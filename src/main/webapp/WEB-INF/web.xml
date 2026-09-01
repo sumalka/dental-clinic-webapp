@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
+         https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0">
+
+    <display-name>Dental Clinic Management System</display-name>
+
+    <!-- Welcome files -->
+    <welcome-file-list>
+        <welcome-file>pages/auth/login.html</welcome-file>
+    </welcome-file-list>
+
+    <!-- Session timeout -->
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
+
+    <!-- ==================== HOME CONTROLLER ==================== -->
+    <servlet>
+        <servlet-name>HomeController</servlet-name>
+        <servlet-class>com.dentalclinic.controller.HomeController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>HomeController</servlet-name>
+        <!-- Page navigation paths -->
+        <url-pattern>/login</url-pattern>
+        <url-pattern>/logout</url-pattern>
+        <url-pattern>/dashboard</url-pattern>
+        <url-pattern>/home</url-pattern>
+        <url-pattern>/</url-pattern>
+        <!-- 🔥 ADDED: Module page paths -->
+        <url-pattern>/patients</url-pattern>
+        <url-pattern>/appointments</url-pattern>
+        <url-pattern>/dentists</url-pattern>
+        <url-pattern>/treatments</url-pattern>
+        <url-pattern>/billing</url-pattern>
+        <url-pattern>/reports</url-pattern>
+        <url-pattern>/staff</url-pattern>
+        <url-pattern>/help</url-pattern>
+    </servlet-mapping>
+
+    <!-- ==================== API CONTROLLERS ==================== -->
+    <servlet>
+        <servlet-name>AuthController</servlet-name>
+        <servlet-class>com.dentalclinic.controller.AuthController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AuthController</servlet-name>
+        <url-pattern>/api/auth</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>SessionController</servlet-name>
+        <servlet-class>com.dentalclinic.controller.SessionController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SessionController</servlet-name>
+        <url-pattern>/api/session</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>PatientController</servlet-name>
+        <servlet-class>com.dentalclinic.controller.PatientController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PatientController</servlet-name>
+        <url-pattern>/api/patients</url-pattern>
+        <url-pattern>/api/patients/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AppointmentController</servlet-name>
+        <servlet-class>com.dentalclinic.controller.AppointmentController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AppointmentController</servlet-name>
+        <url-pattern>/api/appointments</url-pattern>
+        <url-pattern>/api/appointments/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>DentistController</servlet-name>
+        <servlet-class>com.dentalclinic.controller.DentistController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DentistController</servlet-name>
+        <url-pattern>/api/dentists</url-pattern>
+        <url-pattern>/api/dentists/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>TreatmentController</servlet-name>
+        <servlet-class>com.dentalclinic.controller.TreatmentController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TreatmentController</servlet-name>
+        <url-pattern>/api/treatments</url-pattern>
+        <url-pattern>/api/treatments/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>BillingController</servlet-name>
+        <servlet-class>com.dentalclinic.controller.BillingController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>BillingController</servlet-name>
+        <url-pattern>/api/billing</url-pattern>
+        <url-pattern>/api/billing/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ReportController</servlet-name>
+        <servlet-class>com.dentalclinic.controller.ReportController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ReportController</servlet-name>
+        <url-pattern>/api/reports</url-pattern>
+        <url-pattern>/api/reports/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>StaffController</servlet-name>
+        <servlet-class>com.dentalclinic.controller.StaffController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>StaffController</servlet-name>
+        <url-pattern>/api/staff</url-pattern>
+        <url-pattern>/api/staff/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Error pages -->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/pages/error/404.html</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/pages/error/500.html</location>
+    </error-page>
+
+</web-app>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treatments - Dental Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        :root {
+            --primary: #3CA6A6;
+            --primary-dark: #2D8C8C;
+            --secondary: #4299e1;
+            --success: #48bb78;
+            --warning: #ecc94b;
+            --danger: #f56565;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --gray: #7f8c8d;
+            --border: #eaeaea;
+            --card-bg: #ffffff;
+            --sidebar-bg: #1a2530;
+        }
+
+        body {
+            background: #F3F4F6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--sidebar-bg);
+            color: white;
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-left h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-left h1 i {
+            color: var(--primary);
+        }
+
+        .header-left p {
+            opacity: 0.9;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 8px rgba(60, 166, 166, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(60, 166, 166, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #38a169);
+            color: white;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 30px 20px;
+        }
+
+        .section-header h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-header h2 i {
+            color: var(--primary);
+        }
+
+        .table-container {
+            padding: 0 30px 30px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--light);
+            color: var(--dark);
+            font-weight: 600;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid var(--border);
+            font-size: 14px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--dark);
+        }
+
+        tr:hover {
+            background: var(--light);
+        }
+
+        .category-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+            background: rgba(60, 166, 166, 0.1);
+            color: var(--primary);
+        }
+
+        .amount {
+            font-weight: 600;
+            color: var(--success);
+        }
+
+        .loading {
+            padding: 60px;
+            text-align: center;
+            color: var(--gray);
+        }
+
+        .loading i {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+            color: var(--primary);
+        }
+
+        .empty-state h3 {
+            color: var(--dark);
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .empty-state p {
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <h1><i class="fas fa-pills"></i> Treatment Management</h1>
+            <p><i class="fas fa-tooth"></i> Manage all dental treatments and procedures</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-secondary" onclick="window.location.href='/dental_clinic_webapp_war_exploded/dashboard'">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </button>
+            <button class="btn btn-success" onclick="showToast('Add Treatment form coming soon!', 'info')">
+                <i class="fas fa-plus"></i> Add Treatment
+            </button>
+        </div>
+    </div>
+
+    <!-- Section Header -->
+    <div class="section-header">
+        <h2><i class="fas fa-list"></i> All Treatments</h2>
+        <span id="treatmentCount" style="color: var(--gray); font-size: 14px;">Loading...</span>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+        <div class="loading" id="loadingMessage">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading treatments...</p>
+        </div>
+
+        <table id="treatmentTable" style="display: none;">
+            <thead>
+            <tr>
+                <th>Treatment Name</th>
+                <th>Category</th>
+                <th>Duration</th>
+                <th>Price</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody id="treatmentTableBody">
+            <!-- Treatments will be loaded here -->
+            </tbody>
+        </table>
+
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <i class="fas fa-pills"></i>
+            <h3>No Treatments Found</h3>
+            <p>Add your first treatment to the system.</p>
+            <button class="btn btn-primary" onclick="showToast('Add Treatment form coming soon!', 'info')">
+                <i class="fas fa-plus"></i> Add Treatment
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const CONTEXT_PATH = '/dental_clinic_webapp_war_exploded';
+    let treatments = [];
+
+    // Sample treatment data
+    const sampleTreatments = [
+        { id: 1, name: 'Dental Cleaning', category: 'Preventive', duration: 45, price: 2500.00, active: true },
+        { id: 2, name: 'Cavity Filling', category: 'Restorative', duration: 60, price: 3500.00, active: true },
+        { id: 3, name: 'Root Canal', category: 'Endodontic', duration: 90, price: 8000.00, active: true },
+        { id: 4, name: 'Tooth Extraction', category: 'Oral Surgery', duration: 45, price: 3000.00, active: true },
+        { id: 5, name: 'Crown Placement', category: 'Restorative', duration: 90, price: 12000.00, active: true },
+        { id: 6, name: 'Braces Installation', category: 'Orthodontic', duration: 120, price: 25000.00, active: true },
+        { id: 7, name: 'Teeth Whitening', category: 'Cosmetic', duration: 60, price: 5000.00, active: false }
+    ];
+
+    document.addEventListener('DOMContentLoaded', function() {
+        treatments = sampleTreatments;
+        displayTreatments(treatments);
+        document.getElementById('treatmentCount').textContent = `${treatments.length} treatments`;
+    });
+
+    function displayTreatments(treatmentsToShow) {
+        const tbody = document.getElementById('treatmentTableBody');
+        const loading = document.getElementById('loadingMessage');
+        const table = document.getElementById('treatmentTable');
+        const emptyState = document.getElementById('emptyState');
+
+        loading.style.display = 'none';
+
+        if (!treatmentsToShow || treatmentsToShow.length === 0) {
+            table.style.display = 'none';
+            emptyState.style.display = 'block';
+            return;
+        }
+
+        table.style.display = 'table';
+        emptyState.style.display = 'none';
+
+        tbody.innerHTML = '';
+        treatmentsToShow.forEach(treatment => {
+            const row = document.createElement('tr');
+            const statusClass = treatment.active ? 'status-active' : 'status-inactive';
+            const statusText = treatment.active ? 'Active' : 'Inactive';
+
+            row.innerHTML = `
+                <td><strong>${treatment.name}</strong></td>
+                <td><span class="category-badge">${treatment.category}</span></td>
+                <td>${treatment.duration} min</td>
+                <td class="amount">$${treatment.price.toFixed(2)}</td>
+                <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    function showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.style.cssText = `
+            position: fixed; bottom: 30px; right: 30px;
+            background: white; padding: 15px 25px;
+            border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex; align-items: center; gap: 12px;
+            z-index: 9999; animation: slideIn 0.3s ease;
+            border-left: 4px solid ${type === 'success' ? '#48bb78' : '#4299e1'};
+            max-width: 400px;
+        `;
+
+        const icons = {
+            success: 'fa-check-circle',
+            error: 'fa-exclamation-circle',
+            warning: 'fa-exclamation-triangle',
+            info: 'fa-info-circle'
+        };
+
+        toast.innerHTML = `
+            <i class="fas ${icons[type]}" style="font-size: 20px; color: ${type === 'success' ? '#48bb78' : '#4299e1'};"></i>
+            <span style="flex: 1;">${message}</span>
+            <button onclick="this.parentElement.remove()" style="background: none; border: none; color: #7f8c8d; cursor: pointer;">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            if (toast.parentElement) {
+                toast.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }
+        }, 4000);
+    }
+</script>
+<script src="js/protection.js"></script>
+</body>
+</html>

@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dental Clinic - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        :root {
+            --primary: #3CA6A6;
+            --primary-dark: #2D8C8C;
+            --secondary: #4299e1;
+            --success: #48bb78;
+            --warning: #ecc94b;
+            --danger: #f56565;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --gray: #7f8c8d;
+            --border: #eaeaea;
+            --card-bg: #ffffff;
+            --sidebar-bg: #1a2530;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            background: #F3F4F6;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .brand {
+            padding: 10px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .logo {
+            width: 200px;
+            height: 200px;
+            background: transparent;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            animation: float 3s ease-in-out infinite;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .logo i {
+            font-size: 80px;
+            color: var(--primary);
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .brand h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .brand-tagline {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 0;
+        }
+
+        .nav-menu {
+            padding: 10px 0;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+            font-weight: 500;
+            margin: 2px 0;
+            cursor: pointer;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: linear-gradient(90deg, rgba(60, 166, 166, 0.2), rgba(60, 166, 166, 0.1));
+            color: white;
+            border-left: 4px solid var(--primary);
+        }
+
+        .nav-item i {
+            width: 18px;
+            text-align: center;
+            font-size: 15px;
+            color: var(--primary);
+        }
+
+        .nav-item.active i {
+            color: white;
+        }
+
+        .user-section {
+            padding: 20px 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(26, 37, 48, 0.95);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 22px;
+            box-shadow: 0 6px 12px rgba(60, 166, 166, 0.4);
+            overflow: hidden;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .user-details {
+            flex-grow: 1;
+        }
+
+        .user-name {
+            font-weight: 700;
+            font-size: 18px;
+            color: white;
+            margin-bottom: 6px;
+            text-transform: capitalize;
+            letter-spacing: 0.3px;
+            line-height: 1.2;
+        }
+
+        .user-role {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-transform: capitalize;
+        }
+
+        .user-role i {
+            font-size: 12px;
+            color: var(--primary);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px;
+            border-radius: 4px;
+        }
+
+        .btn-logout {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(60, 166, 166, 0.3);
+            text-decoration: none;
+        }
+
+        .btn-logout:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(60, 166, 166, 0.4);
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 30px;
+        }
+
+        .top-header {
+            background: var(--sidebar-bg);
+            padding: 25px 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .header-left h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-left .welcome-message {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-left .welcome-message i {
+            font-size: 18px;
+            color: var(--primary);
+        }
+
+        .header-left .welcome-message span {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .current-time {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(60, 166, 166, 0.2);
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            animation: card-float 4s ease-in-out infinite;
+            animation-delay: calc(var(--card-index) * 0.2s);
+        }
+
+        .stat-card:nth-child(1) { --card-index: 0; }
+        .stat-card:nth-child(2) { --card-index: 1; }
+        .stat-card:nth-child(3) { --card-index: 2; }
+        .stat-card:nth-child(4) { --card-index: 3; }
+
+        @keyframes card-float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .stat-card:hover {
+            animation: card-float-hover 1.5s ease-in-out infinite !important;
+            transform: scale(1.02) translateY(-8px);
+            box-shadow: 0 20px 40px rgba(60, 166, 166, 0.15);
+        }
+
+        @keyframes card-float-hover {
+            0% { transform: scale(1.02) translateY(-5px); }
+            50% { transform: scale(1.02) translateY(-12px); }
+            100% { transform: scale(1.02) translateY(-5px); }
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark), #4ecdc4);
+            z-index: 1;
+        }
+
+        .stat-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stat-numbers h3 {
+            font-size: 42px;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 5px;
+            line-height: 1;
+        }
+
+        .stat-numbers p {
+            color: var(--gray);
+            font-size: 15px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, rgba(60, 166, 166, 0.1), rgba(45, 140, 140, 0.1));
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: var(--primary);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(60, 166, 166, 0.2);
+        }
+
+        .stat-card:hover .stat-icon {
+            transform: rotate(5deg) scale(1.1);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 10px 20px rgba(60, 166, 166, 0.3);
+        }
+
+        .stat-trend {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 5px;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 30px;
+            background: rgba(72, 187, 120, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(72, 187, 120, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .reports-section {
+            margin-top: 40px;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .section-header h3 {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-header h3 i {
+            color: var(--primary);
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            cursor: pointer;
+            z-index: 1002;
+            font-size: 20px;
+            box-shadow: 0 4px 12px rgba(60, 166, 166, 0.3);
+        }
+
+        @media (max-width: 1200px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar.active { transform: translateX(0); }
+            .main-content { margin-left: 0; padding: 20px; width: 100%; }
+            .menu-toggle { display: block; }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: 1fr; gap: 15px; }
+            .top-header { flex-direction: column; gap: 20px; text-align: center; }
+            .header-right { width: 100%; justify-content: space-between; flex-wrap: wrap; }
+            .current-time { min-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<button class="menu-toggle" id="menuToggle">
+    <i class="fas fa-bars"></i>
+</button>
+
+<!-- Sidebar -->
+<nav class="sidebar">
+    <div class="brand">
+        <div class="logo">
+            <i class="fas fa-tooth"></i>
+        </div>
+        <h1>Dental Clinic</h1>
+        <div class="brand-tagline">Management System</div>
+    </div>
+
+    <div class="nav-menu">
+        <a href="/dental_clinic_webapp_war_exploded/dashboard" class="nav-item active">
+            <i class="fas fa-home"></i> Dashboard
+        </a>
+        <a href="/dental_clinic_webapp_war_exploded/patients" class="nav-item">
+            <i class="fas fa-users"></i> Patients
+        </a>
+        <a href="/dental_clinic_webapp_war_exploded/appointments" class="nav-item">
+            <i class="fas fa-calendar-alt"></i> Appointments
+        </a>
+        <a href="/dental_clinic_webapp_war_exploded/dentists" class="nav-item">
+            <i class="fas fa-user-md"></i> Dentists
+        </a>
+        <a href="/dental_clinic_webapp_war_exploded/treatments" class="nav-item">
+            <i class="fas fa-pills"></i> Treatments
+        </a>
+        <a href="/dental_clinic_webapp_war_exploded/billing" class="nav-item">
+            <i class="fas fa-file-invoice-dollar"></i> Billing
+        </a>
+        <a href="/dental_clinic_webapp_war_exploded/reports" class="nav-item">
+            <i class="fas fa-chart-bar"></i> Reports
+        </a>
+        <a href="/dental_clinic_webapp_war_exploded/staff" class="nav-item">
+            <i class="fas fa-user-tie"></i> Staff
+        </a>
+        <a href="/dental_clinic_webapp_war_exploded/help" class="nav-item">
+            <i class="fas fa-question-circle"></i> Help
+        </a>
+    </div>
+
+    <div class="user-section">
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">A</div>
+            <div class="user-details">
+                <div class="user-name" id="userName">Loading...</div>
+                <div class="user-role" id="userRole">
+                    <i class="fas fa-user-tag"></i> Loading...
+                </div>
+            </div>
+        </div>
+        <a href="/dental_clinic_webapp_war_exploded/logout" class="btn-logout">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<main class="main-content">
+    <div class="top-header">
+        <div class="header-left">
+            <h2><i class="fas fa-tooth"></i> Dental Dashboard</h2>
+            <div class="welcome-message" id="welcomeMessage">
+                <i class="fas fa-hand-sparkles"></i>
+                Welcome back, <span id="displayUsername">Loading...</span>!
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="current-time" id="currentTimeDisplay">Loading...</div>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-content">
+                <div class="stat-numbers">
+                    <h3 id="totalPatients">0</h3>
+                    <p>Total Patients</p>
+                    <div class="stat-trend" id="patientsTrend">
+                        <i class="fas fa-arrow-up"></i>
+                        <span id="patientsTrendText">Loading...</span>
+                    </div>
+                </div>
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-content">
+                <div class="stat-numbers">
+                    <h3 id="todayAppointments">0</h3>
+                    <p>Today's Appointments</p>
+                    <div class="stat-trend" id="appointmentsTrend">
+                        <i class="fas fa-arrow-up"></i>
+                        <span id="appointmentsTrendText">Loading...</span>
+                    </div>
+                </div>
+                <div class="stat-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-content">
+                <div class="stat-numbers">
+                    <h3 id="pendingBills">0</h3>
+                    <p>Pending Bills</p>
+                    <div class="stat-trend" id="billsTrend">
+                        <i class="fas fa-arrow-up"></i>
+                        <span id="billsTrendText">Loading...</span>
+                    </div>
+                </div>
+                <div class="stat-icon">
+                    <i class="fas fa-file-invoice"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-content">
+                <div class="stat-numbers">
+                    <h3 id="todayRevenue">$0</h3>
+                    <p>Today's Revenue</p>
+                    <div class="stat-trend" id="revenueTrend">
+                        <i class="fas fa-arrow-up"></i>
+                        <span id="revenueTrendText">Loading...</span>
+                    </div>
+                </div>
+                <div class="stat-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="reports-section">
+        <div class="section-header">
+            <h3><i class="fas fa-chart-line"></i> Quick Overview</h3>
+        </div>
+        <div class="chart-container">
+            <canvas id="overviewChart"></canvas>
+        </div>
+    </div>
+</main>
+
+<script>
+    const CONTEXT_PATH = '/dental_clinic_webapp_war_exploded';
+
+    // Load user info
+    async function loadUserInfo() {
+        try {
+            const response = await fetch(CONTEXT_PATH + '/api/session');
+            const data = await response.json();
+            if (data.authenticated) {
+                document.getElementById('userName').textContent = data.fullName || data.username;
+                document.getElementById('userRole').innerHTML = `<i class="fas fa-user-tag"></i> ${data.role || 'Staff'}`;
+                document.getElementById('displayUsername').textContent = data.username || 'User';
+                const initials = data.fullName ? data.fullName.split(' ').map(n => n[0]).join('') : 'U';
+                document.getElementById('userAvatar').textContent = initials.toUpperCase().substring(0, 2);
+            }
+        } catch (error) {
+            console.error('Error loading user info:', error);
+        }
+    }
+
+    // Load dashboard stats
+    async function loadStats() {
+        try {
+            const response = await fetch(CONTEXT_PATH + '/api/reports?action=daily');
+            const data = await response.json();
+            if (data.success) {
+                document.getElementById('totalPatients').textContent = data.totalPatients || 0;
+                document.getElementById('todayAppointments').textContent = data.todayAppointments || 0;
+                document.getElementById('pendingBills').textContent = data.pendingBills || 0;
+                document.getElementById('todayRevenue').textContent = '$' + (data.todayRevenue || 0).toFixed(2);
+            }
+        } catch (error) {
+            console.error('Error loading stats:', error);
+        }
+    }
+
+    // Update current time
+    function updateTime() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second: '2-digit'});
+        const dateString = now.toLocaleDateString('en-US', {
+            weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
+        });
+        document.getElementById('currentTimeDisplay').innerHTML =
+            `<i class="far fa-clock"></i> ${dateString} • ${timeString}`;
+    }
+
+    // Mobile menu toggle
+    document.getElementById('menuToggle').addEventListener('click', function() {
+        document.querySelector('.sidebar').classList.toggle('active');
+    });
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        loadUserInfo();
+        loadStats();
+        updateTime();
+        setInterval(updateTime, 60000);
+        setInterval(loadStats, 30000);
+
+        // Simple chart
+        const ctx = document.getElementById('overviewChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Appointments',
+                    data: [8, 12, 10, 15, 18, 6, 4],
+                    borderColor: '#3CA6A6',
+                    backgroundColor: 'rgba(60, 166, 166, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }, {
+                    label: 'Revenue ($)',
+                    data: [500, 800, 600, 1200, 1500, 300, 200],
+                    borderColor: '#48bb78',
+                    backgroundColor: 'rgba(72, 187, 120, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true, position: 'top' }
+                },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(0, 0, 0, 0.05)' } }
+                }
+            }
+        });
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.key === 'd') {
+            e.preventDefault();
+            window.location.href = CONTEXT_PATH + '/dashboard';
+        }
+    });
+</script>
+</body>
+</html>

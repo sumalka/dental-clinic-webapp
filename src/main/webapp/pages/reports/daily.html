@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Report - Dental Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        :root {
+            --primary: #3CA6A6;
+            --primary-dark: #2D8C8C;
+            --secondary: #4299e1;
+            --success: #48bb78;
+            --warning: #ecc94b;
+            --danger: #f56565;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --gray: #7f8c8d;
+            --border: #eaeaea;
+            --card-bg: #ffffff;
+            --sidebar-bg: #1a2530;
+        }
+
+        body {
+            background: #F3F4F6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--sidebar-bg);
+            color: white;
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-left h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-left h1 i {
+            color: var(--primary);
+        }
+
+        .header-left p {
+            opacity: 0.9;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #38a169);
+            color: white;
+        }
+
+        .report-type-buttons {
+            display: flex;
+            gap: 10px;
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .report-btn {
+            padding: 10px 25px;
+            border: 2px solid var(--border);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .report-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .report-btn.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding: 30px;
+        }
+
+        .stat-card {
+            background: var(--light);
+            padding: 25px;
+            border-radius: 16px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .stat-card h3 {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            color: var(--gray);
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .stat-card .icon {
+            float: right;
+            font-size: 28px;
+            color: var(--primary);
+            opacity: 0.3;
+        }
+
+        .chart-container {
+            padding: 0 30px 30px;
+        }
+
+        .chart-box {
+            background: var(--light);
+            padding: 25px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        .chart-box h3 {
+            margin-bottom: 20px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chart-box h3 i {
+            color: var(--primary);
+        }
+
+        .chart-wrapper {
+            height: 300px;
+        }
+
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .report-type-buttons {
+                flex-wrap: wrap;
+            }
+
+            .report-btn {
+                flex: 1;
+                min-width: 100px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <h1><i class="fas fa-chart-bar"></i> Daily Report</h1>
+            <p><i class="fas fa-calendar-day"></i> Today's performance metrics</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-secondary" onclick="window.location.href='/dental_clinic_webapp_war_exploded/dashboard'">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </button>
+            <button class="btn btn-success" onclick="showToast('Report exported!', 'success')">
+                <i class="fas fa-download"></i> Export Report
+            </button>
+        </div>
+    </div>
+
+    <!-- Report Type Buttons -->
+    <div class="report-type-buttons">
+        <button class="report-btn active" onclick="switchReport('daily', this)">Daily</button>
+        <button class="report-btn" onclick="switchReport('weekly', this)">Weekly</button>
+        <button class="report-btn" onclick="switchReport('monthly', this)">Monthly</button>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="icon"><i class="fas fa-users"></i></div>
+            <h3 id="totalPatients">156</h3>
+            <p>Total Patients</p>
+        </div>
+        <div class="stat-card">
+            <div class="icon"><i class="fas fa-calendar-check"></i></div>
+            <h3 id="todayAppointments">8</h3>
+            <p>Today's Appointments</p>
+        </div>
+        <div class="stat-card">
+            <div class="icon"><i class="fas fa-file-invoice"></i></div>
+            <h3 id="pendingBills">3</h3>
+            <p>Pending Bills</p>
+        </div>
+        <div class="stat-card">
+            <div class="icon"><i class="fas fa-dollar-sign"></i></div>
+            <h3 id="todayRevenue">$3,850</h3>
+            <p>Today's Revenue</p>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="chart-container">
+        <div class="chart-box">
+            <h3><i class="fas fa-chart-line"></i> Revenue Trend</h3>
+            <div class="chart-wrapper">
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-box">
+            <h3><i class="fas fa-chart-bar"></i> Appointment Distribution</h3>
+            <div class="chart-wrapper">
+                <canvas id="appointmentChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const CONTEXT_PATH = '/dental_clinic_webapp_war_exploded';
+
+    document.addEventListener('DOMContentLoaded', function() {
+        createCharts();
+    });
+
+    function createCharts() {
+        // Revenue Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Revenue ($)',
+                    data: [800, 1200, 600, 1800, 1500, 500, 200],
+                    borderColor: '#3CA6A6',
+                    backgroundColor: 'rgba(60, 166, 166, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Appointment Chart
+        const appCtx = document.getElementById('appointmentChart').getContext('2d');
+        new Chart(appCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Cleaning', 'Filling', 'Root Canal', 'Extraction', 'Braces'],
+                datasets: [{
+                    label: 'Appointments',
+                    data: [12, 8, 5, 6, 4],
+                    backgroundColor: ['#3CA6A6', '#4299e1', '#48bb78', '#ecc94b', '#ed8936'],
+                    borderWidth: 0,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 2 }
+                    }
+                }
+            }
+        });
+    }
+
+    function switchReport(type, element) {
+        document.querySelectorAll('.report-btn').forEach(btn => btn.classList.remove('active'));
+        element.classList.add('active');
+        showToast(`Switched to ${type} report`, 'info');
+    }
+
+    function showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.style.cssText = `
+            position: fixed; bottom: 30px; right: 30px;
+            background: white; padding: 15px 25px;
+            border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex; align-items: center; gap: 12px;
+            z-index: 9999; animation: slideIn 0.3s ease;
+            border-left: 4px solid ${type === 'success' ? '#48bb78' : '#4299e1'};
+            max-width: 400px;
+        `;
+
+        const icons = {
+            success: 'fa-check-circle',
+            error: 'fa-exclamation-circle',
+            warning: 'fa-exclamation-triangle',
+            info: 'fa-info-circle'
+        };
+
+        toast.innerHTML = `
+            <i class="fas ${icons[type]}" style="font-size: 20px; color: ${type === 'success' ? '#48bb78' : '#4299e1'};"></i>
+            <span style="flex: 1;">${message}</span>
+            <button onclick="this.parentElement.remove()" style="background: none; border: none; color: #7f8c8d; cursor: pointer;">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            if (toast.parentElement) {
+                toast.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }
+        }, 4000);
+    }
+</script>
+<script src="js/protection.js"></script>
+</body>
+</html>

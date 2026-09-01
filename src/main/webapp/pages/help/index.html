@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help & Support - Dental Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        :root {
+            --primary: #3CA6A6;
+            --primary-dark: #2D8C8C;
+            --secondary: #4299e1;
+            --success: #48bb78;
+            --warning: #ecc94b;
+            --danger: #f56565;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --gray: #7f8c8d;
+            --border: #eaeaea;
+            --card-bg: #ffffff;
+            --sidebar-bg: #1a2530;
+        }
+
+        body {
+            background: #F3F4F6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--sidebar-bg);
+            color: white;
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-left h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-left h1 i {
+            color: var(--primary);
+        }
+
+        .header-left p {
+            opacity: 0.9;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .help-content {
+            padding: 40px;
+        }
+
+        .help-section {
+            margin-bottom: 40px;
+        }
+
+        .help-section h2 {
+            color: var(--dark);
+            font-size: 24px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .help-section h2 i {
+            color: var(--primary);
+        }
+
+        .help-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .help-card {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s;
+            border: 1px solid var(--border);
+        }
+
+        .help-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+
+        .help-card i {
+            font-size: 32px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .help-card h3 {
+            color: var(--dark);
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .help-card p {
+            color: var(--gray);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .help-card ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 10px;
+        }
+
+        .help-card li {
+            padding: 5px 0;
+            color: var(--gray);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .help-card li i {
+            font-size: 12px;
+            color: var(--primary);
+            margin: 0;
+        }
+
+        .faq-item {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border);
+        }
+
+        .faq-item h4 {
+            color: var(--dark);
+            font-size: 16px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .faq-item h4 i {
+            color: var(--primary);
+        }
+
+        .faq-item p {
+            color: var(--gray);
+            font-size: 14px;
+            line-height: 1.6;
+            padding-left: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .help-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <h1><i class="fas fa-question-circle"></i> Help & Support</h1>
+            <p><i class="fas fa-life-ring"></i> Getting started with Dental Clinic Management System</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-secondary" onclick="window.location.href='/dental_clinic_webapp_war_exploded/dashboard'">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </button>
+            <button class="btn btn-primary" onclick="showToast('Contact support form coming soon!', 'info')">
+                <i class="fas fa-envelope"></i> Contact Support
+            </button>
+        </div>
+    </div>
+
+    <!-- Help Content -->
+    <div class="help-content">
+        <!-- Quick Start -->
+        <div class="help-section">
+            <h2><i class="fas fa-rocket"></i> Quick Start Guide</h2>
+            <div class="help-grid">
+                <div class="help-card">
+                    <i class="fas fa-user-plus"></i>
+                    <h3>Add a Patient</h3>
+                    <p>Start by adding your first patient to the system.</p>
+                    <ul>
+                        <li><i class="fas fa-chevron-right"></i> Click "Patients" in the sidebar</li>
+                        <li><i class="fas fa-chevron-right"></i> Click "Add Patient"</li>
+                        <li><i class="fas fa-chevron-right"></i> Fill in patient details</li>
+                    </ul>
+                </div>
+                <div class="help-card">
+                    <i class="fas fa-calendar-plus"></i>
+                    <h3>Schedule Appointment</h3>
+                    <p>Book appointments for your patients.</p>
+                    <ul>
+                        <li><i class="fas fa-chevron-right"></i> Click "Appointments" in the sidebar</li>
+                        <li><i class="fas fa-chevron-right"></i> Click "Add Appointment"</li>
+                        <li><i class="fas fa-chevron-right"></i> Select patient, dentist, and date</li>
+                    </ul>
+                </div>
+                <div class="help-card">
+                    <i class="fas fa-file-invoice"></i>
+                    <h3>Generate Invoice</h3>
+                    <p>Create bills for completed appointments.</p>
+                    <ul>
+                        <li><i class="fas fa-chevron-right"></i> Go to "Billing" in the sidebar</li>
+                        <li><i class="fas fa-chevron-right"></i> View appointment details</li>
+                        <li><i class="fas fa-chevron-right"></i> Click "Generate Bill"</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQs -->
+        <div class="help-section">
+            <h2><i class="fas fa-question-circle"></i> Frequently Asked Questions</h2>
+
+            <div class="faq-item">
+                <h4><i class="fas fa-user"></i> How do I add a new patient?</h4>
+                <p>Navigate to the Patients page from the sidebar, click the "Add Patient" button, and fill in the required information including name, contact details, and medical history.</p>
+            </div>
+
+            <div class="faq-item">
+                <h4><i class="fas fa-calendar"></i> How do I schedule an appointment?</h4>
+                <p>Go to the Appointments page, click "Add Appointment", select a patient, dentist, treatment type, and choose a date and time that works for everyone.</p>
+            </div>
+
+            <div class="faq-item">
+                <h4><i class="fas fa-file-invoice-dollar"></i> How do I generate a bill?</h4>
+                <p>After an appointment is completed, go to the Billing section, find the appointment, and click "Generate Bill". The system will calculate the total based on treatment and consultation fees.</p>
+            </div>
+
+            <div class="faq-item">
+                <h4><i class="fas fa-users"></i> How do I manage staff members?</h4>
+                <p>Only administrators can manage staff. Go to the Staff page to add, edit, or deactivate staff members.</p>
+            </div>
+
+            <div class="faq-item">
+                <h4><i class="fas fa-chart-bar"></i> How do I view reports?</h4>
+                <p>Navigate to the Reports page to view daily, weekly, and monthly reports on patients, appointments, and revenue.</p>
+            </div>
+        </div>
+
+        <!-- Contact -->
+        <div class="help-section">
+            <h2><i class="fas fa-headset"></i> Need More Help?</h2>
+            <div class="help-grid">
+                <div class="help-card">
+                    <i class="fas fa-envelope"></i>
+                    <h3>Email Support</h3>
+                    <p>support@dentalclinic.com</p>
+                    <p style="margin-top: 5px;">Response within 24 hours</p>
+                </div>
+                <div class="help-card">
+                    <i class="fas fa-phone"></i>
+                    <h3>Phone Support</h3>
+                    <p>+94 77 123 4567</p>
+                    <p style="margin-top: 5px;">Mon-Fri, 9am-5pm</p>
+                </div>
+                <div class="help-card">
+                    <i class="fas fa-book"></i>
+                    <h3>User Manual</h3>
+                    <p>Download the complete user manual for detailed instructions.</p>
+                    <button class="btn btn-primary" style="margin-top: 10px;" onclick="showToast('Manual download coming soon!', 'info')">
+                        <i class="fas fa-download"></i> Download Manual
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const CONTEXT_PATH = '/dental_clinic_webapp_war_exploded';
+
+    function showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.style.cssText = `
+            position: fixed; bottom: 30px; right: 30px;
+            background: white; padding: 15px 25px;
+            border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex; align-items: center; gap: 12px;
+            z-index: 9999; animation: slideIn 0.3s ease;
+            border-left: 4px solid ${type === 'success' ? '#48bb78' : '#4299e1'};
+            max-width: 400px;
+        `;
+
+        const icons = {
+            success: 'fa-check-circle',
+            error: 'fa-exclamation-circle',
+            warning: 'fa-exclamation-triangle',
+            info: 'fa-info-circle'
+        };
+
+        toast.innerHTML = `
+            <i class="fas ${icons[type]}" style="font-size: 20px; color: ${type === 'success' ? '#48bb78' : '#4299e1'};"></i>
+            <span style="flex: 1;">${message}</span>
+            <button onclick="this.parentElement.remove()" style="background: none; border: none; color: #7f8c8d; cursor: pointer;">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            if (toast.parentElement) {
+                toast.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }
+        }, 4000);
+    }
+</script>
+<script src="js/protection.js"></script>
+</body>
+</html>

@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointments - Dental Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        :root {
+            --primary: #3CA6A6;
+            --primary-dark: #2D8C8C;
+            --secondary: #4299e1;
+            --success: #48bb78;
+            --warning: #ecc94b;
+            --danger: #f56565;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --gray: #7f8c8d;
+            --border: #eaeaea;
+            --card-bg: #ffffff;
+            --sidebar-bg: #1a2530;
+        }
+
+        body {
+            background: #F3F4F6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--sidebar-bg);
+            color: white;
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-left h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-left h1 i {
+            color: var(--primary);
+        }
+
+        .header-left p {
+            opacity: 0.9;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 8px rgba(60, 166, 166, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(60, 166, 166, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #38a169);
+            color: white;
+            box-shadow: 0 4px 8px rgba(72, 187, 120, 0.3);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #38a169, var(--success));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(72, 187, 120, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #c53030);
+            color: white;
+            box-shadow: 0 4px 8px rgba(245, 101, 101, 0.3);
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #c53030, var(--danger));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(245, 101, 101, 0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #d69e2e);
+            color: white;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 30px 20px;
+        }
+
+        .section-header h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-header h2 i {
+            color: var(--primary);
+        }
+
+        .search-section {
+            padding: 0 30px 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 12px 12px 45px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(60, 166, 166, 0.1);
+        }
+
+        .filter-box select {
+            padding: 12px 25px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--dark);
+            cursor: pointer;
+            background: white;
+            min-width: 150px;
+            transition: all 0.3s;
+        }
+
+        .filter-box select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(60, 166, 166, 0.1);
+        }
+
+        .tabs {
+            display: flex;
+            padding: 0 30px;
+            background: var(--light);
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 15px 25px;
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--gray);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            color: var(--primary);
+            background: rgba(60, 166, 166, 0.05);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            background: rgba(60, 166, 166, 0.05);
+        }
+
+        .table-container {
+            padding: 0 30px 30px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--light);
+            color: var(--dark);
+            font-weight: 600;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid var(--border);
+            font-size: 14px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--dark);
+        }
+
+        tr:hover {
+            background: var(--light);
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-scheduled {
+            background: rgba(66, 153, 225, 0.1);
+            color: var(--secondary);
+        }
+
+        .status-confirmed {
+            background: rgba(72, 187, 120, 0.1);
+            color: var(--success);
+        }
+
+        .status-completed {
+            background: rgba(160, 174, 192, 0.1);
+            color: #a0aec0;
+        }
+
+        .status-cancelled {
+            background: rgba(245, 101, 101, 0.1);
+            color: var(--danger);
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .action-view {
+            background: rgba(66, 153, 225, 0.1);
+            color: var(--secondary);
+        }
+
+        .action-edit {
+            background: rgba(236, 201, 75, 0.1);
+            color: var(--warning);
+        }
+
+        .action-delete {
+            background: rgba(245, 101, 101, 0.1);
+            color: var(--danger);
+        }
+
+        .action-checkin {
+            background: rgba(72, 187, 120, 0.1);
+            color: var(--success);
+        }
+
+        .action-checkout {
+            background: rgba(236, 201, 75, 0.1);
+            color: var(--warning);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(0.9);
+        }
+
+        .loading {
+            padding: 60px;
+            text-align: center;
+            color: var(--gray);
+        }
+
+        .loading i {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+            color: var(--primary);
+        }
+
+        .empty-state h3 {
+            color: var(--dark);
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .empty-state p {
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 9999;
+            animation: slideIn 0.3s ease;
+            border-left: 4px solid var(--success);
+            max-width: 400px;
+        }
+
+        .toast.error { border-left-color: var(--danger); }
+        .toast.success { border-left-color: var(--success); }
+        .toast.warning { border-left-color: var(--warning); }
+        .toast.info { border-left-color: var(--secondary); }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .search-section {
+                flex-direction: column;
+            }
+
+            .filter-box select {
+                width: 100%;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab {
+                flex: 1;
+                min-width: 80px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <h1><i class="fas fa-calendar-alt"></i> Appointment Management</h1>
+            <p><i class="fas fa-calendar-check"></i> Manage all dental appointments</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-secondary" onclick="window.location.href='/dental_clinic_webapp_war_exploded/dashboard'">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </button>
+            <!-- FIXED: This button now navigates to add.html -->
+            <button class="btn btn-success" onclick="window.location.href='/dental_clinic_webapp_war_exploded/pages/appointments/add.html'">
+                <i class="fas fa-plus"></i> Add Appointment
+            </button>
+        </div>
+    </div>
+
+    <!-- Section Header -->
+    <div class="section-header">
+        <h2><i class="fas fa-list"></i> All Appointments</h2>
+        <span id="appointmentCount" style="color: var(--gray); font-size: 14px;">Loading...</span>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('all', this)">All</button>
+        <button class="tab" onclick="switchTab('today', this)">Today</button>
+        <button class="tab" onclick="switchTab('confirmed', this)">Confirmed</button>
+        <button class="tab" onclick="switchTab('completed', this)">Completed</button>
+        <button class="tab" onclick="switchTab('cancelled', this)">Cancelled</button>
+    </div>
+
+    <!-- Search and Filter -->
+    <div class="search-section">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search by patient, dentist, or appointment number..." onkeyup="filterAppointments()">
+        </div>
+        <div class="filter-box">
+            <select id="dentistFilter" onchange="filterAppointments()">
+                <option value="">All Dentists</option>
+                <option value="Dr. Sarah Johnson">Dr. Sarah Johnson</option>
+                <option value="Dr. Michael Chen">Dr. Michael Chen</option>
+                <option value="Dr. Priya Kumar">Dr. Priya Kumar</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+        <div class="loading" id="loadingMessage">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading appointments...</p>
+        </div>
+
+        <table id="appointmentTable" style="display: none;">
+            <thead>
+            <tr>
+                <th>Appointment #</th>
+                <th>Patient</th>
+                <th>Dentist</th>
+                <th>Treatment</th>
+                <th>Date & Time</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody id="appointmentTableBody">
+            <!-- Appointments will be loaded here -->
+            </tbody>
+        </table>
+
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <i class="fas fa-calendar-times"></i>
+            <h3>No Appointments Found</h3>
+            <p>Schedule your first appointment today.</p>
+            <button class="btn btn-primary" onclick="window.location.href='/dental_clinic_webapp_war_exploded/pages/appointments/add.html'">
+                <i class="fas fa-plus"></i> Add Appointment
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toastContainer"></div>
+
+<script>
+    var CONTEXT_PATH = '/dental_clinic_webapp_war_exploded';
+    var appointments = [];
+    var currentTab = 'all';
+
+    document.addEventListener('DOMContentLoaded', function() {
+        loadAppointments();
+    });
+
+    function loadAppointments() {
+        var loading = document.getElementById('loadingMessage');
+        loading.style.display = 'block';
+        document.getElementById('appointmentTable').style.display = 'none';
+        document.getElementById('emptyState').style.display = 'none';
+
+        fetch(CONTEXT_PATH + '/api/appointments?action=list&t=' + Date.now())
+            .then(function(response) {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(function(data) {
+                appointments = data;
+                displayAppointments(appointments);
+                document.getElementById('appointmentCount').textContent = appointments.length + ' appointments';
+                loading.style.display = 'none';
+                console.log('Loaded ' + appointments.length + ' appointments');
+            })
+            .catch(function(error) {
+                console.error('Error loading appointments:', error);
+                loading.innerHTML = '<i class="fas fa-exclamation-circle" style="color: var(--danger);"></i>' +
+                    '<p style="color: var(--danger);">Failed to load appointments from database</p>' +
+                    '<p style="font-size: 12px; color: var(--gray);">' + error.message + '</p>' +
+                    '<button class="btn btn-primary" onclick="loadAppointments()" style="margin-top: 15px;">' +
+                    '<i class="fas fa-sync-alt"></i> Retry</button>';
+            });
+    }
+
+    function displayAppointments(appointmentsToShow) {
+        var tbody = document.getElementById('appointmentTableBody');
+        var loading = document.getElementById('loadingMessage');
+        var table = document.getElementById('appointmentTable');
+        var emptyState = document.getElementById('emptyState');
+
+        loading.style.display = 'none';
+
+        if (!appointmentsToShow || appointmentsToShow.length === 0) {
+            table.style.display = 'none';
+            emptyState.style.display = 'block';
+            return;
+        }
+
+        table.style.display = 'table';
+        emptyState.style.display = 'none';
+
+        tbody.innerHTML = '';
+        appointmentsToShow.forEach(function(app) {
+            var row = document.createElement('tr');
+            var statusClass = 'status-' + app.status.toLowerCase();
+
+            var statusDisplay = app.status || 'SCHEDULED';
+            if (statusDisplay === 'SCHEDULED') statusDisplay = 'SCHEDULED';
+            if (statusDisplay === 'CONFIRMED') statusDisplay = 'CONFIRMED';
+            if (statusDisplay === 'COMPLETED') statusDisplay = 'COMPLETED';
+            if (statusDisplay === 'CANCELLED') statusDisplay = 'CANCELLED';
+
+            var patientName = app.patientName || 'Unknown Patient';
+            var dentistName = app.dentistName || 'Unknown Dentist';
+            var treatmentName = app.treatmentName || 'Consultation';
+            var appNumber = app.appointmentNumber || 'N/A';
+            var appDate = app.appointmentDate || 'N/A';
+            var appTime = app.appointmentTime || 'N/A';
+
+            var actionsHtml = '';
+            actionsHtml += '<button class="action-btn action-view" onclick="viewAppointment(' + app.appointmentId + ')" title="View">';
+            actionsHtml += '<i class="fas fa-eye"></i></button>';
+
+            if (app.status !== 'CANCELLED' && app.status !== 'COMPLETED') {
+                actionsHtml += '<button class="action-btn action-checkin" onclick="confirmAppointment(' + app.appointmentId + ')" title="Confirm">';
+                actionsHtml += '<i class="fas fa-check"></i></button>';
+                actionsHtml += '<button class="action-btn action-delete" onclick="cancelAppointment(' + app.appointmentId + ')" title="Cancel">';
+                actionsHtml += '<i class="fas fa-times"></i></button>';
+            }
+
+            if (app.status === 'CONFIRMED') {
+                actionsHtml += '<button class="action-btn action-checkout" onclick="completeAppointment(' + app.appointmentId + ')" title="Complete">';
+                actionsHtml += '<i class="fas fa-flag-checkered"></i></button>';
+            }
+
+            row.innerHTML = '<td><strong>' + appNumber + '</strong></td>' +
+                '<td>' + patientName + '</td>' +
+                '<td>' + dentistName + '</td>' +
+                '<td>' + treatmentName + '</td>' +
+                '<td>' + appDate + ' ' + appTime + '</td>' +
+                '<td><span class="status-badge ' + statusClass + '">' + statusDisplay + '</span></td>' +
+                '<td><div class="actions">' + actionsHtml + '</div></td>';
+
+            tbody.appendChild(row);
+        });
+    }
+
+    function switchTab(tab, element) {
+        currentTab = tab;
+        document.querySelectorAll('.tab').forEach(function(t) {
+            t.classList.remove('active');
+        });
+        element.classList.add('active');
+        filterAppointments();
+    }
+
+    function filterAppointments() {
+        var searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        var dentistFilter = document.getElementById('dentistFilter').value;
+
+        var filtered = appointments.filter(function(app) {
+            var patientName = (app.patientName || '').toLowerCase();
+            var dentistName = (app.dentistName || '').toLowerCase();
+            var appNumber = (app.appointmentNumber || '').toLowerCase();
+
+            var matchesSearch = appNumber.includes(searchTerm) ||
+                patientName.includes(searchTerm) ||
+                dentistName.includes(searchTerm);
+            var matchesDentist = !dentistFilter || dentistName === dentistFilter.toLowerCase();
+            var matchesTab = currentTab === 'all' || app.status.toLowerCase() === currentTab;
+
+            return matchesSearch && matchesDentist && matchesTab;
+        });
+
+        displayAppointments(filtered);
+        document.getElementById('appointmentCount').textContent = filtered.length + ' appointments';
+    }
+
+    function viewAppointment(id) {
+        showToast('Viewing appointment #' + id, 'info');
+    }
+
+    function confirmAppointment(id) {
+        if (!confirm('Confirm this appointment?')) {
+            return;
+        }
+
+        fetch(CONTEXT_PATH + '/api/appointments', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                action: 'update',
+                appointmentId: id,
+                status: 'CONFIRMED'
+            })
+        })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.success) {
+                    showToast('Appointment confirmed!', 'success');
+                    loadAppointments();
+                } else {
+                    showToast('Error: ' + data.message, 'error');
+                }
+            })
+            .catch(function(error) {
+                showToast('Error: ' + error.message, 'error');
+            });
+    }
+
+    function completeAppointment(id) {
+        if (!confirm('Mark this appointment as completed?')) {
+            return;
+        }
+
+        fetch(CONTEXT_PATH + '/api/appointments', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                action: 'update',
+                appointmentId: id,
+                status: 'COMPLETED'
+            })
+        })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.success) {
+                    showToast('Appointment completed!', 'success');
+                    loadAppointments();
+                } else {
+                    showToast('Error: ' + data.message, 'error');
+                }
+            })
+            .catch(function(error) {
+                showToast('Error: ' + error.message, 'error');
+            });
+    }
+
+    function cancelAppointment(id) {
+        if (!confirm('Cancel this appointment?')) {
+            return;
+        }
+
+        fetch(CONTEXT_PATH + '/api/appointments', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                action: 'update',
+                appointmentId: id,
+                status: 'CANCELLED'
+            })
+        })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.success) {
+                    showToast('Appointment cancelled.', 'warning');
+                    loadAppointments();
+                } else {
+                    showToast('Error: ' + data.message, 'error');
+                }
+            })
+            .catch(function(error) {
+                showToast('Error: ' + error.message, 'error');
+            });
+    }
+
+    function showToast(message, type) {
+        if (type === undefined) type = 'info';
+        var container = document.getElementById('toastContainer');
+        var toast = document.createElement('div');
+        toast.className = 'toast ' + type;
+
+        var icons = {
+            success: 'fa-check-circle',
+            error: 'fa-exclamation-circle',
+            warning: 'fa-exclamation-triangle',
+            info: 'fa-info-circle'
+        };
+
+        toast.innerHTML = '<i class="fas ' + icons[type] + '" style="font-size: 20px;"></i>' +
+            '<span style="flex: 1;">' + message + '</span>' +
+            '<button onclick="this.parentElement.remove()" style="background: none; border: none; color: var(--gray); cursor: pointer;">' +
+            '<i class="fas fa-times"></i></button>';
+
+        container.appendChild(toast);
+
+        setTimeout(function() {
+            if (toast.parentElement) {
+                toast.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(function() {
+                    if (toast.parentElement) toast.remove();
+                }, 300);
+            }
+        }, 4000);
+    }
+</script>
+<script src="/dental_clinic_webapp_war_exploded/js/protection.js"></script>
+</body>
+</html>

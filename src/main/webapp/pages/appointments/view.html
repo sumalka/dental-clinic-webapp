@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Appointment - Dental Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        :root {
+            --primary: #3CA6A6;
+            --primary-dark: #2D8C8C;
+            --secondary: #4299e1;
+            --success: #48bb78;
+            --warning: #ecc94b;
+            --danger: #f56565;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --gray: #7f8c8d;
+            --border: #eaeaea;
+            --sidebar-bg: #1a2530;
+        }
+
+        body {
+            background: #F3F4F6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--sidebar-bg);
+            color: white;
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-left h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-left h1 i {
+            color: var(--primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 8px rgba(60, 166, 166, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(60, 166, 166, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #38a169);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #38a169, var(--success));
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #d69e2e);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: linear-gradient(135deg, #d69e2e, var(--warning));
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #c53030);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #c53030, var(--danger));
+            transform: translateY(-2px);
+        }
+
+        .appointment-card {
+            padding: 30px;
+        }
+
+        .appointment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .appointment-title h2 {
+            font-size: 28px;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .appointment-title .appointment-id {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .appointment-status {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .status-scheduled {
+            background: rgba(66, 153, 225, 0.1);
+            color: var(--secondary);
+        }
+
+        .status-confirmed {
+            background: rgba(72, 187, 120, 0.1);
+            color: var(--success);
+        }
+
+        .status-completed {
+            background: rgba(160, 174, 192, 0.1);
+            color: #a0aec0;
+        }
+
+        .status-cancelled {
+            background: rgba(245, 101, 101, 0.1);
+            color: var(--danger);
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .detail-section {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .detail-section h3 {
+            color: var(--dark);
+            font-size: 16px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-section h3 i {
+            color: var(--primary);
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 10px;
+            padding: 5px 0;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            width: 130px;
+            color: var(--gray);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            flex: 1;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .loading {
+            padding: 60px;
+            text-align: center;
+            color: var(--gray);
+        }
+
+        .loading i {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 9999;
+            animation: slideIn 0.3s ease;
+            border-left: 4px solid var(--success);
+            max-width: 400px;
+        }
+
+        .toast.error { border-left-color: var(--danger); }
+        .toast.success { border-left-color: var(--success); }
+        .toast.warning { border-left-color: var(--warning); }
+        .toast.info { border-left-color: var(--secondary); }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .appointment-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-buttons .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <h1><i class="fas fa-calendar-check"></i> Appointment Details</h1>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-secondary" onclick="window.location.href='/dental_clinic_webapp_war_exploded/pages/appointments/list.html'">
+                <i class="fas fa-arrow-left"></i> Back to Appointments
+            </button>
+            <button class="btn btn-secondary" onclick="window.location.href='/dental_clinic_webapp_war_exploded/dashboard'">
+                <i class="fas fa-home"></i> Dashboard
+            </button>
+        </div>
+    </div>
+
+    <!-- Appointment Details -->
+    <div class="appointment-card">
+        <div id="loadingState" class="loading">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading appointment details...</p>
+        </div>
+
+        <div id="appointmentContent" style="display: none;">
+            <div class="appointment-header">
+                <div class="appointment-title">
+                    <h2 id="appointmentNumber">Loading...</h2>
+                    <span class="appointment-id">Appointment ID: #<span id="appointmentId">-</span></span>
+                </div>
+                <span class="appointment-status" id="appointmentStatus">SCHEDULED</span>
+            </div>
+
+            <div class="details-grid">
+                <!-- Patient Information -->
+                <div class="detail-section">
+                    <h3><i class="fas fa-user"></i> Patient Information</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">Patient Name:</span>
+                        <span class="detail-value" id="patientName">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Patient ID:</span>
+                        <span class="detail-value" id="patientIdDisplay">-</span>
+                    </div>
+                </div>
+
+                <!-- Dentist Information -->
+                <div class="detail-section">
+                    <h3><i class="fas fa-user-md"></i> Dentist Information</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">Dentist Name:</span>
+                        <span class="detail-value" id="dentistName">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Dentist ID:</span>
+                        <span class="detail-value" id="dentistIdDisplay">-</span>
+                    </div>
+                </div>
+
+                <!-- Appointment Details -->
+                <div class="detail-section">
+                    <h3><i class="fas fa-calendar-alt"></i> Appointment Details</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">Date:</span>
+                        <span class="detail-value" id="appointmentDate">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Time:</span>
+                        <span class="detail-value" id="appointmentTime">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Duration:</span>
+                        <span class="detail-value" id="durationMinutes">-</span>
+                    </div>
+                </div>
+
+                <!-- Treatment Information -->
+                <div class="detail-section">
+                    <h3><i class="fas fa-pills"></i> Treatment Information</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">Treatment:</span>
+                        <span class="detail-value" id="treatmentName">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Treatment ID:</span>
+                        <span class="detail-value" id="treatmentIdDisplay">-</span>
+                    </div>
+                </div>
+
+                <!-- Notes -->
+                <div class="detail-section" style="grid-column: span 2;">
+                    <h3><i class="fas fa-sticky-note"></i> Notes</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">Notes:</span>
+                        <span class="detail-value" id="notes">No notes</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons" id="actionButtons">
+                <button class="btn btn-primary" onclick="editAppointment()">
+                    <i class="fas fa-edit"></i> Edit Appointment
+                </button>
+                <button class="btn btn-success" onclick="confirmAppointment()" id="confirmBtn">
+                    <i class="fas fa-check"></i> Confirm
+                </button>
+                <button class="btn btn-warning" onclick="completeAppointment()" id="completeBtn">
+                    <i class="fas fa-flag-checkered"></i> Mark Complete
+                </button>
+                <button class="btn btn-danger" onclick="cancelAppointment()" id="cancelBtn">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="btn btn-primary" onclick="generateBill()" id="billBtn">
+                    <i class="fas fa-file-invoice"></i> Generate Bill
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="toastContainer"></div>
+
+<script>
+    var CONTEXT_PATH = '/dental_clinic_webapp_war_exploded';
+    var currentAppointmentId = null;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var appointmentId = urlParams.get('id');
+
+        if (appointmentId) {
+            loadAppointmentFromDatabase(appointmentId);
+        } else {
+            document.getElementById('loadingState').innerHTML = '<i class="fas fa-exclamation-circle" style="color: var(--danger);"></i>' +
+                '<p style="color: var(--danger);">No appointment ID provided</p>' +
+                '<button class="btn btn-primary" onclick="window.location.href=\'' + CONTEXT_PATH + '/pages/appointments/list.html\'" style="margin-top: 15px;">' +
+                '<i class="fas fa-arrow-left"></i> Back to Appointments</button>';
+        }
+    });
+
+    function loadAppointmentFromDatabase(appointmentId) {
+        currentAppointmentId = appointmentId;
+
+        fetch(CONTEXT_PATH + '/api/appointments?action=getById&id=' + appointmentId + '&t=' + Date.now())
+            .then(function(response) {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.error) {
+                    document.getElementById('loadingState').innerHTML = '<i class="fas fa-exclamation-circle" style="color: var(--danger);"></i>' +
+                        '<p style="color: var(--danger);">' + data.error + '</p>' +
+                        '<button class="btn btn-primary" onclick="window.location.href=\'' + CONTEXT_PATH + '/pages/appointments/list.html\'" style="margin-top: 15px;">' +
+                        '<i class="fas fa-arrow-left"></i> Back to Appointments</button>';
+                    return;
+                }
+                displayAppointment(data);
+            })
+            .catch(function(error) {
+                console.error('Error loading appointment:', error);
+                document.getElementById('loadingState').innerHTML = '<i class="fas fa-exclamation-circle" style="color: var(--danger);"></i>' +
+                    '<p style="color: var(--danger);">Error loading appointment: ' + error.message + '</p>' +
+                    '<button class="btn btn-primary" onclick="window.location.href=\'' + CONTEXT_PATH + '/pages/appointments/list.html\'" style="margin-top: 15px;">' +
+                    '<i class="fas fa-arrow-left"></i> Back to Appointments</button>';
+            });
+    }
+
+    function displayAppointment(appointment) {
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('appointmentContent').style.display = 'block';
+
+        document.getElementById('appointmentNumber').textContent = appointment.appointmentNumber || 'N/A';
+        document.getElementById('appointmentId').textContent = appointment.appointmentId || '-';
+
+        document.getElementById('patientName').textContent = appointment.patientName || 'Unknown Patient';
+        document.getElementById('patientIdDisplay').textContent = appointment.patientId || '-';
+
+        document.getElementById('dentistName').textContent = appointment.dentistName || 'Unknown Dentist';
+        document.getElementById('dentistIdDisplay').textContent = appointment.dentistId || '-';
+
+        document.getElementById('appointmentDate').textContent = appointment.appointmentDate || 'N/A';
+        document.getElementById('appointmentTime').textContent = appointment.appointmentTime || 'N/A';
+        document.getElementById('durationMinutes').textContent = appointment.durationMinutes + ' minutes' || '30 minutes';
+
+        document.getElementById('treatmentName').textContent = appointment.treatmentName || 'Consultation';
+        document.getElementById('treatmentIdDisplay').textContent = appointment.treatmentId || '-';
+
+        document.getElementById('notes').textContent = appointment.notes || 'No notes';
+
+        // Set status
+        var statusEl = document.getElementById('appointmentStatus');
+        var status = (appointment.status || 'SCHEDULED').toUpperCase();
+        statusEl.textContent = status;
+        statusEl.className = 'appointment-status status-' + status.toLowerCase();
+
+        // Show/hide action buttons based on status
+        var confirmBtn = document.getElementById('confirmBtn');
+        var completeBtn = document.getElementById('completeBtn');
+        var cancelBtn = document.getElementById('cancelBtn');
+        var billBtn = document.getElementById('billBtn');
+
+        confirmBtn.style.display = 'none';
+        completeBtn.style.display = 'none';
+        cancelBtn.style.display = 'none';
+        billBtn.style.display = 'none';
+
+        if (status === 'SCHEDULED') {
+            confirmBtn.style.display = 'inline-flex';
+            cancelBtn.style.display = 'inline-flex';
+        } else if (status === 'CONFIRMED') {
+            completeBtn.style.display = 'inline-flex';
+            cancelBtn.style.display = 'inline-flex';
+            billBtn.style.display = 'inline-flex';
+        } else if (status === 'COMPLETED') {
+            billBtn.style.display = 'inline-flex';
+        }
+    }
+
+    function confirmAppointment() {
+        if (!confirm('Confirm this appointment?')) {
+            return;
+        }
+        updateAppointmentStatus('CONFIRMED');
+    }
+
+    function completeAppointment() {
+        if (!confirm('Mark this appointment as completed?')) {
+            return;
+        }
+        updateAppointmentStatus('COMPLETED');
+    }
+
+    function cancelAppointment() {
+        if (!confirm('Cancel this appointment?')) {
+            return;
+        }
+        updateAppointmentStatus('CANCELLED');
+    }
+
+    function updateAppointmentStatus(status) {
+        fetch(CONTEXT_PATH + '/api/appointments', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                action: 'update',
+                appointmentId: currentAppointmentId,
+                status: status
+            })
+        })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.success) {
+                    showToast('Appointment ' + status.toLowerCase() + '!', 'success');
+                    loadAppointmentFromDatabase(currentAppointmentId);
+                } else {
+                    showToast('Error: ' + data.message, 'error');
+                }
+            })
+            .catch(function(error) {
+                showToast('Error: ' + error.message, 'error');
+            });
+    }
+
+    function editAppointment() {
+        window.location.href = CONTEXT_PATH + '/pages/appointments/edit.html?id=' + currentAppointmentId;
+    }
+
+    function generateBill() {
+        if (!confirm('Generate bill for this appointment?')) {
+            return;
+        }
+
+        fetch(CONTEXT_PATH + '/api/billing', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                action: 'generate',
+                appointmentId: currentAppointmentId
+            })
+        })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.success) {
+                    showToast('Bill generated! Total: $' + data.totalAmount.toFixed(2), 'success');
+                    window.location.href = CONTEXT_PATH + '/pages/billing/invoice.html?id=' + data.billId;
+                } else {
+                    showToast('Error: ' + data.message, 'error');
+                }
+            })
+            .catch(function(error) {
+                showToast('Error: ' + error.message, 'error');
+            });
+    }
+
+    function showToast(message, type) {
+        if (type === undefined) type = 'info';
+        var container = document.getElementById('toastContainer');
+        var toast = document.createElement('div');
+        toast.className = 'toast ' + type;
+
+        var icons = {
+            success: 'fa-check-circle',
+            error: 'fa-exclamation-circle',
+            warning: 'fa-exclamation-triangle',
+            info: 'fa-info-circle'
+        };
+
+        var colors = {
+            success: '#48bb78',
+            error: '#f56565',
+            warning: '#ecc94b',
+            info: '#4299e1'
+        };
+
+        toast.innerHTML = '<i class="fas ' + icons[type] + '" style="font-size: 20px; color: ' + colors[type] + ';"></i>' +
+            '<span style="flex: 1; color: var(--dark);">' + message + '</span>' +
+            '<button onclick="this.parentElement.remove()" style="background: none; border: none; color: var(--gray); cursor: pointer;">' +
+            '<i class="fas fa-times"></i></button>';
+
+        container.appendChild(toast);
+
+        setTimeout(function() {
+            if (toast.parentElement) {
+                toast.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(function() {
+                    if (toast.parentElement) toast.remove();
+                }, 300);
+            }
+        }, 4000);
+    }
+</script>
+<script src="/dental_clinic_webapp_war_exploded/js/protection.js"></script>
+</body>
+</html>

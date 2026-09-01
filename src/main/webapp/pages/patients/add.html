@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Patient - Dental Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        :root {
+            --primary: #3CA6A6;
+            --primary-dark: #2D8C8C;
+            --secondary: #4299e1;
+            --success: #48bb78;
+            --warning: #ecc94b;
+            --danger: #f56565;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --gray: #7f8c8d;
+            --border: #eaeaea;
+            --card-bg: #ffffff;
+            --sidebar-bg: #1a2530;
+        }
+
+        body {
+            background: #F3F4F6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--sidebar-bg);
+            color: white;
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-left h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-left h1 i {
+            color: var(--primary);
+        }
+
+        .header-left p {
+            opacity: 0.9;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #38a169);
+            color: white;
+            box-shadow: 0 4px 8px rgba(72, 187, 120, 0.3);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #38a169, var(--success));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(72, 187, 120, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--gray);
+        }
+
+        .btn-outline:hover {
+            background: var(--light);
+            border-color: var(--gray);
+        }
+
+        .form-container {
+            padding: 30px;
+        }
+
+        .form-section {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--primary);
+            font-size: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-grid .full-width {
+            grid-column: span 2;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 14px;
+        }
+
+        .form-group label .required {
+            color: var(--danger);
+            margin-left: 2px;
+        }
+
+        .form-control {
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(60, 166, 166, 0.1);
+        }
+
+        .form-control.error {
+            border-color: var(--danger);
+            background: rgba(245, 101, 101, 0.05);
+        }
+
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237f8c8d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 40px;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .phone-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .phone-group select {
+            width: 120px;
+            flex-shrink: 0;
+        }
+
+        .phone-group input {
+            flex: 1;
+        }
+
+        .error-text {
+            color: var(--danger);
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .error-text.show {
+            display: block;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            margin-top: 10px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 9999;
+            animation: slideIn 0.3s ease;
+            border-left: 4px solid var(--success);
+            max-width: 400px;
+        }
+
+        .toast.error { border-left-color: var(--danger); }
+        .toast.success { border-left-color: var(--success); }
+        .toast.warning { border-left-color: var(--warning); }
+        .toast.info { border-left-color: var(--secondary); }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid .full-width {
+                grid-column: span 1;
+            }
+
+            .phone-group {
+                flex-direction: column;
+            }
+
+            .phone-group select {
+                width: 100%;
+            }
+
+            .form-actions {
+                flex-direction: column-reverse;
+            }
+
+            .form-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <div class="header no-print">
+        <div class="header-left">
+            <h1><i class="fas fa-user-plus"></i> Add New Patient</h1>
+            <p><i class="fas fa-user-md"></i> Register a new patient in the dental clinic system</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-secondary" onclick="window.location.href='/dental_clinic_webapp_war_exploded/pages/patients/list.html'">
+                <i class="fas fa-arrow-left"></i> Back to Patients
+            </button>
+            <button class="btn btn-secondary" onclick="window.location.href='/dental_clinic_webapp_war_exploded/dashboard'">
+                <i class="fas fa-home"></i> Dashboard
+            </button>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="form-container">
+        <form id="patientForm">
+            <!-- Personal Information -->
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="fas fa-user"></i>
+                    Personal Information
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>First Name <span class="required">*</span></label>
+                        <input type="text" id="firstName" class="form-control" placeholder="Enter first name" required>
+                        <div class="error-text" id="firstNameError">First name is required</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name <span class="required">*</span></label>
+                        <input type="text" id="lastName" class="form-control" placeholder="Enter last name" required>
+                        <div class="error-text" id="lastNameError">Last name is required</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Date of Birth <span class="required">*</span></label>
+                        <input type="date" id="dateOfBirth" class="form-control" required>
+                        <div class="error-text" id="dobError">Date of birth is required</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Gender <span class="required">*</span></label>
+                        <select id="gender" class="form-control" required>
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <div class="error-text" id="genderError">Gender is required</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Nationality <span class="required">*</span></label>
+                        <select id="nationality" class="form-control" required>
+                            <option value="">Select Nationality</option>
+                            <option value="Sri Lankan" selected>Sri Lankan</option>
+                            <option value="American">American</option>
+                            <option value="British">British</option>
+                            <option value="Canadian">Canadian</option>
+                            <option value="Australian">Australian</option>
+                            <option value="Indian">Indian</option>
+                            <option value="Chinese">Chinese</option>
+                            <option value="Japanese">Japanese</option>
+                            <option value="German">German</option>
+                            <option value="French">French</option>
+                            <option value="Italian">Italian</option>
+                            <option value="Malaysian">Malaysian</option>
+                            <option value="Singaporean">Singaporean</option>
+                            <option value="South African">South African</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <div class="error-text" id="nationalityError">Nationality is required</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="fas fa-phone"></i>
+                    Contact Information
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Phone Number <span class="required">*</span></label>
+                        <div class="phone-group">
+                            <select id="phoneCode" class="form-control">
+                                <option value="+1">+1</option>
+                                <option value="+44">+44</option>
+                                <option value="+94" selected>+94</option>
+                                <option value="+91">+91</option>
+                                <option value="+971">+971</option>
+                                <option value="+60">+60</option>
+                                <option value="+65">+65</option>
+                                <option value="+61">+61</option>
+                            </select>
+                            <input type="tel" id="phoneNumber" class="form-control" placeholder="77 123 4567" required>
+                        </div>
+                        <div class="error-text" id="phoneError">Phone number is required</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="email" class="form-control" placeholder="patient@email.com">
+                        <div class="error-text" id="emailError">Please enter a valid email</div>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Address <span class="required">*</span></label>
+                        <input type="text" id="address" class="form-control" placeholder="Street address" required>
+                        <div class="error-text" id="addressError">Address is required</div>
+                    </div>
+                    <div class="form-group">
+                        <label>City <span class="required">*</span></label>
+                        <input type="text" id="city" class="form-control" placeholder="City" required>
+                        <div class="error-text" id="cityError">City is required</div>
+                    </div>
+                    <div class="form-group">
+                        <label>State / Province</label>
+                        <input type="text" id="state" class="form-control" placeholder="State or Province">
+                    </div>
+                    <div class="form-group">
+                        <label>Postal Code</label>
+                        <input type="text" id="postalCode" class="form-control" placeholder="Postal code">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Identification -->
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="fas fa-id-card"></i>
+                    Identification
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>ID Type <span class="required">*</span></label>
+                        <select id="idType" class="form-control" required>
+                            <option value="NIC">NIC</option>
+                            <option value="Passport">Passport</option>
+                            <option value="Drivers License">Driver's License</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <div class="error-text" id="idTypeError">ID type is required</div>
+                    </div>
+                    <div class="form-group">
+                        <label>ID Number <span class="required">*</span></label>
+                        <input type="text" id="idNumber" class="form-control" placeholder="Enter ID number" required>
+                        <div class="error-text" id="idNumberError">ID number is required</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Emergency Contact -->
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="fas fa-ambulance"></i>
+                    Emergency Contact
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Emergency Contact Name</label>
+                        <input type="text" id="emergencyName" class="form-control" placeholder="Full name">
+                    </div>
+                    <div class="form-group">
+                        <label>Emergency Contact Phone</label>
+                        <div class="phone-group">
+                            <select id="emergencyPhoneCode" class="form-control">
+                                <option value="+1">+1</option>
+                                <option value="+44">+44</option>
+                                <option value="+94" selected>+94</option>
+                                <option value="+91">+91</option>
+                            </select>
+                            <input type="tel" id="emergencyPhone" class="form-control" placeholder="77 123 4567">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medical Information -->
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="fas fa-notes-medical"></i>
+                    Medical Information
+                </div>
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Medical Notes / History</label>
+                        <textarea id="medicalNotes" class="form-control" rows="4" placeholder="Any allergies, medical conditions, or special notes..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions no-print">
+                <button type="button" class="btn btn-outline" onclick="resetForm()">
+                    <i class="fas fa-undo"></i> Reset
+                </button>
+                <button type="submit" class="btn btn-success" id="submitBtn">
+                    <i class="fas fa-save"></i> Save Patient
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toastContainer"></div>
+
+<script>
+    var CONTEXT_PATH = '/dental_clinic_webapp_war_exploded';
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var today = new Date();
+        var eighteenYearsAgo = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+        document.getElementById('dateOfBirth').max = eighteenYearsAgo.toISOString().split('T')[0];
+        document.getElementById('dateOfBirth').value = eighteenYearsAgo.toISOString().split('T')[0];
+    });
+
+    document.getElementById('patientForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        if (!validateForm()) {
+            return;
+        }
+
+        var submitBtn = document.getElementById('submitBtn');
+        var originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        submitBtn.disabled = true;
+
+        var patientData = {
+            firstName: document.getElementById('firstName').value.trim(),
+            lastName: document.getElementById('lastName').value.trim(),
+            dateOfBirth: document.getElementById('dateOfBirth').value,
+            gender: document.getElementById('gender').value,
+            nationality: document.getElementById('nationality').value,
+            contactNumber: document.getElementById('phoneCode').value + ' ' + document.getElementById('phoneNumber').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            address: document.getElementById('address').value.trim(),
+            city: document.getElementById('city').value.trim(),
+            state: document.getElementById('state').value.trim(),
+            postalCode: document.getElementById('postalCode').value.trim(),
+            idType: document.getElementById('idType').value,
+            idNumber: document.getElementById('idNumber').value.trim(),
+            emergencyContactName: document.getElementById('emergencyName').value.trim(),
+            emergencyContactNumber: document.getElementById('emergencyPhoneCode').value + ' ' + document.getElementById('emergencyPhone').value.trim(),
+            medicalNotes: document.getElementById('medicalNotes').value.trim()
+        };
+
+        fetch(CONTEXT_PATH + '/api/patients', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(patientData)
+        })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.success) {
+                    showToast('Patient added successfully! ID: ' + data.patientId, 'success');
+                    resetForm();
+
+                    setTimeout(function() {
+                        window.location.href = CONTEXT_PATH + '/pages/patients/list.html';
+                    }, 1500);
+                } else {
+                    showToast('Error: ' + data.message, 'error');
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            })
+            .catch(function(error) {
+                showToast('Network error: ' + error.message, 'error');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+    });
+
+    function validateForm() {
+        var isValid = true;
+
+        document.querySelectorAll('.form-control').forEach(function(el) {
+            el.classList.remove('error');
+        });
+        document.querySelectorAll('.error-text').forEach(function(el) {
+            el.classList.remove('show');
+        });
+
+        var firstName = document.getElementById('firstName').value.trim();
+        if (!firstName) {
+            document.getElementById('firstName').classList.add('error');
+            document.getElementById('firstNameError').classList.add('show');
+            isValid = false;
+        }
+
+        var lastName = document.getElementById('lastName').value.trim();
+        if (!lastName) {
+            document.getElementById('lastName').classList.add('error');
+            document.getElementById('lastNameError').classList.add('show');
+            isValid = false;
+        }
+
+        var dob = document.getElementById('dateOfBirth').value;
+        if (!dob) {
+            document.getElementById('dateOfBirth').classList.add('error');
+            document.getElementById('dobError').classList.add('show');
+            isValid = false;
+        }
+
+        var gender = document.getElementById('gender').value;
+        if (!gender) {
+            document.getElementById('gender').classList.add('error');
+            document.getElementById('genderError').classList.add('show');
+            isValid = false;
+        }
+
+        var nationality = document.getElementById('nationality').value;
+        if (!nationality) {
+            document.getElementById('nationality').classList.add('error');
+            document.getElementById('nationalityError').classList.add('show');
+            isValid = false;
+        }
+
+        var phone = document.getElementById('phoneNumber').value.trim();
+        if (!phone) {
+            document.getElementById('phoneNumber').classList.add('error');
+            document.getElementById('phoneError').classList.add('show');
+            isValid = false;
+        }
+
+        var email = document.getElementById('email').value.trim();
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            document.getElementById('email').classList.add('error');
+            document.getElementById('emailError').textContent = 'Please enter a valid email address';
+            document.getElementById('emailError').classList.add('show');
+            isValid = false;
+        }
+
+        var address = document.getElementById('address').value.trim();
+        if (!address) {
+            document.getElementById('address').classList.add('error');
+            document.getElementById('addressError').classList.add('show');
+            isValid = false;
+        }
+
+        var city = document.getElementById('city').value.trim();
+        if (!city) {
+            document.getElementById('city').classList.add('error');
+            document.getElementById('cityError').classList.add('show');
+            isValid = false;
+        }
+
+        var idNumber = document.getElementById('idNumber').value.trim();
+        if (!idNumber) {
+            document.getElementById('idNumber').classList.add('error');
+            document.getElementById('idNumberError').classList.add('show');
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    function resetForm() {
+        document.getElementById('patientForm').reset();
+        document.querySelectorAll('.form-control').forEach(function(el) {
+            el.classList.remove('error');
+        });
+        document.querySelectorAll('.error-text').forEach(function(el) {
+            el.classList.remove('show');
+        });
+
+        var today = new Date();
+        var eighteenYearsAgo = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+        document.getElementById('dateOfBirth').value = eighteenYearsAgo.toISOString().split('T')[0];
+
+        document.getElementById('phoneCode').value = '+94';
+        document.getElementById('emergencyPhoneCode').value = '+94';
+
+        showToast('Form reset successfully', 'info');
+    }
+
+    function showToast(message, type) {
+        if (type === undefined) type = 'info';
+        var container = document.getElementById('toastContainer');
+        var toast = document.createElement('div');
+        toast.className = 'toast ' + type;
+
+        var icons = {
+            success: 'fa-check-circle',
+            error: 'fa-exclamation-circle',
+            warning: 'fa-exclamation-triangle',
+            info: 'fa-info-circle'
+        };
+
+        var colors = {
+            success: '#48bb78',
+            error: '#f56565',
+            warning: '#ecc94b',
+            info: '#4299e1'
+        };
+
+        toast.innerHTML = '<i class="fas ' + icons[type] + '" style="font-size: 20px; color: ' + colors[type] + ';"></i>' +
+            '<span style="flex: 1; color: var(--dark);">' + message + '</span>' +
+            '<button onclick="this.parentElement.remove()" style="background: none; border: none; color: var(--gray); cursor: pointer;">' +
+            '<i class="fas fa-times"></i></button>';
+
+        container.appendChild(toast);
+
+        setTimeout(function() {
+            if (toast.parentElement) {
+                toast.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(function() {
+                    if (toast.parentElement) toast.remove();
+                }, 300);
+            }
+        }, 4000);
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('patientForm').dispatchEvent(new Event('submit'));
+        }
+
+        if (e.key === 'Escape') {
+            if (confirm('Are you sure you want to leave? Unsaved changes will be lost.')) {
+                window.location.href = CONTEXT_PATH + '/pages/patients/list.html';
+            }
+        }
+    });
+</script>
+<script src="/dental_clinic_webapp_war_exploded/js/protection.js"></script>
+</body>
+</html>

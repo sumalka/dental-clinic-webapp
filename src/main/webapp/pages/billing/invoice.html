@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing - Dental Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        :root {
+            --primary: #3CA6A6;
+            --primary-dark: #2D8C8C;
+            --secondary: #4299e1;
+            --success: #48bb78;
+            --warning: #ecc94b;
+            --danger: #f56565;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --gray: #7f8c8d;
+            --border: #eaeaea;
+            --card-bg: #ffffff;
+            --sidebar-bg: #1a2530;
+        }
+
+        body {
+            background: #F3F4F6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--sidebar-bg);
+            color: white;
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-left h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-left h1 i {
+            color: var(--primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 8px rgba(60, 166, 166, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(60, 166, 166, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #38a169);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #d69e2e);
+            color: white;
+        }
+
+        .invoice-content {
+            padding: 40px;
+        }
+
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .invoice-logo h2 {
+            color: var(--primary);
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .invoice-logo p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .invoice-number {
+            text-align: right;
+        }
+
+        .invoice-number h3 {
+            color: var(--dark);
+            font-size: 20px;
+        }
+
+        .invoice-number p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .invoice-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+            background: var(--light);
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .detail-group label {
+            color: var(--gray);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .detail-group p {
+            color: var(--dark);
+            font-size: 16px;
+            font-weight: 500;
+            margin-top: 5px;
+        }
+
+        .invoice-table {
+            width: 100%;
+            margin-bottom: 30px;
+            border-collapse: collapse;
+        }
+
+        .invoice-table th {
+            background: var(--light);
+            color: var(--dark);
+            font-weight: 600;
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 2px solid var(--border);
+            font-size: 14px;
+        }
+
+        .invoice-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--dark);
+        }
+
+        .invoice-table .total {
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .invoice-table .amount {
+            text-align: right;
+        }
+
+        .invoice-total {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .invoice-total .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .invoice-total .row:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--primary);
+            padding-top: 15px;
+        }
+
+        .payment-status {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .status-paid {
+            background: rgba(72, 187, 120, 0.1);
+            color: var(--success);
+        }
+
+        .status-pending {
+            background: rgba(236, 201, 75, 0.1);
+            color: var(--warning);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid var(--border);
+        }
+
+        .loading {
+            padding: 60px;
+            text-align: center;
+            color: var(--gray);
+        }
+
+        .loading i {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .invoice-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .invoice-number {
+                text-align: left;
+            }
+
+            .invoice-details {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-wrap: wrap;
+            }
+
+            .action-buttons .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media print {
+            .header, .action-buttons, .no-print {
+                display: none !important;
+            }
+
+            .container {
+                box-shadow: none !important;
+                border-radius: 0 !important;
+            }
+
+            .invoice-content {
+                padding: 20px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <div class="header no-print">
+        <div class="header-left">
+            <h1><i class="fas fa-file-invoice"></i> Invoice</h1>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-secondary" onclick="window.location.href='/dental_clinic_webapp_war_exploded/dashboard'">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </button>
+            <button class="btn btn-primary" onclick="window.print()">
+                <i class="fas fa-print"></i> Print Invoice
+            </button>
+        </div>
+    </div>
+
+    <!-- Invoice Content -->
+    <div class="invoice-content" id="invoiceContent">
+        <div class="loading" id="loadingState">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading invoice...</p>
+        </div>
+
+        <div id="invoiceDisplay" style="display: none;">
+            <!-- Invoice Header -->
+            <div class="invoice-header">
+                <div class="invoice-logo">
+                    <h2><i class="fas fa-tooth"></i> Dental Clinic</h2>
+                    <p>123 Dental Street, Colombo</p>
+                    <p>Phone: +94 77 123 4567 | Email: info@dentalclinic.com</p>
+                </div>
+                <div class="invoice-number">
+                    <h3>INVOICE</h3>
+                    <p>#<span id="invoiceNumber">INV-2026-001</span></p>
+                    <p>Date: <span id="invoiceDate">2026-01-01</span></p>
+                </div>
+            </div>
+
+            <!-- Invoice Details -->
+            <div class="invoice-details">
+                <div class="detail-group">
+                    <label>Bill To</label>
+                    <p id="patientName">John Doe</p>
+                    <p style="font-size: 14px; color: var(--gray);" id="patientContact">+94 77 111 2222</p>
+                    <p style="font-size: 14px; color: var(--gray);" id="patientEmail">john@email.com</p>
+                </div>
+                <div class="detail-group">
+                    <label>Appointment Details</label>
+                    <p id="appointmentNumber">APP-20260101-001</p>
+                    <p style="font-size: 14px; color: var(--gray);" id="dentistName">Dr. Sarah Johnson</p>
+                    <p style="font-size: 14px; color: var(--gray);" id="treatmentName">Dental Cleaning</p>
+                    <p style="font-size: 14px; color: var(--gray);">
+                        Status: <span class="payment-status status-paid" id="paymentStatus">PAID</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Invoice Table -->
+            <table class="invoice-table">
+                <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th style="text-align: right;">Amount</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td id="treatmentDesc">Dental Cleaning - Professional teeth cleaning</td>
+                    <td>1</td>
+                    <td style="text-align: right;" id="treatmentCost">$2,500.00</td>
+                </tr>
+                <tr>
+                    <td id="consultationDesc">Consultation Fee</td>
+                    <td>1</td>
+                    <td style="text-align: right;" id="consultationFee">$1,000.00</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- Invoice Total -->
+            <div class="invoice-total">
+                <div class="row">
+                    <span>Subtotal</span>
+                    <span id="subtotal">$3,500.00</span>
+                </div>
+                <div class="row">
+                    <span>Tax (10%)</span>
+                    <span id="taxAmount">$350.00</span>
+                </div>
+                <div class="row">
+                    <span>Total</span>
+                    <span id="totalAmount">$3,850.00</span>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons no-print">
+                <button class="btn btn-success" onclick="processPayment()">
+                    <i class="fas fa-credit-card"></i> Process Payment
+                </button>
+                <button class="btn btn-warning" onclick="showToast('Email sent!', 'success')">
+                    <i class="fas fa-envelope"></i> Email Invoice
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const CONTEXT_PATH = '/dental_clinic_webapp_war_exploded';
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Simulate loading
+        setTimeout(() => {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('invoiceDisplay').style.display = 'block';
+        }, 1000);
+    });
+
+    function processPayment() {
+        if (confirm('Process payment for this invoice?')) {
+            const status = document.getElementById('paymentStatus');
+            status.textContent = 'PAID';
+            status.className = 'payment-status status-paid';
+            showToast('Payment processed successfully!', 'success');
+        }
+    }
+
+    function showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.style.cssText = `
+            position: fixed; bottom: 30px; right: 30px;
+            background: white; padding: 15px 25px;
+            border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex; align-items: center; gap: 12px;
+            z-index: 9999; animation: slideIn 0.3s ease;
+            border-left: 4px solid ${type === 'success' ? '#48bb78' : '#4299e1'};
+            max-width: 400px;
+        `;
+
+        const icons = {
+            success: 'fa-check-circle',
+            error: 'fa-exclamation-circle',
+            warning: 'fa-exclamation-triangle',
+            info: 'fa-info-circle'
+        };
+
+        toast.innerHTML = `
+            <i class="fas ${icons[type]}" style="font-size: 20px; color: ${type === 'success' ? '#48bb78' : '#4299e1'};"></i>
+            <span style="flex: 1;">${message}</span>
+            <button onclick="this.parentElement.remove()" style="background: none; border: none; color: #7f8c8d; cursor: pointer;">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            if (toast.parentElement) {
+                toast.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }
+        }, 4000);
+    }
+</script>
+<script src="js/protection.js"></script>
+</body>
+</html>

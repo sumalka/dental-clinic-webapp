@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Login · Dental Clinic</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #eef2f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 1450px;
+            height: 700px;
+            background: white;
+            border-radius: 2.5rem;
+            box-shadow: 0 30px 60px -15px rgba(0, 40, 40, 0.3);
+            overflow: hidden;
+            margin: 1rem;
+        }
+
+        .hero-section {
+            flex: 1.2;
+            background: linear-gradient(125deg, #0b5345 0%, #117a65 45%, #45b7aa 100%),
+            url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-blend-mode: soft-light;
+            background-position: center 15%;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2rem 2.5rem 0 2.5rem;
+            position: relative;
+            isolation: isolate;
+        }
+
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: white;
+            clip-path: path('M0,70 C220,150 440,5 660,70 C880,135 1100,25 1320,70 L1320,160 L0,160 Z');
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 5;
+            max-width: 600px;
+            margin-bottom: 1.5rem;
+        }
+
+        .clinic-brand {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(10px);
+            padding: 0.2rem 1.8rem 0.2rem 0.2rem;
+            border-radius: 120px;
+            width: fit-content;
+        }
+
+        .logo-badge {
+            width: 220px !important;
+            height: 220px !important;
+            background: transparent !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .logo-badge img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.4));
+        }
+
+        .clinic-brand span {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 3px 8px rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.1);
+            padding: 0.2rem 1rem;
+            border-radius: 50px;
+        }
+
+        .hero-title {
+            font-size: 2.4rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 1.2rem;
+            max-width: 460px;
+        }
+
+        .feature-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(5px);
+            padding: 0.4rem 1.4rem;
+            border-radius: 50px;
+            width: fit-content;
+            font-size: 0.85rem;
+        }
+
+        .feature-item i {
+            font-size: 1.1rem;
+            color: #f9e3a0;
+        }
+
+        .login-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            padding: 0.8rem;
+            height: 100%;
+            overflow-y: hidden;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 380px;
+            animation: fadeSlide 0.5s ease;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 0.1rem;
+        }
+
+        .login-logo {
+            width: 280px !important;
+            height: 280px !important;
+            margin: -3.2rem auto 0 !important;
+            background: transparent !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 40px;
+            overflow: hidden;
+        }
+
+        .login-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 15px 30px rgba(30, 80, 80, 0.35));
+        }
+
+        .login-header h1 {
+            color: #0c3b3b;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .login-header .subtitle {
+            color: #5f7e89;
+            font-size: 0.75rem;
+            margin-bottom: 0.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 0.4rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.1rem;
+            color: #1a4b58;
+            font-weight: 600;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper i:not(.toggle-password) {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #2f8a8a;
+            font-size: 0.85rem;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 0.5rem 2.2rem 0.5rem 2.2rem;
+            border: 1.5px solid #d5e3e8;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            background: white;
+            transition: border-color 0.2s;
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: #126e6e;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #2f8a8a;
+            font-size: 1rem;
+            cursor: pointer;
+            background: transparent;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            z-index: 2;
+            user-select: none;
+        }
+
+        .toggle-password:hover {
+            color: #0b5345;
+            background: rgba(18, 110, 110, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            background: #126e6e;
+            color: white;
+            font-weight: 600;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            margin: 0.2rem 0 0.2rem;
+            transition: background 0.2s;
+        }
+
+        .btn-login:hover {
+            background: #0f5a5a;
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            color: #8aa9b5;
+            font-size: 0.65rem;
+            margin: 0.2rem 0 0.2rem;
+        }
+
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: #d0e0e8;
+        }
+
+        .divider span {
+            margin: 0 0.4rem;
+        }
+
+        .staff-block {
+            background: #f1f9fc;
+            border-radius: 14px;
+            padding: 0.5rem 0.6rem 0.4rem;
+            margin: 0.1rem 0 0.2rem;
+            border: 1px solid #cae1e8;
+        }
+
+        .staff-title {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: #094c5c;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .staff-title i {
+            color: #148080;
+            font-size: 0.9rem;
+            background: white;
+            padding: 0.25rem;
+            border-radius: 60%;
+        }
+
+        .google-btn-wrapper {
+            display: flex;
+            justify-content: center;
+            min-height: 32px;
+            margin-bottom: 0.2rem;
+            transform: scale(0.8);
+            transform-origin: center;
+        }
+
+        .staff-note {
+            font-size: 0.65rem;
+            color: #2b5f6b;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.3rem;
+            background: rgba(255,255,255,0.7);
+            padding: 0.3rem 0.5rem;
+            border-radius: 10px;
+            line-height: 1.2;
+        }
+
+        .staff-note i {
+            color: #1b7a7a;
+            font-size: 0.7rem;
+        }
+
+        .new-staff-area {
+            margin-top: 0.5rem;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #587b86;
+            background: #ecf6fa;
+            border-radius: 20px;
+            padding: 0.4rem 0.2rem;
+            line-height: 1.4;
+        }
+
+        .new-staff-area i {
+            color: #126e6e;
+            margin-right: 0.3rem;
+            font-size: 0.7rem;
+        }
+
+        .new-staff-text {
+            font-weight: 500;
+        }
+
+        .contact-text {
+            display: block;
+            margin-top: 0.2rem;
+            font-size: 0.6rem;
+            color: #195e6b;
+        }
+
+        .message-area {
+            margin: 0.1rem 0;
+            min-height: 50px;
+        }
+
+        .message {
+            padding: 0.5rem 0.8rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            border-left: 4px solid;
+            margin-bottom: 0.5rem;
+            animation: slideIn 0.2s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message i {
+            font-size: 0.9rem;
+        }
+
+        .message.error {
+            background: #fee9e7;
+            color: #a14341;
+            border-left-color: #c24141;
+        }
+
+        .message.success {
+            background: #def3ef;
+            color: #136155;
+            border-left-color: #178f7c;
+        }
+
+        .message.info {
+            background: #e0f0f8;
+            color: #0e5d77;
+            border-left-color: #2580a3;
+        }
+
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 1100px) {
+            .logo-badge { width: 180px !important; height: 180px !important; }
+            .login-logo { width: 220px !important; height: 220px !important; margin-top: -2.5rem !important; }
+        }
+
+        #loginFrame {
+            display: none;
+        }
+
+        input[type="password"]::-ms-reveal,
+        input[type="password"]::-ms-clear {
+            display: none;
+        }
+
+        input[type="password"]::-webkit-credentials-auto-fill-button,
+        input[type="password"]::-webkit-textfield-decoration-container {
+            display: none !important;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="hero-section">
+        <div class="hero-content">
+            <div class="clinic-brand">
+                <div class="logo-badge">
+                    <img src="images/dental-logo.png" alt="dental logo" onerror="this.parentElement.innerHTML='&#128737;'; this.parentElement.style.fontSize='5rem';">
+                </div>
+                <span>Dental Clinic</span>
+            </div>
+            <h1 class="hero-title">Welcome to Dental<br>Management System</h1>
+            <p class="hero-subtitle">Staff platform — appointments, patients, billing.</p>
+            <div class="feature-grid">
+                <div class="feature-item"><i class="fas fa-lock"></i> Secure access</div>
+                <div class="feature-item"><i class="fas fa-sync"></i> Real-time sync</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="login-section">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo">
+                    <img src="images/dental-logo.png" alt="dental logo" onerror="this.parentElement.innerHTML='&#128737;'; this.parentElement.style.fontSize='6rem';">
+                </div>
+                <h1>Staff sign in</h1>
+                <p class="subtitle">internal credentials</p>
+            </div>
+
+            <div class="message-area">
+                <div class="message error" id="errorMessage">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span></span>
+                </div>
+                <div class="message success" id="successMessage">
+                    <i class="fas fa-check-circle"></i>
+                    <span></span>
+                </div>
+                <div class="message info" id="infoMessage">
+                    <i class="fas fa-info-circle"></i>
+                    <span></span>
+                </div>
+            </div>
+
+            <form id="loginForm" method="POST" action="login" target="loginFrame" novalidate>
+                <div class="form-group">
+                    <label for="username">USERNAME</label>
+                    <div class="input-wrapper">
+                        <i class="far fa-user-circle"></i>
+                        <input type="text" name="username" id="username" placeholder="Enter your username" required autocomplete="off">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password">PASSWORD</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-key"></i>
+                        <input type="password" name="password" id="password" placeholder="Enter your password" required autocomplete="off">
+                        <i class="fas fa-eye-slash toggle-password" id="togglePassword" role="button" tabindex="0" aria-label="Toggle password visibility"></i>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-login" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> Access
+                </button>
+            </form>
+
+            <iframe name="loginFrame" id="loginFrame"></iframe>
+
+            <div class="divider">
+                <span class="divider-line"></span>
+                <span>staff recovery</span>
+                <span class="divider-line"></span>
+            </div>
+
+            <div class="staff-block">
+                <div class="staff-title">
+                    <i class="fas fa-id-card"></i>
+                    <span>Recover with Google</span>
+                </div>
+
+                <div id="g_id_onload"
+                     data-client_id="504145599580-bi5lghvn285m96ie6aso7dlu3rlhd201.apps.googleusercontent.com"
+                     data-context="signin"
+                     data-ux_mode="popup"
+                     data-callback="handleGoogleStaffRecovery"
+                     data-auto_prompt="false">
+                </div>
+
+                <div class="google-btn-wrapper">
+                    <div class="g_id_signin"
+                         data-type="standard"
+                         data-shape="rectangular"
+                         data-theme="outline"
+                         data-text="signin_with"
+                         data-size="large"
+                         data-logo_alignment="left"
+                         data-width="200">
+                    </div>
+                </div>
+
+                <div class="staff-note">
+                    <i class="fas fa-envelope"></i>
+                    <span><strong>Google email must match staff email</strong></span>
+                </div>
+            </div>
+
+            <div class="new-staff-area">
+                <span class="new-staff-text"><i class="fas fa-user-plus"></i> new staff?</span>
+                <span class="contact-text">
+                    <i class="fas fa-envelope"></i> contact system administrator
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<script>
+    (function() {
+        // Get elements
+        const loginForm = document.getElementById('loginForm');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginFrame = document.getElementById('loginFrame');
+        const errorMsg = document.getElementById('errorMessage');
+        const successMsg = document.getElementById('successMessage');
+        const infoMsg = document.getElementById('infoMessage');
+
+        // Store current input values
+        let currentTypedUsername = '';
+        let currentTypedPassword = '';
+
+        // Track user input
+        usernameInput.addEventListener('input', function(e) {
+            currentTypedUsername = e.target.value;
+        });
+
+        passwordInput.addEventListener('input', function(e) {
+            currentTypedPassword = e.target.value;
+        });
+
+        // Message display function
+        window.showMessage = function(type, text) {
+            // Hide all
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+            infoMsg.style.display = 'none';
+
+            // Clear all
+            errorMsg.querySelector('span').innerHTML = '';
+            successMsg.querySelector('span').innerHTML = '';
+            infoMsg.querySelector('span').innerHTML = '';
+
+            // Show target
+            let target = type === 'error' ? errorMsg : (type === 'success' ? successMsg : infoMsg);
+            target.querySelector('span').innerHTML = text;
+            target.style.display = 'flex';
+
+            // Auto hide after 4 seconds
+            setTimeout(() => {
+                target.style.display = 'none';
+            }, 4000);
+        };
+
+        // Google Recovery
+        window.handleGoogleStaffRecovery = async function(response) {
+            showMessage('info', 'Verifying your Google account...');
+            try {
+                const res = await fetch('api/auth/google-recovery', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ credential: response.credential })
+                });
+                const data = await res.json();
+                if (data.success && data.isStaff) {
+                    showMessage('success', 'Recovery email sent!');
+                    setTimeout(() => window.location.href = 'login?recovery=success', 1500);
+                } else {
+                    showMessage('info', 'No staff account found with this Google email.');
+                }
+            } catch (e) {
+                showMessage('error', 'Network error. Please check your connection.');
+            }
+        };
+
+        // Check URL params
+        function checkUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+
+            // Show appropriate message based on URL params
+            if (params.get('error') === 'true') {
+                showMessage('error', 'Invalid username or password. Please try again.');
+            }
+            if (params.get('error') === 'inactive') {
+                showMessage('error', 'Account is inactive. Contact administrator.');
+            }
+            if (params.get('recovery') === 'success') {
+                showMessage('success', 'Password reset complete! You can now login.');
+            }
+            if (params.get('logout') === 'success') {
+                showMessage('success', 'Logged out successfully.');
+            }
+
+            // Clean URL without reloading page
+            if (params.toString()) {
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        }
+
+        // Toggle password
+        window.togglePassword = function() {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            const icon = document.getElementById('togglePassword');
+            if (type === 'password') {
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        };
+
+        // Handle iframe load (form submission response)
+        loginFrame.onload = function() {
+            try {
+                // Get the iframe content
+                const iframeDoc = loginFrame.contentDocument || loginFrame.contentWindow.document;
+                const bodyText = iframeDoc.body.innerText || iframeDoc.body.textContent;
+
+                // Check if we got a redirect (successful login)
+                if (iframeDoc.location.href !== 'about:blank' &&
+                    !iframeDoc.location.href.includes('login') &&
+                    iframeDoc.location.href !== window.location.href) {
+                    // Successful login - redirect main window
+                    window.location.href = iframeDoc.location.href;
+                    return;
+                }
+
+                // Check for error messages in the response
+                if (bodyText.includes('error') || bodyText.includes('invalid') || bodyText.includes('inactive')) {
+                    // Show error message
+                    if (bodyText.includes('inactive')) {
+                        showMessage('error', 'Account is inactive. Contact administrator.');
+                    } else {
+                        showMessage('error', 'Invalid username or password. Please try again.');
+                    }
+
+                    // Restore the typed values
+                    usernameInput.value = currentTypedUsername;
+                    passwordInput.value = currentTypedPassword;
+
+                    // Focus password for retry
+                    passwordInput.focus();
+                    passwordInput.select();
+                }
+            } catch (e) {
+                // Cross-origin errors might occur, but we can ignore them
+                console.log('Iframe load handled');
+            } finally {
+                // Re-enable button
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Access';
+
+                // Reset iframe src to prevent showing previous results
+                setTimeout(() => {
+                    loginFrame.src = 'about:blank';
+                }, 100);
+            }
+        };
+
+        // Handle form submit
+        loginForm.onsubmit = function(e) {
+            // Store current values before submission
+            currentTypedUsername = usernameInput.value;
+            currentTypedPassword = passwordInput.value;
+
+            // Validate
+            if (!currentTypedUsername) {
+                e.preventDefault();
+                showMessage('error', 'Please enter your username.');
+                usernameInput.focus();
+                return false;
+            }
+
+            if (!currentTypedPassword) {
+                e.preventDefault();
+                showMessage('error', 'Please enter your password.');
+                passwordInput.focus();
+                return false;
+            }
+
+            // Disable button
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
+
+            // Allow form to submit to iframe
+            return true;
+        };
+
+        // Password toggle click
+        document.getElementById('togglePassword').onclick = togglePassword;
+
+        // Enter key on password field
+        passwordInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                loginForm.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        // Check URL params on page load
+        checkUrlParams();
+
+        // Focus username field
+        setTimeout(() => {
+            usernameInput.focus();
+        }, 100);
+
+        // Prevent form resubmission on page refresh
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.pathname);
+        }
+
+        // Initialize current values
+        currentTypedUsername = usernameInput.value;
+        currentTypedPassword = passwordInput.value;
+
+    })();
+</script>
+<script src="js/protection.js"></script>
+</body>
+</html>
