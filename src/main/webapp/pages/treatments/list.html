@@ -26,6 +26,9 @@
             --border: #eaeaea;
             --card-bg: #ffffff;
             --sidebar-bg: #1a2530;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --radius: 20px;
+            --radius-sm: 8px;
         }
 
         body {
@@ -38,11 +41,12 @@
             max-width: 1400px;
             margin: 0 auto;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
             overflow: hidden;
         }
 
+        /* ===== HEADER ===== */
         .header {
             background: var(--sidebar-bg);
             color: white;
@@ -51,6 +55,8 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .header-left h1 {
@@ -75,21 +81,46 @@
 
         .header-actions {
             display: flex;
-            gap: 15px;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
+        /* ===== BUTTONS ===== */
         .btn {
-            padding: 12px 24px;
+            padding: 10px 20px;
             border: none;
-            border-radius: 8px;
+            border-radius: var(--radius-sm);
             cursor: pointer;
             font-weight: 600;
             font-size: 14px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             text-decoration: none;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #38a169);
+            color: white;
+            box-shadow: 0 4px 8px rgba(72, 187, 120, 0.3);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #38a169, var(--success));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(72, 187, 120, 0.4);
         }
 
         .btn-primary {
@@ -104,28 +135,24 @@
             box-shadow: 0 6px 12px rgba(60, 166, 166, 0.4);
         }
 
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #c53030);
             color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #c53030, var(--danger));
             transform: translateY(-2px);
-            border-color: rgba(255, 255, 255, 0.3);
         }
 
-        .btn-success {
-            background: linear-gradient(135deg, var(--success), #38a169);
-            color: white;
-        }
-
+        /* ===== SECTION HEADER ===== */
         .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 30px 30px 20px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .section-header h2 {
@@ -141,6 +168,124 @@
             color: var(--primary);
         }
 
+        /* ===== SEARCH & FILTERS ===== */
+        .search-section {
+            padding: 0 30px 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 12px 12px 45px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(60, 166, 166, 0.1);
+        }
+
+        .search-box input::placeholder {
+            color: var(--gray);
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-label {
+            font-size: 13px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .filter-btn {
+            padding: 6px 14px;
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            background: white;
+            color: var(--dark);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary);
+            background: rgba(60, 166, 166, 0.05);
+            transform: translateY(-1px);
+        }
+
+        .filter-btn.active {
+            border-color: var(--primary);
+            background: rgba(60, 166, 166, 0.1);
+            color: var(--primary);
+        }
+
+        .filter-btn.active-filter-all {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .filter-btn.active-filter-all:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+
+        .filter-btn .dot-active {
+            color: var(--success);
+            font-size: 8px;
+        }
+
+        .filter-btn .dot-inactive {
+            color: var(--danger);
+            font-size: 8px;
+        }
+
+        .filter-count {
+            background: rgba(0,0,0,0.08);
+            padding: 0 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .filter-btn.active-filter-all .filter-count {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        /* ===== TABLE ===== */
         .table-container {
             padding: 0 30px 30px;
             overflow-x: auto;
@@ -149,6 +294,8 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
         }
 
         th {
@@ -159,6 +306,7 @@
             padding: 15px;
             border-bottom: 2px solid var(--border);
             font-size: 14px;
+            white-space: nowrap;
         }
 
         td {
@@ -166,12 +314,58 @@
             border-bottom: 1px solid var(--border);
             font-size: 14px;
             color: var(--dark);
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
         }
 
         tr:hover {
             background: var(--light);
         }
 
+        tr.inactive-row {
+            opacity: 0.65;
+        }
+
+        tr.inactive-row .treatment-name {
+            color: var(--gray);
+        }
+
+        /* ===== TREATMENT INFO ===== */
+        .treatment-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .treatment-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .treatment-name {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .treatment-description {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 2px;
+        }
+
+        /* ===== CATEGORY BADGE ===== */
         .category-badge {
             padding: 5px 12px;
             border-radius: 20px;
@@ -182,11 +376,255 @@
             color: var(--primary);
         }
 
+        .category-badge.cosmetic { background: rgba(236, 201, 75, 0.15); color: #b7950b; }
+        .category-badge.preventive { background: rgba(72, 187, 120, 0.15); color: var(--success); }
+        .category-badge.restorative { background: rgba(66, 153, 225, 0.15); color: var(--secondary); }
+        .category-badge.endodontic { background: rgba(245, 101, 101, 0.15); color: var(--danger); }
+        .category-badge.orthodontic { background: rgba(155, 89, 182, 0.15); color: #8e44ad; }
+        .category-badge.oral-surgery { background: rgba(231, 76, 60, 0.15); color: #c0392b; }
+        .category-badge.perio { background: rgba(52, 152, 219, 0.15); color: #2980b9; }
+        .category-badge.prosthodontic { background: rgba(26, 188, 156, 0.15); color: #16a085; }
+
         .amount {
             font-weight: 600;
             color: var(--success);
         }
 
+        /* ===== STATUS DROPDOWN - BUTTON STYLE ===== */
+        .status-dropdown-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .status-dropdown-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px 6px 14px;
+            border: none;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            min-width: 100px;
+            justify-content: center;
+        }
+
+        .status-dropdown-btn .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .status-dropdown-btn .status-text {
+            flex: 1;
+        }
+
+        .status-dropdown-btn .chevron-icon {
+            font-size: 12px;
+            color: var(--gray);
+            transition: transform 0.3s ease;
+            margin-left: 4px;
+        }
+
+        .status-dropdown-btn .chevron-icon.rotated {
+            transform: rotate(180deg);
+        }
+
+        .status-dropdown-btn.active-status {
+            background: rgba(72, 187, 120, 0.12);
+            color: var(--success);
+        }
+
+        .status-dropdown-btn.active-status .status-dot {
+            background: var(--success);
+        }
+
+        .status-dropdown-btn.active-status:hover {
+            background: rgba(72, 187, 120, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .status-dropdown-btn.inactive-status {
+            background: rgba(245, 101, 101, 0.12);
+            color: var(--danger);
+        }
+
+        .status-dropdown-btn.inactive-status .status-dot {
+            background: var(--danger);
+        }
+
+        .status-dropdown-btn.inactive-status:hover {
+            background: rgba(245, 101, 101, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .status-dropdown-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* ===== DROPDOWN MENU ===== */
+        .status-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            border: 1px solid #e8e8e8;
+            min-width: 130px;
+            z-index: 99999;
+            display: none;
+            overflow: hidden;
+            padding: 6px 0;
+        }
+
+        .status-dropdown-menu.show {
+            display: block;
+            animation: dropdownIn 0.2s ease;
+        }
+
+        @keyframes dropdownIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px) scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .status-dropdown-menu .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.15s ease;
+            border: none;
+            width: 100%;
+            text-align: left;
+            background: #ffffff;
+            color: #2c3e50;
+            border-left: 3px solid transparent;
+        }
+
+        .status-dropdown-menu .menu-item:hover {
+            background: #f5f6f8;
+        }
+
+        .status-dropdown-menu .menu-item:active {
+            transform: scale(0.97);
+        }
+
+        .status-dropdown-menu .menu-item .menu-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .status-dropdown-menu .menu-item .menu-dot.green {
+            background: #48bb78;
+        }
+
+        .status-dropdown-menu .menu-item .menu-dot.red {
+            background: #f56565;
+        }
+
+        .status-dropdown-menu .menu-item .menu-label {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .status-dropdown-menu .menu-item.active-option {
+            border-left-color: #48bb78;
+            background: #f0faf4;
+            color: #2d8c4a;
+        }
+
+        .status-dropdown-menu .menu-item.active-option:hover {
+            background: #e6f5ec;
+        }
+
+        .status-dropdown-menu .menu-item.active-option .check-icon {
+            color: #48bb78;
+        }
+
+        .status-dropdown-menu .menu-item.inactive-option {
+            border-left-color: #f56565;
+            background: #fdf0f0;
+            color: #c53030;
+        }
+
+        .status-dropdown-menu .menu-item.inactive-option:hover {
+            background: #fce8e8;
+        }
+
+        .status-dropdown-menu .menu-item.inactive-option .check-icon {
+            color: #f56565;
+        }
+
+        .status-dropdown-menu .menu-item .check-icon {
+            margin-left: auto;
+            font-size: 14px;
+        }
+
+        /* ===== ACTIONS ===== */
+        .actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .action-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .action-edit {
+            background: rgba(236, 201, 75, 0.15);
+            color: var(--warning);
+        }
+
+        .action-edit:hover {
+            background: rgba(236, 201, 75, 0.25);
+        }
+
+        .action-delete {
+            background: rgba(245, 101, 101, 0.15);
+            color: var(--danger);
+        }
+
+        .action-delete:hover {
+            background: rgba(245, 101, 101, 0.25);
+        }
+
+        /* ===== LOADING & EMPTY STATES ===== */
         .loading {
             padding: 60px;
             text-align: center;
@@ -223,24 +661,319 @@
             font-size: 14px;
         }
 
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal {
+            background: white;
+            border-radius: var(--radius);
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 0;
+            animation: slideUp 0.3s ease;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            background: var(--sidebar-bg);
+            color: white;
+            padding: 20px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+
+        .modal-header h2 {
+            font-size: 22px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-header h2 i {
+            color: var(--primary);
+        }
+
+        .modal-close {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: rgba(255,255,255,0.2);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .modal-footer {
+            padding: 20px 25px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .form-group label .required {
+            color: var(--danger);
+            margin-left: 2px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(60, 166, 166, 0.1);
+        }
+
+        .form-control.error {
+            border-color: var(--danger);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* ===== TOAST NOTIFICATIONS ===== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: var(--radius-sm);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 999999;
+            animation: slideIn 0.3s ease;
+            border-left: 4px solid var(--success);
+            max-width: 400px;
+        }
+
+        .toast.error { border-left-color: var(--danger); }
+        .toast.success { border-left-color: var(--success); }
+        .toast.warning { border-left-color: var(--warning); }
+        .toast.info { border-left-color: var(--secondary); }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0 4px;
+            transition: color 0.2s;
+        }
+
+        .toast-close:hover {
+            color: var(--dark);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
             .header {
                 flex-direction: column;
-                gap: 15px;
                 text-align: center;
+                padding: 20px;
             }
 
             .header-actions {
                 width: 100%;
                 justify-content: center;
-                flex-wrap: wrap;
+            }
+
+            .section-header {
+                padding: 20px;
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .search-section {
+                padding: 0 20px 15px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-group {
+                justify-content: center;
+            }
+
+            .table-container {
+                padding: 0 20px 20px;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+                font-size: 13px;
+            }
+
+            th, td {
+                padding: 10px 12px;
+                white-space: nowrap;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .status-dropdown-btn {
+                min-width: 80px;
+                font-size: 12px;
+                padding: 5px 12px 5px 10px;
+            }
+
+            .status-dropdown-menu {
+                min-width: 110px;
+            }
+
+            .actions {
+                justify-content: center;
+            }
+
+            .toast {
+                bottom: 15px;
+                right: 15px;
+                left: 15px;
+                max-width: none;
+                font-size: 14px;
+                padding: 12px 18px;
+            }
+
+            .modal {
+                margin: 10px;
+                max-height: 95vh;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-left h1 {
+                font-size: 22px;
+            }
+
+            .section-header h2 {
+                font-size: 20px;
+            }
+
+            .treatment-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 13px;
+            }
+
+            .filter-btn {
+                font-size: 12px;
+                padding: 5px 10px;
+            }
+
+            .status-dropdown-btn {
+                min-width: 70px;
+                font-size: 11px;
+                padding: 4px 10px 4px 8px;
+            }
+
+            .status-dropdown-btn .chevron-icon {
+                font-size: 10px;
             }
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <!-- Header -->
+    <!-- ===== HEADER ===== -->
     <div class="header">
         <div class="header-left">
             <h1><i class="fas fa-pills"></i> Treatment Management</h1>
@@ -248,35 +981,56 @@
         </div>
         <div class="header-actions">
             <button class="btn btn-secondary" onclick="window.location.href='/dental_clinic_webapp_war_exploded/dashboard'">
-                <i class="fas fa-arrow-left"></i> Back to Dashboard
+                <i class="fas fa-arrow-left"></i> Dashboard
             </button>
-            <button class="btn btn-success" onclick="showToast('Add Treatment form coming soon!', 'info')">
+            <button class="btn btn-success" onclick="openAddModal()">
                 <i class="fas fa-plus"></i> Add Treatment
             </button>
         </div>
     </div>
 
-    <!-- Section Header -->
+    <!-- ===== SECTION HEADER ===== -->
     <div class="section-header">
         <h2><i class="fas fa-list"></i> All Treatments</h2>
         <span id="treatmentCount" style="color: var(--gray); font-size: 14px;">Loading...</span>
     </div>
 
-    <!-- Table -->
+    <!-- ===== SEARCH & FILTERS ===== -->
+    <div class="search-section">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search by name, category, or description..." oninput="filterTreatments()">
+        </div>
+        <div class="filter-group">
+            <span class="filter-label"><i class="fas fa-filter"></i> Status:</span>
+            <button class="filter-btn active-filter-all" data-filter="all" onclick="setStatusFilter('all')">
+                <i class="fas fa-users"></i> All <span class="filter-count" id="countAll">0</span>
+            </button>
+            <button class="filter-btn" data-filter="active" onclick="setStatusFilter('active')">
+                <i class="fas fa-circle dot-active"></i> Active <span class="filter-count" id="countActive">0</span>
+            </button>
+            <button class="filter-btn" data-filter="inactive" onclick="setStatusFilter('inactive')">
+                <i class="fas fa-circle dot-inactive"></i> Inactive <span class="filter-count" id="countInactive">0</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ===== TREATMENT TABLE ===== -->
     <div class="table-container">
         <div class="loading" id="loadingMessage">
             <i class="fas fa-spinner fa-spin"></i>
-            <p>Loading treatments...</p>
+            <p>Loading treatments from database...</p>
         </div>
 
         <table id="treatmentTable" style="display: none;">
             <thead>
             <tr>
-                <th>Treatment Name</th>
+                <th style="min-width: 200px;">Treatment</th>
                 <th>Category</th>
                 <th>Duration</th>
-                <th>Price</th>
-                <th>Status</th>
+                <th style="text-align: center;">Price</th>
+                <th style="text-align: center; min-width: 140px;">Status</th>
+                <th style="text-align: center;">Actions</th>
             </tr>
             </thead>
             <tbody id="treatmentTableBody">
@@ -287,106 +1041,621 @@
         <div class="empty-state" id="emptyState" style="display: none;">
             <i class="fas fa-pills"></i>
             <h3>No Treatments Found</h3>
-            <p>Add your first treatment to the system.</p>
-            <button class="btn btn-primary" onclick="showToast('Add Treatment form coming soon!', 'info')">
+            <p id="emptyMessage">Add your first treatment to the system.</p>
+            <button class="btn btn-primary" onclick="openAddModal()">
                 <i class="fas fa-plus"></i> Add Treatment
             </button>
         </div>
     </div>
 </div>
 
-<script>
-    const CONTEXT_PATH = '/dental_clinic_webapp_war_exploded';
-    let treatments = [];
+<!-- ===== ADD/EDIT MODAL ===== -->
+<div class="modal-overlay" id="treatmentModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 id="modalTitle"><i class="fas fa-pills"></i> Add Treatment</h2>
+            <button class="modal-close" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="treatmentForm">
+                <input type="hidden" id="treatmentId" value="0">
 
-    // Sample treatment data
-    const sampleTreatments = [
-        { id: 1, name: 'Dental Cleaning', category: 'Preventive', duration: 45, price: 2500.00, active: true },
-        { id: 2, name: 'Cavity Filling', category: 'Restorative', duration: 60, price: 3500.00, active: true },
-        { id: 3, name: 'Root Canal', category: 'Endodontic', duration: 90, price: 8000.00, active: true },
-        { id: 4, name: 'Tooth Extraction', category: 'Oral Surgery', duration: 45, price: 3000.00, active: true },
-        { id: 5, name: 'Crown Placement', category: 'Restorative', duration: 90, price: 12000.00, active: true },
-        { id: 6, name: 'Braces Installation', category: 'Orthodontic', duration: 120, price: 25000.00, active: true },
-        { id: 7, name: 'Teeth Whitening', category: 'Cosmetic', duration: 60, price: 5000.00, active: false }
-    ];
+                <div class="form-group">
+                    <label>Treatment Name <span class="required">*</span></label>
+                    <input type="text" id="treatmentName" class="form-control" placeholder="e.g., Root Canal Treatment" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Category <span class="required">*</span></label>
+                    <select id="category" class="form-control" required>
+                        <option value="">Select Category</option>
+                        <option value="Preventive">Preventive</option>
+                        <option value="Restorative">Restorative</option>
+                        <option value="Endodontic">Endodontic</option>
+                        <option value="Orthodontic">Orthodontic</option>
+                        <option value="Oral Surgery">Oral Surgery</option>
+                        <option value="Cosmetic">Cosmetic</option>
+                        <option value="Periodontic">Periodontic</option>
+                        <option value="Prosthodontic">Prosthodontic</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="description" class="form-control" placeholder="Brief description of the treatment..."></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Base Price <span class="required">*</span></label>
+                        <input type="number" id="basePrice" class="form-control" placeholder="1000.00" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Duration (minutes) <span class="required">*</span></label>
+                        <input type="number" id="durationMinutes" class="form-control" placeholder="30" required>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal()" style="color: var(--dark); background: var(--light);">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+            <button class="btn btn-primary" id="saveBtn" onclick="saveTreatment()">
+                <i class="fas fa-save"></i> Save Treatment
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== TOAST CONTAINER ===== -->
+<div id="toastContainer"></div>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+    var CONTEXT_PATH = '/dental_clinic_webapp_war_exploded';
+    var allTreatments = [];
+    var currentStatusFilter = 'all';
+    var isEditing = false;
+    var originalStatusValues = {};
 
     document.addEventListener('DOMContentLoaded', function() {
-        treatments = sampleTreatments;
-        displayTreatments(treatments);
-        document.getElementById('treatmentCount').textContent = `${treatments.length} treatments`;
+        loadTreatments();
     });
 
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.status-dropdown-wrapper')) {
+            document.querySelectorAll('.status-dropdown-menu.show').forEach(function(menu) {
+                menu.classList.remove('show');
+                var wrapper = menu.closest('.status-dropdown-wrapper');
+                if (wrapper) {
+                    var chevron = wrapper.querySelector('.chevron-icon');
+                    if (chevron) {
+                        chevron.classList.remove('rotated');
+                    }
+                }
+            });
+        }
+    });
+
+    function loadTreatments() {
+        var loading = document.getElementById('loadingMessage');
+        loading.style.display = 'block';
+        document.getElementById('treatmentTable').style.display = 'none';
+        document.getElementById('emptyState').style.display = 'none';
+
+        fetch(CONTEXT_PATH + '/api/treatments?action=list&t=' + Date.now())
+            .then(function(response) {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(function(data) {
+                allTreatments = data.map(function(treatment) {
+                    treatment.active = treatment.active === true;
+                    originalStatusValues[treatment.treatmentId] = treatment.active;
+                    return treatment;
+                });
+
+                console.log('Loaded treatments:', allTreatments.length);
+                updateCounts();
+                filterTreatments();
+                loading.style.display = 'none';
+            })
+            .catch(function(error) {
+                console.error('Error loading treatments:', error);
+                loading.innerHTML = '<i class="fas fa-exclamation-circle" style="color: var(--danger);"></i>' +
+                    '<p style="color: var(--danger);">Failed to load treatments from database</p>' +
+                    '<p style="font-size: 12px; color: var(--gray);">' + error.message + '</p>' +
+                    '<button class="btn btn-primary" onclick="loadTreatments()" style="margin-top: 15px;">' +
+                    '<i class="fas fa-sync-alt"></i> Retry</button>';
+            });
+    }
+
+    function updateCounts() {
+        var active = allTreatments.filter(function(t) { return t.active === true; }).length;
+        var inactive = allTreatments.filter(function(t) { return t.active === false; }).length;
+        document.getElementById('countAll').textContent = allTreatments.length;
+        document.getElementById('countActive').textContent = active;
+        document.getElementById('countInactive').textContent = inactive;
+    }
+
+    function setStatusFilter(filter) {
+        currentStatusFilter = filter;
+
+        document.querySelectorAll('.filter-btn').forEach(function(btn) {
+            btn.classList.remove('active-filter-all');
+            btn.classList.remove('active');
+        });
+
+        var activeBtn = document.querySelector('.filter-btn[data-filter="' + filter + '"]');
+        if (filter === 'all') {
+            activeBtn.classList.add('active-filter-all');
+        } else {
+            activeBtn.classList.add('active');
+        }
+
+        filterTreatments();
+    }
+
+    function filterTreatments() {
+        var searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+
+        var filtered = allTreatments.filter(function(treatment) {
+            var name = (treatment.treatmentName || '').toLowerCase();
+            var category = (treatment.category || '').toLowerCase();
+            var description = (treatment.description || '').toLowerCase();
+            var matchesSearch = name.includes(searchTerm) ||
+                category.includes(searchTerm) ||
+                description.includes(searchTerm);
+
+            if (!matchesSearch) return false;
+
+            if (currentStatusFilter === 'active') {
+                return treatment.active === true;
+            } else if (currentStatusFilter === 'inactive') {
+                return treatment.active === false;
+            }
+
+            return true;
+        });
+
+        displayTreatments(filtered);
+        updateCountDisplay(filtered.length);
+    }
+
+    function updateCountDisplay(count) {
+        var label = count + ' treatment' + (count !== 1 ? 's' : '');
+        if (currentStatusFilter !== 'all') {
+            label += ' (' + currentStatusFilter + ')';
+        }
+        document.getElementById('treatmentCount').textContent = label;
+    }
+
+    function getCategoryClass(category) {
+        var catMap = {
+            'Cosmetic': 'cosmetic',
+            'Preventive': 'preventive',
+            'Restorative': 'restorative',
+            'Endodontic': 'endodontic',
+            'Orthodontic': 'orthodontic',
+            'Oral Surgery': 'oral-surgery',
+            'Periodontic': 'perio',
+            'Prosthodontic': 'prosthodontic'
+        };
+        return catMap[category] || '';
+    }
+
+    function toggleDropdown(treatmentId) {
+        var menu = document.getElementById('dropdownMenu_' + treatmentId);
+        var chevron = document.getElementById('chevron_' + treatmentId);
+        var isOpen = menu.classList.contains('show');
+
+        // Close all other dropdowns
+        document.querySelectorAll('.status-dropdown-menu.show').forEach(function(m) {
+            if (m.id !== 'dropdownMenu_' + treatmentId) {
+                m.classList.remove('show');
+                var wrapper = m.closest('.status-dropdown-wrapper');
+                if (wrapper) {
+                    var c = wrapper.querySelector('.chevron-icon');
+                    if (c) {
+                        c.classList.remove('rotated');
+                    }
+                }
+            }
+        });
+
+        if (isOpen) {
+            menu.classList.remove('show');
+            if (chevron) chevron.classList.remove('rotated');
+        } else {
+            menu.classList.add('show');
+            if (chevron) chevron.classList.add('rotated');
+        }
+    }
+
+    function changeStatus(treatmentId, newStatus) {
+        var treatment = allTreatments.find(function(t) { return t.treatmentId === treatmentId; });
+        if (!treatment) {
+            showToast('Treatment not found', 'error');
+            return;
+        }
+
+        var currentStatus = treatment.active === true;
+        var newStatusBool = newStatus === 'active';
+
+        // If status hasn't changed, close dropdown and return
+        if (newStatusBool === currentStatus) {
+            var menu = document.getElementById('dropdownMenu_' + treatmentId);
+            menu.classList.remove('show');
+            var chevron = document.getElementById('chevron_' + treatmentId);
+            if (chevron) chevron.classList.remove('rotated');
+            return;
+        }
+
+        var actionText = newStatusBool ? 'activate' : 'deactivate';
+
+        if (!confirm('Are you sure you want to ' + actionText + ' ' + treatment.treatmentName + '?')) {
+            var menu = document.getElementById('dropdownMenu_' + treatmentId);
+            menu.classList.remove('show');
+            var chevron = document.getElementById('chevron_' + treatmentId);
+            if (chevron) chevron.classList.remove('rotated');
+            return;
+        }
+
+        // Disable the button during request
+        var btn = document.getElementById('statusBtn_' + treatmentId);
+        btn.disabled = true;
+        btn.innerHTML = '<span class="status-dot" style="background: var(--gray);"></span><span class="status-text">Loading...</span><i class="fas fa-spinner fa-spin chevron-icon"></i>';
+
+        fetch(CONTEXT_PATH + '/api/treatments?id=' + treatmentId + '&_method=PATCH', {
+            method: 'POST'
+        })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.success) {
+                    showToast(data.message, 'success');
+                    var menu = document.getElementById('dropdownMenu_' + treatmentId);
+                    menu.classList.remove('show');
+                    var chevron = document.getElementById('chevron_' + treatmentId);
+                    if (chevron) chevron.classList.remove('rotated');
+                    loadTreatments();
+                } else {
+                    showToast('Error: ' + data.message, 'error');
+                    btn.disabled = false;
+                    updateButtonDisplay(treatmentId, currentStatus);
+                }
+            })
+            .catch(function(error) {
+                showToast('Error: ' + error.message, 'error');
+                btn.disabled = false;
+                updateButtonDisplay(treatmentId, currentStatus);
+            });
+    }
+
+    function updateButtonDisplay(treatmentId, isActive) {
+        var btn = document.getElementById('statusBtn_' + treatmentId);
+        var statusClass = isActive ? 'active-status' : 'inactive-status';
+        var statusText = isActive ? 'Active' : 'Inactive';
+        var dotColor = isActive ? 'var(--success)' : 'var(--danger)';
+
+        btn.className = 'status-dropdown-btn ' + statusClass;
+        btn.innerHTML = `
+            <span class="status-dot" style="background: ${dotColor};"></span>
+            <span class="status-text">${statusText}</span>
+            <i class="fas fa-chevron-down chevron-icon" id="chevron_${treatmentId}"></i>
+        `;
+        btn.disabled = false;
+    }
+
     function displayTreatments(treatmentsToShow) {
-        const tbody = document.getElementById('treatmentTableBody');
-        const loading = document.getElementById('loadingMessage');
-        const table = document.getElementById('treatmentTable');
-        const emptyState = document.getElementById('emptyState');
+        var tbody = document.getElementById('treatmentTableBody');
+        var loading = document.getElementById('loadingMessage');
+        var table = document.getElementById('treatmentTable');
+        var emptyState = document.getElementById('emptyState');
+        var emptyMessage = document.getElementById('emptyMessage');
 
         loading.style.display = 'none';
 
         if (!treatmentsToShow || treatmentsToShow.length === 0) {
             table.style.display = 'none';
             emptyState.style.display = 'block';
+
+            var searchTerm = document.getElementById('searchInput').value.trim();
+            if (searchTerm) {
+                emptyMessage.textContent = 'No treatments match your search criteria.';
+            } else if (currentStatusFilter === 'active') {
+                emptyMessage.textContent = 'No active treatments found.';
+            } else if (currentStatusFilter === 'inactive') {
+                emptyMessage.textContent = 'No inactive treatments found.';
+            } else {
+                emptyMessage.textContent = 'Add your first treatment to the system.';
+            }
             return;
         }
 
         table.style.display = 'table';
         emptyState.style.display = 'none';
-
         tbody.innerHTML = '';
-        treatmentsToShow.forEach(treatment => {
-            const row = document.createElement('tr');
-            const statusClass = treatment.active ? 'status-active' : 'status-inactive';
-            const statusText = treatment.active ? 'Active' : 'Inactive';
+
+        treatmentsToShow.forEach(function(treatment) {
+            var row = document.createElement('tr');
+            var isActive = treatment.active === true;
+
+            if (!isActive) {
+                row.classList.add('inactive-row');
+            }
+
+            var initials = (treatment.treatmentName || 'T').substring(0, 2).toUpperCase();
+            var categoryClass = getCategoryClass(treatment.category);
+
+            // Status button styling
+            var statusClass = isActive ? 'active-status' : 'inactive-status';
+            var statusText = isActive ? 'Active' : 'Inactive';
+            var dotColor = isActive ? 'var(--success)' : 'var(--danger)';
+
+            // Menu item classes
+            var activeMenuItemClass = isActive ? 'active-option' : '';
+            var inactiveMenuItemClass = !isActive ? 'inactive-option' : '';
+            var activeCheckmark = isActive ? '<i class="fas fa-check check-icon"></i>' : '';
+            var inactiveCheckmark = !isActive ? '<i class="fas fa-check check-icon"></i>' : '';
 
             row.innerHTML = `
-                <td><strong>${treatment.name}</strong></td>
-                <td><span class="category-badge">${treatment.category}</span></td>
-                <td>${treatment.duration} min</td>
-                <td class="amount">$${treatment.price.toFixed(2)}</td>
-                <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                <td>
+                    <div class="treatment-info">
+                        <div class="treatment-icon">${initials}</div>
+                        <div>
+                            <div class="treatment-name">${treatment.treatmentName || 'N/A'}</div>
+                            ${treatment.description ? '<div class="treatment-description">' + treatment.description.substring(0, 60) + (treatment.description.length > 60 ? '...' : '') + '</div>' : ''}
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <span class="category-badge ${categoryClass}">${treatment.category || 'N/A'}</span>
+                </td>
+                <td>
+                    <div>${treatment.durationMinutes || 0} min</div>
+                </td>
+                <td style="text-align: center;">
+                    <div class="amount">$${treatment.basePrice ? treatment.basePrice.toFixed(2) : '0.00'}</div>
+                </td>
+                <td style="text-align: center;">
+                    <div class="status-dropdown-wrapper">
+                        <button class="status-dropdown-btn ${statusClass}" id="statusBtn_${treatment.treatmentId}"
+                                onclick="toggleDropdown(${treatment.treatmentId})">
+                            <span class="status-dot" style="background: ${dotColor};"></span>
+                            <span class="status-text">${statusText}</span>
+                            <i class="fas fa-chevron-down chevron-icon" id="chevron_${treatment.treatmentId}"></i>
+                        </button>
+                        <div class="status-dropdown-menu" id="dropdownMenu_${treatment.treatmentId}">
+                            <button class="menu-item ${activeMenuItemClass}" onclick="changeStatus(${treatment.treatmentId}, 'active')">
+                                <span class="menu-dot green"></span>
+                                <span class="menu-label">Active</span>
+                                ${activeCheckmark}
+                            </button>
+                            <button class="menu-item ${inactiveMenuItemClass}" onclick="changeStatus(${treatment.treatmentId}, 'inactive')">
+                                <span class="menu-dot red"></span>
+                                <span class="menu-label">Inactive</span>
+                                ${inactiveCheckmark}
+                            </button>
+                        </div>
+                    </div>
+                </td>
+                <td style="text-align: center;">
+                    <div class="actions">
+                        <button class="action-btn action-edit" onclick="editTreatment(${treatment.treatmentId})" title="Edit Treatment">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn action-delete" onclick="deleteTreatment(${treatment.treatmentId})" title="Delete Treatment">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
             `;
+
             tbody.appendChild(row);
         });
     }
 
-    function showToast(message, type = 'info') {
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.style.cssText = `
-            position: fixed; bottom: 30px; right: 30px;
-            background: white; padding: 15px 25px;
-            border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            display: flex; align-items: center; gap: 12px;
-            z-index: 9999; animation: slideIn 0.3s ease;
-            border-left: 4px solid ${type === 'success' ? '#48bb78' : '#4299e1'};
-            max-width: 400px;
-        `;
+    function openAddModal() {
+        isEditing = false;
+        document.getElementById('modalTitle').innerHTML = '<i class="fas fa-pills"></i> Add Treatment';
+        document.getElementById('treatmentId').value = '0';
+        document.getElementById('treatmentForm').reset();
+        document.getElementById('saveBtn').innerHTML = '<i class="fas fa-save"></i> Save Treatment';
+        document.getElementById('treatmentModal').classList.add('show');
+    }
 
-        const icons = {
+    function editTreatment(id) {
+        var treatment = allTreatments.find(function(t) { return t.treatmentId === id; });
+        if (!treatment) {
+            showToast('Treatment not found', 'error');
+            return;
+        }
+
+        isEditing = true;
+        document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Treatment';
+        document.getElementById('treatmentId').value = treatment.treatmentId;
+        document.getElementById('treatmentName').value = treatment.treatmentName || '';
+        document.getElementById('category').value = treatment.category || '';
+        document.getElementById('description').value = treatment.description || '';
+        document.getElementById('basePrice').value = treatment.basePrice || '';
+        document.getElementById('durationMinutes').value = treatment.durationMinutes || '';
+        document.getElementById('saveBtn').innerHTML = '<i class="fas fa-save"></i> Update Treatment';
+        document.getElementById('treatmentModal').classList.add('show');
+    }
+
+    function closeModal() {
+        document.getElementById('treatmentModal').classList.remove('show');
+    }
+
+    function saveTreatment() {
+        var treatmentId = parseInt(document.getElementById('treatmentId').value);
+        var treatmentName = document.getElementById('treatmentName').value.trim();
+        var category = document.getElementById('category').value;
+        var description = document.getElementById('description').value.trim();
+        var basePrice = parseFloat(document.getElementById('basePrice').value);
+        var durationMinutes = parseInt(document.getElementById('durationMinutes').value);
+
+        // Validate
+        if (!treatmentName) {
+            showToast('Please enter a treatment name', 'error');
+            document.getElementById('treatmentName').focus();
+            return;
+        }
+
+        if (!category) {
+            showToast('Please select a category', 'error');
+            document.getElementById('category').focus();
+            return;
+        }
+
+        if (!basePrice || basePrice <= 0) {
+            showToast('Please enter a valid price', 'error');
+            document.getElementById('basePrice').focus();
+            return;
+        }
+
+        if (!durationMinutes || durationMinutes <= 0) {
+            showToast('Please enter a valid duration', 'error');
+            document.getElementById('durationMinutes').focus();
+            return;
+        }
+
+        var treatmentData = {
+            treatmentId: treatmentId,
+            treatmentName: treatmentName,
+            category: category,
+            description: description,
+            basePrice: basePrice,
+            durationMinutes: durationMinutes
+        };
+
+        var saveBtn = document.getElementById('saveBtn');
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+        var url = CONTEXT_PATH + '/api/treatments';
+        var method = 'POST';
+
+        if (isEditing) {
+            url += '?_method=PUT';
+        }
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(treatmentData)
+        })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.success) {
+                    showToast(data.message, 'success');
+                    closeModal();
+                    loadTreatments();
+                } else {
+                    showToast('Error: ' + data.message, 'error');
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = isEditing ? '<i class="fas fa-save"></i> Update Treatment' : '<i class="fas fa-save"></i> Save Treatment';
+                }
+            })
+            .catch(function(error) {
+                showToast('Network error: ' + error.message, 'error');
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = isEditing ? '<i class="fas fa-save"></i> Update Treatment' : '<i class="fas fa-save"></i> Save Treatment';
+            });
+    }
+
+    function deleteTreatment(id) {
+        var treatment = allTreatments.find(function(t) { return t.treatmentId === id; });
+        var name = treatment ? treatment.treatmentName : 'this treatment';
+
+        if (!confirm('Are you sure you want to delete ' + name + '? This action cannot be undone.')) {
+            return;
+        }
+
+        fetch(CONTEXT_PATH + '/api/treatments?id=' + id + '&_method=DELETE', {
+            method: 'POST'
+        })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.success) {
+                    showToast('Treatment deleted successfully!', 'success');
+                    loadTreatments();
+                } else {
+                    showToast('Error: ' + data.message, 'error');
+                }
+            })
+            .catch(function(error) {
+                showToast('Error: ' + error.message, 'error');
+            });
+    }
+
+    function showToast(message, type) {
+        if (type === undefined) type = 'info';
+        var container = document.getElementById('toastContainer');
+        var toast = document.createElement('div');
+        toast.className = 'toast ' + type;
+
+        var icons = {
             success: 'fa-check-circle',
             error: 'fa-exclamation-circle',
             warning: 'fa-exclamation-triangle',
             info: 'fa-info-circle'
         };
 
+        var colors = {
+            success: '#48bb78',
+            error: '#f56565',
+            warning: '#ecc94b',
+            info: '#4299e1'
+        };
+
         toast.innerHTML = `
-            <i class="fas ${icons[type]}" style="font-size: 20px; color: ${type === 'success' ? '#48bb78' : '#4299e1'};"></i>
-            <span style="flex: 1;">${message}</span>
-            <button onclick="this.parentElement.remove()" style="background: none; border: none; color: #7f8c8d; cursor: pointer;">
+            <i class="fas ${icons[type]}" style="font-size: 20px; color: ${colors[type]};"></i>
+            <span style="flex: 1; color: var(--dark);">${message}</span>
+            <button class="toast-close" onclick="this.closest('.toast').remove()">
                 <i class="fas fa-times"></i>
             </button>
         `;
 
-        document.body.appendChild(toast);
-        setTimeout(() => {
+        container.appendChild(toast);
+
+        setTimeout(function() {
             if (toast.parentElement) {
                 toast.style.animation = 'fadeOut 0.3s ease';
-                setTimeout(() => toast.remove(), 300);
+                setTimeout(function() {
+                    if (toast.parentElement) toast.remove();
+                }, 300);
             }
         }, 4000);
     }
+
+    // Close modal on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
+
+    // Close modal on overlay click
+    document.getElementById('treatmentModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
 </script>
-<script src="js/protection.js"></script>
 </body>
 </html>

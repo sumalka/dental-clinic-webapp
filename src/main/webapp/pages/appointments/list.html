@@ -471,7 +471,6 @@
             <button class="btn btn-secondary" onclick="window.location.href='/dental_clinic_webapp_war_exploded/dashboard'">
                 <i class="fas fa-arrow-left"></i> Back to Dashboard
             </button>
-            <!-- FIXED: This button now navigates to add.html -->
             <button class="btn btn-success" onclick="window.location.href='/dental_clinic_webapp_war_exploded/pages/appointments/add.html'">
                 <i class="fas fa-plus"></i> Add Appointment
             </button>
@@ -502,9 +501,6 @@
         <div class="filter-box">
             <select id="dentistFilter" onchange="filterAppointments()">
                 <option value="">All Dentists</option>
-                <option value="Dr. Sarah Johnson">Dr. Sarah Johnson</option>
-                <option value="Dr. Michael Chen">Dr. Michael Chen</option>
-                <option value="Dr. Priya Kumar">Dr. Priya Kumar</option>
             </select>
         </div>
     </div>
@@ -571,6 +567,7 @@
             })
             .then(function(data) {
                 appointments = data;
+                populateDentistFilter(appointments);
                 displayAppointments(appointments);
                 document.getElementById('appointmentCount').textContent = appointments.length + ' appointments';
                 loading.style.display = 'none';
@@ -584,6 +581,23 @@
                     '<button class="btn btn-primary" onclick="loadAppointments()" style="margin-top: 15px;">' +
                     '<i class="fas fa-sync-alt"></i> Retry</button>';
             });
+    }
+
+    function populateDentistFilter(apps) {
+        var select = document.getElementById('dentistFilter');
+        var dentists = {};
+        apps.forEach(function(app) {
+            if (app.dentistName) {
+                dentists[app.dentistName] = true;
+            }
+        });
+        var dentistNames = Object.keys(dentists);
+        dentistNames.forEach(function(name) {
+            var option = document.createElement('option');
+            option.value = name;
+            option.textContent = name;
+            select.appendChild(option);
+        });
     }
 
     function displayAppointments(appointmentsToShow) {
@@ -609,10 +623,6 @@
             var statusClass = 'status-' + app.status.toLowerCase();
 
             var statusDisplay = app.status || 'SCHEDULED';
-            if (statusDisplay === 'SCHEDULED') statusDisplay = 'SCHEDULED';
-            if (statusDisplay === 'CONFIRMED') statusDisplay = 'CONFIRMED';
-            if (statusDisplay === 'COMPLETED') statusDisplay = 'COMPLETED';
-            if (statusDisplay === 'CANCELLED') statusDisplay = 'CANCELLED';
 
             var patientName = app.patientName || 'Unknown Patient';
             var dentistName = app.dentistName || 'Unknown Dentist';
@@ -626,15 +636,18 @@
             actionsHtml += '<i class="fas fa-eye"></i></button>';
 
             if (app.status !== 'CANCELLED' && app.status !== 'COMPLETED') {
-                actionsHtml += '<button class="action-btn action-checkin" onclick="confirmAppointment(' + app.appointmentId + ')" title="Confirm">';
-                actionsHtml += '<i class="fas fa-check"></i></button>';
-                actionsHtml += '<button class="action-btn action-delete" onclick="cancelAppointment(' + app.appointmentId + ')" title="Cancel">';
-                actionsHtml += '<i class="fas fa-times"></i></button>';
-            }
-
-            if (app.status === 'CONFIRMED') {
-                actionsHtml += '<button class="action-btn action-checkout" onclick="completeAppointment(' + app.appointmentId + ')" title="Complete">';
-                actionsHtml += '<i class="fas fa-flag-checkered"></i></button>';
+                if (app.status === 'SCHEDULED') {
+                    actionsHtml += '<button class="action-btn action-checkin" onclick="confirmAppointment(' + app.appointmentId + ')" title="Confirm">';
+                    actionsHtml += '<i class="fas fa-check"></i></button>';
+                }
+                if (app.status === 'CONFIRMED') {
+                    actionsHtml += '<button class="action-btn action-checkout" onclick="completeAppointment(' + app.appointmentId + ')" title="Complete & Generate Bill">';
+                    actionsHtml += '<i class="fas fa-flag-checkered"></i></button>';
+                }
+                if (app.status === 'SCHEDULED' || app.status === 'CONFIRMED') {
+                    actionsHtml += '<button class="action-btn action-delete" onclick="cancelAppointment(' + app.appointmentId + ')" title="Cancel">';
+                    actionsHtml += '<i class="fas fa-times"></i></button>';
+                }
             }
 
             row.innerHTML = '<td><strong>' + appNumber + '</strong></td>' +
@@ -681,7 +694,7 @@
     }
 
     function viewAppointment(id) {
-        showToast('Viewing appointment #' + id, 'info');
+        window.location.href = CONTEXT_PATH + '/pages/appointments/view.html?id=' + id;
     }
 
     function confirmAppointment(id) {
@@ -717,10 +730,13 @@
     }
 
     function completeAppointment(id) {
-        if (!confirm('Mark this appointment as completed?')) {
+        if (!confirm('Mark this appointment as completed and generate bill?')) {
             return;
         }
 
+        showToast('Processing completion and generating bill...', 'info');
+
+        // First update appointment status to COMPLETED
         fetch(CONTEXT_PATH + '/api/appointments', {
             method: 'POST',
             headers: {
@@ -737,14 +753,39 @@
             })
             .then(function(data) {
                 if (data.success) {
-                    showToast('Appointment completed!', 'success');
+                    showToast('Appointment completed! Generating bill...', 'success');
+
+                    // Now generate the bill
+                    return fetch(CONTEXT_PATH + '/api/billing', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            action: 'generate',
+                            appointmentId: id
+                        })
+                    });
+                } else {
+                    throw new Error(data.message || 'Failed to complete appointment');
+                }
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(billData) {
+                if (billData.success) {
+                    showToast('Bill generated! Invoice #' + billData.invoiceNumber, 'success');
                     loadAppointments();
                 } else {
-                    showToast('Error: ' + data.message, 'error');
+                    showToast('Error generating bill: ' + billData.message, 'error');
+                    loadAppointments();
                 }
             })
             .catch(function(error) {
+                console.error('Error:', error);
                 showToast('Error: ' + error.message, 'error');
+                loadAppointments();
             });
     }
 

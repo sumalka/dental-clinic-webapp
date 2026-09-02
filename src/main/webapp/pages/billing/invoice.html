@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Billing - Dental Clinic</title>
+    <title>Billing & Payments - Dental Clinic</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -26,6 +26,9 @@
             --border: #eaeaea;
             --card-bg: #ffffff;
             --sidebar-bg: #1a2530;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --radius: 20px;
+            --radius-sm: 8px;
         }
 
         body {
@@ -35,11 +38,11 @@
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1400px;
             margin: 0 auto;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
             overflow: hidden;
         }
 
@@ -51,11 +54,14 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .header-left h1 {
             font-size: 28px;
             font-weight: 700;
+            margin-bottom: 5px;
             color: white;
             display: flex;
             align-items: center;
@@ -66,22 +72,29 @@
             color: var(--primary);
         }
 
+        .header-left p {
+            opacity: 0.9;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
         .header-actions {
             display: flex;
-            gap: 15px;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .btn {
-            padding: 12px 24px;
+            padding: 10px 20px;
             border: none;
-            border-radius: 8px;
+            border-radius: var(--radius-sm);
             cursor: pointer;
             font-weight: 600;
             font-size: 14px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             text-decoration: none;
         }
 
@@ -111,154 +124,224 @@
         .btn-success {
             background: linear-gradient(135deg, var(--success), #38a169);
             color: white;
+            box-shadow: 0 4px 8px rgba(72, 187, 120, 0.3);
         }
 
-        .btn-warning {
-            background: linear-gradient(135deg, var(--warning), #d69e2e);
+        .btn-success:hover {
+            background: linear-gradient(135deg, #38a169, var(--success));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(72, 187, 120, 0.4);
+        }
+
+        .btn-print {
+            background: linear-gradient(135deg, #6c757d, #495057);
             color: white;
+            box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
         }
 
-        .invoice-content {
-            padding: 40px;
+        .btn-print:hover {
+            background: linear-gradient(135deg, #495057, #6c757d);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(108, 117, 125, 0.4);
         }
 
-        .invoice-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid var(--border);
+        .btn-close-modal {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
-        .invoice-logo h2 {
-            color: var(--primary);
-            font-size: 28px;
-            margin-bottom: 5px;
+        .btn-close-modal:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
 
-        .invoice-logo p {
-            color: var(--gray);
-            font-size: 14px;
-        }
-
-        .invoice-number {
-            text-align: right;
-        }
-
-        .invoice-number h3 {
-            color: var(--dark);
-            font-size: 20px;
-        }
-
-        .invoice-number p {
-            color: var(--gray);
-            font-size: 14px;
-        }
-
-        .invoice-details {
+        .stats-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
-            background: var(--light);
-            padding: 20px;
-            border-radius: 12px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding: 30px 30px 20px;
         }
 
-        .detail-group label {
+        .stat-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 20px 25px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+        }
+
+        .stat-card .stat-label {
+            font-size: 13px;
             color: var(--gray);
-            font-size: 12px;
+            font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            font-weight: 600;
         }
 
-        .detail-group p {
+        .stat-card .stat-value {
+            font-size: 32px;
+            font-weight: 700;
             color: var(--dark);
-            font-size: 16px;
-            font-weight: 500;
+            margin-top: 8px;
+        }
+
+        .stat-card .stat-icon {
+            font-size: 24px;
+            float: right;
+            opacity: 0.3;
+        }
+
+        .stat-card.total-revenue .stat-value { color: var(--primary); }
+        .stat-card.today-revenue .stat-value { color: var(--success); }
+        .stat-card.pending-payments .stat-value { color: var(--danger); }
+        .stat-card.total-invoices .stat-value { color: var(--secondary); }
+
+        .stat-card .stat-sub {
+            font-size: 13px;
+            color: var(--gray);
             margin-top: 5px;
         }
 
-        .invoice-table {
-            width: 100%;
-            margin-bottom: 30px;
-            border-collapse: collapse;
-        }
-
-        .invoice-table th {
-            background: var(--light);
-            color: var(--dark);
-            font-weight: 600;
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 2px solid var(--border);
-            font-size: 14px;
-        }
-
-        .invoice-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid var(--border);
-            font-size: 14px;
-            color: var(--dark);
-        }
-
-        .invoice-table .total {
-            font-weight: 700;
-            font-size: 18px;
-        }
-
-        .invoice-table .amount {
-            text-align: right;
-        }
-
-        .invoice-total {
-            background: var(--light);
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 20px;
-        }
-
-        .invoice-total .row {
+        .section-header {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid var(--border);
+            align-items: center;
+            padding: 10px 30px 20px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
-        .invoice-total .row:last-child {
-            border-bottom: none;
-            font-weight: 700;
+        .section-header h2 {
             font-size: 20px;
-            color: var(--primary);
-            padding-top: 15px;
-        }
-
-        .payment-status {
-            display: inline-block;
-            padding: 8px 20px;
-            border-radius: 30px;
             font-weight: 600;
-            font-size: 14px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .status-paid {
+        .section-header h2 i {
+            color: var(--primary);
+        }
+
+        .table-container {
+            padding: 0 30px 30px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+        }
+
+        th {
+            background: var(--light);
+            color: var(--dark);
+            font-weight: 600;
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 2px solid var(--border);
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--dark);
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: var(--light);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .status-badge.paid {
+            background: rgba(72, 187, 120, 0.15);
+            color: var(--success);
+        }
+
+        .status-badge.pending {
+            background: rgba(236, 201, 75, 0.15);
+            color: #b7950b;
+        }
+
+        .status-badge i {
+            font-size: 8px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .action-view {
+            background: rgba(60, 166, 166, 0.1);
+            color: var(--primary);
+        }
+
+        .action-view:hover {
+            background: rgba(60, 166, 166, 0.2);
+        }
+
+        .action-pay {
             background: rgba(72, 187, 120, 0.1);
             color: var(--success);
         }
 
-        .status-pending {
-            background: rgba(236, 201, 75, 0.1);
-            color: var(--warning);
+        .action-pay:hover {
+            background: rgba(72, 187, 120, 0.2);
         }
 
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 2px solid var(--border);
+        .action-print {
+            background: rgba(108, 117, 125, 0.1);
+            color: #6c757d;
+        }
+
+        .action-print:hover {
+            background: rgba(108, 117, 125, 0.2);
         }
 
         .loading {
@@ -273,225 +356,1160 @@
             margin-bottom: 15px;
         }
 
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
-            }
-
-            .header-actions {
-                width: 100%;
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-
-            .invoice-header {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .invoice-number {
-                text-align: left;
-            }
-
-            .invoice-details {
-                grid-template-columns: 1fr;
-            }
-
-            .action-buttons {
-                flex-wrap: wrap;
-            }
-
-            .action-buttons .btn {
-                width: 100%;
-                justify-content: center;
-            }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray);
         }
 
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+            color: var(--primary);
+        }
+
+        .empty-state h3 {
+            color: var(--dark);
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .empty-state p {
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        /* ===== MODAL STYLES ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 99999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-header {
+            background: var(--sidebar-bg);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 16px 16px 0 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .modal-header h2 {
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-header h2 i {
+            color: var(--primary);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            padding: 5px 10px;
+            border-radius: 6px;
+        }
+
+        .modal-close:hover {
+            background: rgba(255,255,255,0.1);
+            transform: rotate(90deg);
+        }
+
+        .invoice-view {
+            padding: 10px 0;
+        }
+
+        .invoice-view .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .invoice-view .invoice-header .clinic-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .invoice-view .invoice-header .clinic-name i {
+            color: var(--primary);
+        }
+
+        .invoice-view .invoice-number {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .invoice-view .invoice-number strong {
+            color: var(--dark);
+            font-size: 18px;
+        }
+
+        .invoice-view .status-badge-large {
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .invoice-view .status-badge-large.paid {
+            background: rgba(72, 187, 120, 0.15);
+            color: var(--success);
+        }
+
+        .invoice-view .status-badge-large.pending {
+            background: rgba(236, 201, 75, 0.15);
+            color: #b7950b;
+        }
+
+        .invoice-view .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .invoice-view .detail-section {
+            background: var(--light);
+            padding: 15px 20px;
+            border-radius: var(--radius-sm);
+        }
+
+        .invoice-view .detail-section h3 {
+            color: var(--dark);
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .invoice-view .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 14px;
+        }
+
+        .invoice-view .detail-row .label {
+            color: var(--gray);
+        }
+
+        .invoice-view .detail-row .value {
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .invoice-view .amount-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid var(--border);
+        }
+
+        .invoice-view .amount-row {
+            display: flex;
+            justify-content: flex-end;
+            padding: 6px 0;
+            font-size: 15px;
+        }
+
+        .invoice-view .amount-row .label {
+            color: var(--gray);
+            width: 150px;
+            text-align: right;
+            padding-right: 20px;
+        }
+
+        .invoice-view .amount-row .value {
+            color: var(--dark);
+            font-weight: 500;
+            width: 120px;
+            text-align: right;
+        }
+
+        .invoice-view .amount-row.total {
+            font-size: 20px;
+            font-weight: 700;
+            padding-top: 10px;
+            border-top: 2px solid var(--primary);
+            margin-top: 5px;
+        }
+
+        .invoice-view .amount-row.total .value {
+            color: var(--primary);
+        }
+
+        .invoice-view .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--gray);
+            font-size: 13px;
+        }
+
+        .invoice-view .footer .clinic-name-footer {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 16px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: var(--radius-sm);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 999999;
+            animation: slideIn 0.3s ease;
+            border-left: 4px solid var(--success);
+            max-width: 400px;
+        }
+
+        .toast.error { border-left-color: var(--danger); }
+        .toast.success { border-left-color: var(--success); }
+        .toast.warning { border-left-color: var(--warning); }
+        .toast.info { border-left-color: var(--secondary); }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0 4px;
+        }
+
+        .toast-close:hover {
+            color: var(--dark);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        /* Print Styles */
         @media print {
-            .header, .action-buttons, .no-print {
-                display: none !important;
-            }
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; border-radius: 0; }
+            .header { background: #1a2530 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            .header-actions .btn, .action-btn, .btn-primary, .btn-secondary, .btn-print, .section-header .btn, .modal-actions { display: none !important; }
+            .stats-grid { display: none !important; }
+            .no-print { display: none !important; }
+            .modal-overlay { display: none !important; }
+            .modal-content { box-shadow: none !important; max-height: none !important; }
+            .modal-header { border-radius: 0 !important; }
+            table { width: 100% !important; }
+            th { background: #f8f9fa !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            .status-badge { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            .status-badge.paid { background: rgba(72, 187, 120, 0.15) !important; }
+            .status-badge.pending { background: rgba(236, 201, 75, 0.15) !important; }
+        }
 
-            .container {
-                box-shadow: none !important;
-                border-radius: 0 !important;
-            }
+        @media (max-width: 1024px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
 
-            .invoice-content {
-                padding: 20px !important;
-            }
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .header { flex-direction: column; text-align: center; padding: 20px; }
+            .header-actions { width: 100%; justify-content: center; }
+            .stats-grid { grid-template-columns: 1fr; padding: 15px; }
+            .section-header { padding: 10px 15px 15px; flex-direction: column; text-align: center; }
+            .table-container { padding: 0 15px 15px; }
+            table { font-size: 12px; }
+            th, td { padding: 8px 10px; }
+            .actions { justify-content: center; }
+            .modal-content { max-width: 100%; margin: 10px; max-height: 95vh; }
+            .modal-body { padding: 15px; }
+            .invoice-view .details-grid { grid-template-columns: 1fr; }
+            .invoice-view .amount-row { justify-content: space-between; }
+            .invoice-view .amount-row .label { width: auto; text-align: left; padding-right: 10px; }
+            .invoice-view .amount-row .value { width: auto; text-align: right; }
+            .toast { bottom: 15px; right: 15px; left: 15px; max-width: none; font-size: 14px; padding: 12px 18px; }
+        }
+
+        @media (max-width: 480px) {
+            .header-left h1 { font-size: 22px; }
+            .stat-card .stat-value { font-size: 24px; }
+            .stat-card .stat-icon { font-size: 18px; }
+            .modal-header h2 { font-size: 18px; }
         }
     </style>
 </head>
 <body>
 <div class="container">
     <!-- Header -->
-    <div class="header no-print">
+    <div class="header">
         <div class="header-left">
-            <h1><i class="fas fa-file-invoice"></i> Invoice</h1>
+            <h1><i class="fas fa-file-invoice-dollar"></i> Billing & Payments</h1>
+            <p><i class="fas fa-tooth"></i> Complete billing history</p>
         </div>
         <div class="header-actions">
             <button class="btn btn-secondary" onclick="window.location.href='/dental_clinic_webapp_war_exploded/dashboard'">
-                <i class="fas fa-arrow-left"></i> Back to Dashboard
+                <i class="fas fa-arrow-left"></i> Dashboard
             </button>
-            <button class="btn btn-primary" onclick="window.print()">
-                <i class="fas fa-print"></i> Print Invoice
+            <button class="btn btn-primary no-print" onclick="refreshBills()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+            <button class="btn btn-print no-print" onclick="printPage()">
+                <i class="fas fa-print"></i> Print All
             </button>
         </div>
     </div>
 
-    <!-- Invoice Content -->
-    <div class="invoice-content" id="invoiceContent">
-        <div class="loading" id="loadingState">
-            <i class="fas fa-spinner fa-spin"></i>
-            <p>Loading invoice...</p>
+    <!-- Stats Cards -->
+    <div class="stats-grid no-print" id="statsGrid">
+        <div class="stat-card total-revenue">
+            <i class="fas fa-chart-line stat-icon"></i>
+            <div class="stat-label">Total Revenue (All Time)</div>
+            <div class="stat-value" id="totalRevenue">$0.00</div>
+            <div class="stat-sub">All paid invoices</div>
+        </div>
+        <div class="stat-card today-revenue">
+            <i class="fas fa-calendar-day stat-icon"></i>
+            <div class="stat-label">Today's Revenue</div>
+            <div class="stat-value" id="todayRevenue">$0.00</div>
+            <div class="stat-sub">Today's paid invoices</div>
+        </div>
+        <div class="stat-card pending-payments">
+            <i class="fas fa-clock stat-icon"></i>
+            <div class="stat-label">Pending Payments</div>
+            <div class="stat-value" id="pendingTotal">$0.00</div>
+            <div class="stat-sub" id="pendingCount">0 invoices pending</div>
+        </div>
+        <div class="stat-card total-invoices">
+            <i class="fas fa-file-invoice stat-icon"></i>
+            <div class="stat-label">Total Invoices</div>
+            <div class="stat-value" id="totalInvoices">0</div>
+            <div class="stat-sub">All time invoices</div>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+        <div class="section-header">
+            <h2 style="font-size: 18px;"><i class="fas fa-list"></i> Billing History</h2>
+            <span id="billCount" style="color: var(--gray); font-size: 14px;">Loading...</span>
         </div>
 
-        <div id="invoiceDisplay" style="display: none;">
-            <!-- Invoice Header -->
-            <div class="invoice-header">
-                <div class="invoice-logo">
-                    <h2><i class="fas fa-tooth"></i> Dental Clinic</h2>
-                    <p>123 Dental Street, Colombo</p>
-                    <p>Phone: +94 77 123 4567 | Email: info@dentalclinic.com</p>
-                </div>
-                <div class="invoice-number">
-                    <h3>INVOICE</h3>
-                    <p>#<span id="invoiceNumber">INV-2026-001</span></p>
-                    <p>Date: <span id="invoiceDate">2026-01-01</span></p>
-                </div>
+        <div class="loading" id="loadingMessage">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading billing data...</p>
+        </div>
+
+        <table id="billTable" style="display: none;">
+            <thead>
+            <tr>
+                <th>Invoice #</th>
+                <th>Patient Information</th>
+                <th>Treatment</th>
+                <th>Dentist</th>
+                <th>Bill Date</th>
+                <th style="text-align: right;">Amount</th>
+                <th style="text-align: center;">Status</th>
+                <th style="text-align: center;" class="no-print">Actions</th>
+            </tr>
+            </thead>
+            <tbody id="billTableBody">
+            </tbody>
+        </table>
+
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <i class="fas fa-file-invoice"></i>
+            <h3>No Invoices Found</h3>
+            <p id="emptyMessage">No billing records available. Bills are automatically generated when appointments are marked as completed.</p>
+            <button class="btn btn-primary no-print" onclick="refreshBills()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== VIEW INVOICE MODAL ===== -->
+<div class="modal-overlay" id="invoiceModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-file-invoice"></i> Invoice Details</h2>
+            <button class="modal-close" onclick="closeInvoiceModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="invoiceViewContent">
+                <!-- Invoice content will be loaded here -->
             </div>
-
-            <!-- Invoice Details -->
-            <div class="invoice-details">
-                <div class="detail-group">
-                    <label>Bill To</label>
-                    <p id="patientName">John Doe</p>
-                    <p style="font-size: 14px; color: var(--gray);" id="patientContact">+94 77 111 2222</p>
-                    <p style="font-size: 14px; color: var(--gray);" id="patientEmail">john@email.com</p>
-                </div>
-                <div class="detail-group">
-                    <label>Appointment Details</label>
-                    <p id="appointmentNumber">APP-20260101-001</p>
-                    <p style="font-size: 14px; color: var(--gray);" id="dentistName">Dr. Sarah Johnson</p>
-                    <p style="font-size: 14px; color: var(--gray);" id="treatmentName">Dental Cleaning</p>
-                    <p style="font-size: 14px; color: var(--gray);">
-                        Status: <span class="payment-status status-paid" id="paymentStatus">PAID</span>
-                    </p>
-                </div>
-            </div>
-
-            <!-- Invoice Table -->
-            <table class="invoice-table">
-                <thead>
-                <tr>
-                    <th>Description</th>
-                    <th>Quantity</th>
-                    <th style="text-align: right;">Amount</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td id="treatmentDesc">Dental Cleaning - Professional teeth cleaning</td>
-                    <td>1</td>
-                    <td style="text-align: right;" id="treatmentCost">$2,500.00</td>
-                </tr>
-                <tr>
-                    <td id="consultationDesc">Consultation Fee</td>
-                    <td>1</td>
-                    <td style="text-align: right;" id="consultationFee">$1,000.00</td>
-                </tr>
-                </tbody>
-            </table>
-
-            <!-- Invoice Total -->
-            <div class="invoice-total">
-                <div class="row">
-                    <span>Subtotal</span>
-                    <span id="subtotal">$3,500.00</span>
-                </div>
-                <div class="row">
-                    <span>Tax (10%)</span>
-                    <span id="taxAmount">$350.00</span>
-                </div>
-                <div class="row">
-                    <span>Total</span>
-                    <span id="totalAmount">$3,850.00</span>
-                </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="action-buttons no-print">
-                <button class="btn btn-success" onclick="processPayment()">
-                    <i class="fas fa-credit-card"></i> Process Payment
+            <div class="modal-actions no-print">
+                <button class="btn btn-secondary" onclick="closeInvoiceModal()">
+                    <i class="fas fa-times"></i> Close
                 </button>
-                <button class="btn btn-warning" onclick="showToast('Email sent!', 'success')">
-                    <i class="fas fa-envelope"></i> Email Invoice
+                <button class="btn btn-print" onclick="printInvoiceFromModal()">
+                    <i class="fas fa-print"></i> Print Invoice
+                </button>
+                <button class="btn btn-success" id="modalPayBtn" style="display: none;" onclick="processPaymentFromModal()">
+                    <i class="fas fa-credit-card"></i> Process Payment
                 </button>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Toast Container -->
+<div id="toastContainer"></div>
+
 <script>
-    const CONTEXT_PATH = '/dental_clinic_webapp_war_exploded';
+    var CONTEXT_PATH = '/dental_clinic_webapp_war_exploded';
+    var allBills = [];
+    var currentViewBillId = null;
+    var currentViewBill = null;
 
     document.addEventListener('DOMContentLoaded', function() {
-        // Simulate loading
-        setTimeout(() => {
-            document.getElementById('loadingState').style.display = 'none';
-            document.getElementById('invoiceDisplay').style.display = 'block';
-        }, 1000);
+        loadBills();
+        setInterval(function() {
+            loadBills();
+        }, 30000);
     });
 
-    function processPayment() {
-        if (confirm('Process payment for this invoice?')) {
-            const status = document.getElementById('paymentStatus');
-            status.textContent = 'PAID';
-            status.className = 'payment-status status-paid';
-            showToast('Payment processed successfully!', 'success');
+    function refreshBills() {
+        loadBills();
+        showToast('Refreshing billing data...', 'info');
+    }
+
+    function printPage() {
+        window.print();
+    }
+
+    function loadBills() {
+        var loading = document.getElementById('loadingMessage');
+        loading.style.display = 'block';
+        document.getElementById('billTable').style.display = 'none';
+        document.getElementById('emptyState').style.display = 'none';
+
+        fetch(CONTEXT_PATH + '/api/billing?action=list&t=' + Date.now())
+            .then(function(response) {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(function(data) {
+                console.log('Bills loaded:', data);
+                allBills = data || [];
+                displayBills(allBills);
+                loading.style.display = 'none';
+                updateStats(allBills);
+                document.getElementById('billCount').textContent = allBills.length + ' invoices';
+            })
+            .catch(function(error) {
+                console.error('Error loading bills:', error);
+                loading.innerHTML = '<i class="fas fa-exclamation-circle" style="color: var(--danger);"></i>' +
+                    '<p style="color: var(--danger);">Failed to load billing data: ' + error.message + '</p>' +
+                    '<button class="btn btn-primary no-print" onclick="loadBills()" style="margin-top: 15px;">' +
+                    '<i class="fas fa-sync-alt"></i> Retry</button>';
+            });
+    }
+
+    function updateStats(bills) {
+        var paidBills = bills.filter(function(b) { return b.paymentStatus === 'PAID'; });
+        var pendingBills = bills.filter(function(b) { return b.paymentStatus === 'PENDING'; });
+
+        var totalRevenue = paidBills.reduce(function(sum, b) { return sum + (b.totalAmount || 0); }, 0);
+        var pendingTotal = pendingBills.reduce(function(sum, b) { return sum + (b.totalAmount || 0); }, 0);
+
+        var today = new Date().toISOString().split('T')[0];
+        var todayBills = paidBills.filter(function(b) {
+            if (!b.billDate) return false;
+            var billDate = b.billDate.split('T')[0];
+            return billDate === today;
+        });
+        var todayRevenue = todayBills.reduce(function(sum, b) { return sum + (b.totalAmount || 0); }, 0);
+
+        document.getElementById('totalRevenue').textContent = '$' + totalRevenue.toFixed(2);
+        document.getElementById('todayRevenue').textContent = '$' + todayRevenue.toFixed(2);
+        document.getElementById('pendingTotal').textContent = '$' + pendingTotal.toFixed(2);
+        document.getElementById('totalInvoices').textContent = bills.length;
+        document.getElementById('pendingCount').textContent = pendingBills.length + ' invoices pending';
+    }
+
+    function displayBills(billsToShow) {
+        var tbody = document.getElementById('billTableBody');
+        var loading = document.getElementById('loadingMessage');
+        var table = document.getElementById('billTable');
+        var emptyState = document.getElementById('emptyState');
+        var emptyMessage = document.getElementById('emptyMessage');
+
+        loading.style.display = 'none';
+
+        if (!billsToShow || billsToShow.length === 0) {
+            table.style.display = 'none';
+            emptyState.style.display = 'block';
+            emptyMessage.textContent = 'No billing records available. Bills are automatically generated when appointments are marked as completed.';
+            return;
+        }
+
+        table.style.display = 'table';
+        emptyState.style.display = 'none';
+        tbody.innerHTML = '';
+
+        billsToShow.forEach(function(bill) {
+            var row = document.createElement('tr');
+
+            var statusClass = bill.paymentStatus === 'PAID' ? 'paid' : 'pending';
+            var statusIcon = bill.paymentStatus === 'PAID' ? 'fa-check-circle' : 'fa-clock';
+            var statusLabel = bill.paymentStatus === 'PAID' ? 'Paid' : 'Pending';
+
+            var formattedDate = 'N/A';
+            if (bill.billDate) {
+                var date = new Date(bill.billDate);
+                formattedDate = date.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: '2-digit',
+                    year: 'numeric'
+                });
+            }
+
+            var initials = (bill.patientName || 'G').substring(0, 2).toUpperCase();
+
+            row.innerHTML = `
+                <td>
+                    <div style="font-weight: 600; color: var(--primary); font-size: 13px;">
+                        ${bill.invoiceNumber || 'INV-0000'}
+                    </div>
+                </td>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="width: 35px; height: 35px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+                             display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 13px; flex-shrink: 0;">
+                            ${initials}
+                        </div>
+                        <div>
+                            <div style="font-weight: 500; color: var(--dark);">${bill.patientName || 'N/A'}</div>
+                            <div style="font-size: 12px; color: var(--gray);">
+                                <i class="fas fa-envelope"></i> ${bill.patientEmail || 'N/A'}
+                            </div>
+                            <div style="font-size: 12px; color: var(--gray);">
+                                <i class="fas fa-phone"></i> ${bill.patientPhone || 'N/A'}
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div style="font-weight: 500;">${bill.treatmentName || 'N/A'}</div>
+                </td>
+                <td>
+                    <div style="font-size: 13px; color: var(--dark);">${bill.dentistName || 'N/A'}</div>
+                </td>
+                <td>
+                    <div style="font-size: 13px; color: var(--gray);">${formattedDate}</div>
+                </td>
+                <td style="text-align: right;">
+                    <div style="font-weight: 600; color: var(--success);">$${bill.totalAmount ? bill.totalAmount.toFixed(2) : '0.00'}</div>
+                </td>
+                <td style="text-align: center;">
+                    <span class="status-badge ${statusClass}">
+                        <i class="fas ${statusIcon}"></i> ${statusLabel}
+                    </span>
+                </td>
+                <td style="text-align: center;" class="no-print">
+                    <div class="actions">
+                        <button class="action-btn action-view" onclick="viewInvoiceModal(${bill.billId})" title="View Invoice">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn action-print" onclick="printInvoice(${bill.billId})" title="Print Invoice">
+                            <i class="fas fa-print"></i>
+                        </button>
+                        ${bill.paymentStatus === 'PENDING' ?
+                '<button class="action-btn action-pay" onclick="processPayment(' + bill.billId + ')" title="Process Payment">' +
+                '<i class="fas fa-credit-card"></i></button>' : ''}
+                    </div>
+                </td>
+            `;
+
+            tbody.appendChild(row);
+        });
+    }
+
+    // ===== VIEW INVOICE MODAL =====
+    function viewInvoiceModal(billId) {
+        var bill = allBills.find(function(b) { return b.billId === billId; });
+        if (!bill) {
+            showToast('Bill not found', 'error');
+            return;
+        }
+
+        currentViewBillId = billId;
+        currentViewBill = bill;
+
+        var content = document.getElementById('invoiceViewContent');
+        var modal = document.getElementById('invoiceModal');
+        var payBtn = document.getElementById('modalPayBtn');
+
+        var formattedDate = 'N/A';
+        if (bill.billDate) {
+            var date = new Date(bill.billDate);
+            formattedDate = date.toLocaleDateString('en-US', {
+                month: 'long',
+                day: '2-digit',
+                year: 'numeric'
+            });
+        }
+
+        var statusClass = bill.paymentStatus === 'PAID' ? 'paid' : 'pending';
+        var statusLabel = bill.paymentStatus === 'PAID' ? 'Paid' : 'Pending';
+
+        // Show/hide pay button
+        payBtn.style.display = bill.paymentStatus === 'PENDING' ? 'inline-flex' : 'none';
+
+        content.innerHTML = `
+            <div class="invoice-view">
+                <div class="invoice-header">
+                    <div>
+                        <div class="clinic-name"><i class="fas fa-tooth"></i> Dental Clinic</div>
+                        <div class="invoice-number">Invoice # <strong>${bill.invoiceNumber || 'N/A'}</strong></div>
+                    </div>
+                    <div>
+                        <span class="status-badge-large ${statusClass}">${statusLabel}</span>
+                    </div>
+                </div>
+
+                <div class="details-grid">
+                    <div class="detail-section">
+                        <h3><i class="fas fa-user"></i> Patient Information</h3>
+                        <div class="detail-row">
+                            <span class="label">Name</span>
+                            <span class="value">${bill.patientName || 'N/A'}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Email</span>
+                            <span class="value">${bill.patientEmail || 'N/A'}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Phone</span>
+                            <span class="value">${bill.patientPhone || 'N/A'}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Patient ID</span>
+                            <span class="value">#${bill.patientId || 'N/A'}</span>
+                        </div>
+                    </div>
+                    <div class="detail-section">
+                        <h3><i class="fas fa-calendar-alt"></i> Appointment Details</h3>
+                        <div class="detail-row">
+                            <span class="label">Dentist</span>
+                            <span class="value">${bill.dentistName || 'N/A'}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Treatment</span>
+                            <span class="value">${bill.treatmentName || 'N/A'}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Date</span>
+                            <span class="value">${formattedDate}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Room</span>
+                            <span class="value">${bill.roomNumber || 'N/A'}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Appointment ID</span>
+                            <span class="value">#${bill.appointmentId || 'N/A'}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="amount-section">
+                    <div class="amount-row">
+                        <span class="label">Treatment Cost</span>
+                        <span class="value">$${bill.treatmentCost ? bill.treatmentCost.toFixed(2) : '0.00'}</span>
+                    </div>
+                    <div class="amount-row">
+                        <span class="label">Consultation Fee</span>
+                        <span class="value">$${bill.consultationFee ? bill.consultationFee.toFixed(2) : '0.00'}</span>
+                    </div>
+                    <div class="amount-row">
+                        <span class="label">Subtotal</span>
+                        <span class="value">$${bill.subtotal ? bill.subtotal.toFixed(2) : '0.00'}</span>
+                    </div>
+                    <div class="amount-row">
+                        <span class="label">Tax (${bill.taxRate || 10}%)</span>
+                        <span class="value">$${bill.taxAmount ? bill.taxAmount.toFixed(2) : '0.00'}</span>
+                    </div>
+                    ${bill.discountAmount && bill.discountAmount > 0 ? `
+                    <div class="amount-row">
+                        <span class="label">Discount</span>
+                        <span class="value">-$${bill.discountAmount.toFixed(2)}</span>
+                    </div>
+                    ` : ''}
+                    <div class="amount-row total">
+                        <span class="label">Total Amount</span>
+                        <span class="value">$${bill.totalAmount ? bill.totalAmount.toFixed(2) : '0.00'}</span>
+                    </div>
+                </div>
+
+                <div class="footer">
+                    <div class="clinic-name-footer">🦷 Dental Clinic</div>
+                    <div>Thank you for choosing our services</div>
+                    <div style="margin-top: 5px; font-size: 12px;">Invoice generated on ${formattedDate}</div>
+                </div>
+            </div>
+        `;
+
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeInvoiceModal() {
+        document.getElementById('invoiceModal').classList.remove('active');
+        document.body.style.overflow = 'auto';
+        currentViewBillId = null;
+        currentViewBill = null;
+    }
+
+    function printInvoiceFromModal() {
+        if (currentViewBill) {
+            printInvoice(currentViewBill.billId);
         }
     }
 
-    function showToast(message, type = 'info') {
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.style.cssText = `
-            position: fixed; bottom: 30px; right: 30px;
-            background: white; padding: 15px 25px;
-            border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            display: flex; align-items: center; gap: 12px;
-            z-index: 9999; animation: slideIn 0.3s ease;
-            border-left: 4px solid ${type === 'success' ? '#48bb78' : '#4299e1'};
-            max-width: 400px;
-        `;
+    function processPaymentFromModal() {
+        if (currentViewBill) {
+            processPayment(currentViewBill.billId);
+        }
+    }
 
-        const icons = {
+    // Close modal on overlay click
+    document.getElementById('invoiceModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeInvoiceModal();
+        }
+    });
+
+    // Close modal on ESC key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeInvoiceModal();
+        }
+    });
+
+    // ===== PRINT INDIVIDUAL INVOICE =====
+    function printInvoice(billId) {
+        var bill = allBills.find(function(b) { return b.billId === billId; });
+        if (!bill) {
+            showToast('Bill not found', 'error');
+            return;
+        }
+
+        var printWindow = window.open('', '_blank', 'width=800,height=600');
+        if (!printWindow) {
+            showToast('Please allow popups for printing', 'warning');
+            return;
+        }
+
+        var formattedDate = 'N/A';
+        if (bill.billDate) {
+            var date = new Date(bill.billDate);
+            formattedDate = date.toLocaleDateString('en-US', {
+                month: 'long',
+                day: '2-digit',
+                year: 'numeric'
+            });
+        }
+
+        var statusLabel = bill.paymentStatus === 'PAID' ? 'Paid' : 'Pending';
+        var statusColor = bill.paymentStatus === 'PAID' ? '#48bb78' : '#ecc94b';
+
+        printWindow.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Invoice ${bill.invoiceNumber}</title>
+                <style>
+                    body {
+                        font-family: 'Segoe UI', Arial, sans-serif;
+                        margin: 0;
+                        padding: 40px;
+                        background: white;
+                    }
+                    .invoice-container {
+                        max-width: 800px;
+                        margin: 0 auto;
+                        border: 1px solid #eaeaea;
+                        border-radius: 12px;
+                        padding: 40px;
+                        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+                    }
+                    .invoice-header {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        border-bottom: 2px solid #3CA6A6;
+                        padding-bottom: 20px;
+                        margin-bottom: 25px;
+                    }
+                    .invoice-header h1 {
+                        color: #2c3e50;
+                        font-size: 28px;
+                        margin: 0;
+                    }
+                    .invoice-header h1 i {
+                        color: #3CA6A6;
+                    }
+                    .invoice-number {
+                        color: #7f8c8d;
+                        font-size: 14px;
+                    }
+                    .invoice-number strong {
+                        color: #2c3e50;
+                        font-size: 18px;
+                    }
+                    .status-badge {
+                        display: inline-block;
+                        padding: 6px 16px;
+                        border-radius: 20px;
+                        font-weight: 600;
+                        font-size: 14px;
+                        background: ${statusColor}22;
+                        color: ${statusColor};
+                    }
+                    .details-grid {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 20px;
+                        margin-bottom: 30px;
+                    }
+                    .detail-section {
+                        background: #f8f9fa;
+                        padding: 15px 20px;
+                        border-radius: 8px;
+                    }
+                    .detail-section h3 {
+                        color: #2c3e50;
+                        font-size: 14px;
+                        margin: 0 0 10px 0;
+                        padding-bottom: 8px;
+                        border-bottom: 1px solid #eaeaea;
+                    }
+                    .detail-row {
+                        display: flex;
+                        justify-content: space-between;
+                        padding: 4px 0;
+                        font-size: 14px;
+                    }
+                    .detail-row .label {
+                        color: #7f8c8d;
+                    }
+                    .detail-row .value {
+                        color: #2c3e50;
+                        font-weight: 500;
+                    }
+                    .amount-section {
+                        margin-top: 20px;
+                        padding-top: 20px;
+                        border-top: 2px solid #eaeaea;
+                    }
+                    .amount-row {
+                        display: flex;
+                        justify-content: flex-end;
+                        padding: 6px 0;
+                        font-size: 15px;
+                    }
+                    .amount-row .label {
+                        color: #7f8c8d;
+                        width: 150px;
+                        text-align: right;
+                        padding-right: 20px;
+                    }
+                    .amount-row .value {
+                        color: #2c3e50;
+                        font-weight: 500;
+                        width: 120px;
+                        text-align: right;
+                    }
+                    .amount-row.total {
+                        font-size: 20px;
+                        font-weight: 700;
+                        padding-top: 10px;
+                        border-top: 2px solid #3CA6A6;
+                        margin-top: 5px;
+                    }
+                    .amount-row.total .value {
+                        color: #3CA6A6;
+                    }
+                    .footer {
+                        margin-top: 40px;
+                        padding-top: 20px;
+                        border-top: 1px solid #eaeaea;
+                        text-align: center;
+                        color: #7f8c8d;
+                        font-size: 13px;
+                    }
+                    .footer .clinic-name {
+                        font-weight: 600;
+                        color: #2c3e50;
+                        font-size: 16px;
+                    }
+                    @media print {
+                        body { padding: 20px; }
+                        .invoice-container { box-shadow: none; border: 1px solid #ddd; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="invoice-container">
+                    <div class="invoice-header">
+                        <div>
+                            <h1><i class="fas fa-tooth"></i> Dental Clinic</h1>
+                            <div class="invoice-number">Invoice # <strong>${bill.invoiceNumber}</strong></div>
+                        </div>
+                        <div>
+                            <span class="status-badge">${statusLabel}</span>
+                        </div>
+                    </div>
+
+                    <div class="details-grid">
+                        <div class="detail-section">
+                            <h3>Patient Information</h3>
+                            <div class="detail-row">
+                                <span class="label">Name</span>
+                                <span class="value">${bill.patientName || 'N/A'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="label">Email</span>
+                                <span class="value">${bill.patientEmail || 'N/A'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="label">Phone</span>
+                                <span class="value">${bill.patientPhone || 'N/A'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="label">Patient ID</span>
+                                <span class="value">#${bill.patientId || 'N/A'}</span>
+                            </div>
+                        </div>
+                        <div class="detail-section">
+                            <h3>Appointment Details</h3>
+                            <div class="detail-row">
+                                <span class="label">Dentist</span>
+                                <span class="value">${bill.dentistName || 'N/A'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="label">Treatment</span>
+                                <span class="value">${bill.treatmentName || 'N/A'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="label">Date</span>
+                                <span class="value">${formattedDate}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="label">Room</span>
+                                <span class="value">${bill.roomNumber || 'N/A'}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="amount-section">
+                        <div class="amount-row">
+                            <span class="label">Treatment Cost</span>
+                            <span class="value">$${bill.treatmentCost ? bill.treatmentCost.toFixed(2) : '0.00'}</span>
+                        </div>
+                        <div class="amount-row">
+                            <span class="label">Consultation Fee</span>
+                            <span class="value">$${bill.consultationFee ? bill.consultationFee.toFixed(2) : '0.00'}</span>
+                        </div>
+                        <div class="amount-row">
+                            <span class="label">Subtotal</span>
+                            <span class="value">$${bill.subtotal ? bill.subtotal.toFixed(2) : '0.00'}</span>
+                        </div>
+                        <div class="amount-row">
+                            <span class="label">Tax (${bill.taxRate || 10}%)</span>
+                            <span class="value">$${bill.taxAmount ? bill.taxAmount.toFixed(2) : '0.00'}</span>
+                        </div>
+                        ${bill.discountAmount && bill.discountAmount > 0 ? `
+                        <div class="amount-row">
+                            <span class="label">Discount</span>
+                            <span class="value">-$${bill.discountAmount.toFixed(2)}</span>
+                        </div>
+                        ` : ''}
+                        <div class="amount-row total">
+                            <span class="label">Total Amount</span>
+                            <span class="value">$${bill.totalAmount ? bill.totalAmount.toFixed(2) : '0.00'}</span>
+                        </div>
+                    </div>
+
+                    <div class="footer">
+                        <div class="clinic-name">🦷 Dental Clinic</div>
+                        <div>Thank you for choosing our services</div>
+                        <div style="margin-top: 5px; font-size: 12px;">Invoice generated on ${formattedDate}</div>
+                    </div>
+                </div>
+                <script>
+                    window.onload = function() {
+                        window.print();
+                        setTimeout(function() {
+                            window.close();
+                        }, 1000);
+                    };
+                <\/script>
+            </body>
+            </html>
+        `);
+
+        printWindow.document.close();
+    }
+
+    // ===== PROCESS PAYMENT =====
+    function processPayment(billId) {
+        var bill = allBills.find(function(b) { return b.billId === billId; });
+        if (!bill) {
+            showToast('Bill not found', 'error');
+            return;
+        }
+
+        if (!confirm('Process payment for invoice ' + bill.invoiceNumber + '? Total: $' + bill.totalAmount.toFixed(2))) {
+            return;
+        }
+
+        fetch(CONTEXT_PATH + '/api/billing', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                action: 'processPayment',
+                billId: billId,
+                paymentMethod: 'Credit Card'
+            })
+        })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.success) {
+                    showToast('Payment processed successfully for ' + bill.invoiceNumber, 'success');
+                    // Close modal if open
+                    closeInvoiceModal();
+                    loadBills();
+                } else {
+                    showToast('Error: ' + data.message, 'error');
+                }
+            })
+            .catch(function(error) {
+                showToast('Error: ' + error.message, 'error');
+            });
+    }
+
+    // ===== TOAST =====
+    function showToast(message, type) {
+        if (type === undefined) type = 'info';
+        var container = document.getElementById('toastContainer');
+        var toast = document.createElement('div');
+        toast.className = 'toast ' + type;
+
+        var icons = {
             success: 'fa-check-circle',
             error: 'fa-exclamation-circle',
             warning: 'fa-exclamation-triangle',
             info: 'fa-info-circle'
         };
 
+        var colors = {
+            success: '#48bb78',
+            error: '#f56565',
+            warning: '#ecc94b',
+            info: '#4299e1'
+        };
+
         toast.innerHTML = `
-            <i class="fas ${icons[type]}" style="font-size: 20px; color: ${type === 'success' ? '#48bb78' : '#4299e1'};"></i>
-            <span style="flex: 1;">${message}</span>
-            <button onclick="this.parentElement.remove()" style="background: none; border: none; color: #7f8c8d; cursor: pointer;">
+            <i class="fas ${icons[type]}" style="font-size: 20px; color: ${colors[type]};"></i>
+            <span style="flex: 1; color: var(--dark);">${message}</span>
+            <button class="toast-close" onclick="this.closest('.toast').remove()">
                 <i class="fas fa-times"></i>
             </button>
         `;
 
-        document.body.appendChild(toast);
-        setTimeout(() => {
+        container.appendChild(toast);
+
+        setTimeout(function() {
             if (toast.parentElement) {
                 toast.style.animation = 'fadeOut 0.3s ease';
-                setTimeout(() => toast.remove(), 300);
+                setTimeout(function() {
+                    if (toast.parentElement) toast.remove();
+                }, 300);
             }
         }, 4000);
     }
 </script>
-<script src="js/protection.js"></script>
 </body>
 </html>

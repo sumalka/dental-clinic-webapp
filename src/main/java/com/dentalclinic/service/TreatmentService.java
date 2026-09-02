@@ -14,4 +14,16 @@ public class TreatmentService {
     public Treatment getTreatmentById(int treatmentId) {
         return treatmentDAO.getTreatmentById(treatmentId);
     }
+
+    public boolean addTreatment(Treatment treatment) {
+        return treatmentDAO.addTreatment(treatment);
+    }
+
+    public boolean updateTreatment(Treatment treatment) {
+        return treatmentDAO.updateTreatment(treatment);
+    }
+
+    public boolean deleteTreatment(int treatmentId) {
+        return treatmentDAO.deleteTreatment(treatmentId);
+    }
 }

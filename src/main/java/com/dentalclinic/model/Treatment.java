@@ -7,7 +7,7 @@ public class Treatment {
     private String description;
     private double basePrice;
     private int durationMinutes;
-    private boolean isActive;
+    private boolean active;  // Changed from isActive to active for consistency
 
     public Treatment() {}
 
@@ -18,22 +18,28 @@ public class Treatment {
         this.description = description;
         this.basePrice = basePrice;
         this.durationMinutes = durationMinutes;
-        this.isActive = true;
+        this.active = true;
     }
 
     // Getters and Setters
     public int getTreatmentId() { return treatmentId; }
     public void setTreatmentId(int treatmentId) { this.treatmentId = treatmentId; }
+
     public String getTreatmentName() { return treatmentName; }
     public void setTreatmentName(String treatmentName) { this.treatmentName = treatmentName; }
+
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
+
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+
     public double getBasePrice() { return basePrice; }
     public void setBasePrice(double basePrice) { this.basePrice = basePrice; }
+
     public int getDurationMinutes() { return durationMinutes; }
     public void setDurationMinutes(int durationMinutes) { this.durationMinutes = durationMinutes; }
-    public boolean isActive() { return isActive; }
-    public void setActive(boolean active) { isActive = active; }
+
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
 }

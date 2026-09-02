@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Report - Dental Clinic</title>
+    <title>Reports - Dental Clinic</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -52,6 +55,8 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .header-left h1 {
@@ -75,11 +80,12 @@
 
         .header-actions {
             display: flex;
-            gap: 15px;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .btn {
-            padding: 12px 24px;
+            padding: 10px 20px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
@@ -106,11 +112,59 @@
         .btn-primary {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
+            box-shadow: 0 4px 8px rgba(60, 166, 166, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(60, 166, 166, 0.4);
         }
 
         .btn-success {
             background: linear-gradient(135deg, var(--success), #38a169);
             color: white;
+            box-shadow: 0 4px 8px rgba(72, 187, 120, 0.3);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #38a169, var(--success));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(72, 187, 120, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #c53030);
+            color: white;
+            box-shadow: 0 4px 8px rgba(245, 101, 101, 0.3);
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #c53030, var(--danger));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(245, 101, 101, 0.4);
+        }
+
+        .btn-export-excel {
+            background: linear-gradient(135deg, #217346, #1e7e34);
+            color: white;
+            box-shadow: 0 4px 8px rgba(33, 115, 70, 0.3);
+        }
+
+        .btn-export-excel:hover {
+            background: linear-gradient(135deg, #1e7e34, #217346);
+            transform: translateY(-2px);
+        }
+
+        .btn-export-pdf {
+            background: linear-gradient(135deg, #dc3545, #b02a37);
+            color: white;
+            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+        }
+
+        .btn-export-pdf:hover {
+            background: linear-gradient(135deg, #b02a37, #dc3545);
+            transform: translateY(-2px);
         }
 
         .report-type-buttons {
@@ -118,6 +172,7 @@
             gap: 10px;
             padding: 20px 30px;
             border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
         }
 
         .report-btn {
@@ -128,6 +183,7 @@
             cursor: pointer;
             font-weight: 500;
             transition: all 0.3s;
+            font-size: 14px;
         }
 
         .report-btn:hover {
@@ -153,6 +209,12 @@
             padding: 25px;
             border-radius: 16px;
             border-left: 4px solid var(--primary);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
         .stat-card h3 {
@@ -167,6 +229,7 @@
             font-size: 14px;
             font-weight: 500;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .stat-card .icon {
@@ -176,15 +239,30 @@
             opacity: 0.3;
         }
 
+        .stat-card.patients { border-left-color: var(--secondary); }
+        .stat-card.appointments { border-left-color: var(--success); }
+        .stat-card.pending { border-left-color: var(--danger); }
+        .stat-card.revenue { border-left-color: var(--primary); }
+
+        .stat-card.patients .icon { color: var(--secondary); }
+        .stat-card.appointments .icon { color: var(--success); }
+        .stat-card.pending .icon { color: var(--danger); }
+        .stat-card.revenue .icon { color: var(--primary); }
+
         .chart-container {
             padding: 0 30px 30px;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
 
         .chart-box {
             background: var(--light);
             padding: 25px;
             border-radius: 16px;
-            margin-bottom: 20px;
         }
 
         .chart-box h3 {
@@ -193,6 +271,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            font-size: 16px;
         }
 
         .chart-box h3 i {
@@ -201,39 +280,201 @@
 
         .chart-wrapper {
             height: 300px;
+            position: relative;
+        }
+
+        .table-section {
+            padding: 0 30px 30px;
+        }
+
+        .table-section .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .table-section .section-header h3 {
+            font-size: 18px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .table-section .section-header h3 i {
+            color: var(--primary);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            background: var(--light);
+            border-radius: 12px;
+            padding: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th {
+            background: var(--dark);
+            color: white;
+            font-weight: 600;
+            text-align: left;
+            padding: 12px 15px;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--dark);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(60, 166, 166, 0.05);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-badge.paid {
+            background: rgba(72, 187, 120, 0.15);
+            color: var(--success);
+        }
+
+        .status-badge.pending {
+            background: rgba(236, 201, 75, 0.15);
+            color: #b7950b;
+        }
+
+        .status-badge.completed {
+            background: rgba(160, 174, 192, 0.15);
+            color: #718096;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 99999;
+            animation: slideIn 0.3s ease;
+            border-left: 4px solid var(--success);
+            max-width: 400px;
+        }
+
+        .toast.error { border-left-color: var(--danger); }
+        .toast.success { border-left-color: var(--success); }
+        .toast.warning { border-left-color: var(--warning); }
+        .toast.info { border-left-color: var(--secondary); }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
         }
 
         @media (max-width: 1024px) {
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
             .header {
                 flex-direction: column;
-                gap: 15px;
                 text-align: center;
+                padding: 20px;
             }
 
             .header-actions {
                 width: 100%;
                 justify-content: center;
-                flex-wrap: wrap;
             }
 
             .stats-grid {
                 grid-template-columns: 1fr;
+                padding: 15px;
+            }
+
+            .chart-container {
+                padding: 0 15px 15px;
             }
 
             .report-type-buttons {
-                flex-wrap: wrap;
+                padding: 15px;
+                justify-content: center;
             }
 
             .report-btn {
                 flex: 1;
-                min-width: 100px;
+                min-width: 80px;
                 text-align: center;
+                padding: 8px 15px;
+                font-size: 13px;
+            }
+
+            .table-section {
+                padding: 0 15px 15px;
+            }
+
+            .toast {
+                bottom: 15px;
+                right: 15px;
+                left: 15px;
+                max-width: none;
+                font-size: 14px;
+                padding: 12px 18px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-left h1 {
+                font-size: 22px;
+            }
+
+            .stat-card h3 {
+                font-size: 28px;
+            }
+
+            .stat-card .icon {
+                font-size: 20px;
             }
         }
     </style>
@@ -243,97 +484,294 @@
     <!-- Header -->
     <div class="header">
         <div class="header-left">
-            <h1><i class="fas fa-chart-bar"></i> Daily Report</h1>
-            <p><i class="fas fa-calendar-day"></i> Today's performance metrics</p>
+            <h1><i class="fas fa-chart-bar"></i> Reports & Analytics</h1>
+            <p><i class="fas fa-calendar-day"></i> Comprehensive clinic performance metrics</p>
         </div>
         <div class="header-actions">
             <button class="btn btn-secondary" onclick="window.location.href='/dental_clinic_webapp_war_exploded/dashboard'">
-                <i class="fas fa-arrow-left"></i> Back to Dashboard
+                <i class="fas fa-arrow-left"></i> Dashboard
             </button>
-            <button class="btn btn-success" onclick="showToast('Report exported!', 'success')">
-                <i class="fas fa-download"></i> Export Report
+            <button class="btn btn-export-excel" onclick="exportToExcel()">
+                <i class="fas fa-file-excel"></i> Export Excel
+            </button>
+            <button class="btn btn-export-pdf" onclick="exportToPDF()">
+                <i class="fas fa-file-pdf"></i> Export PDF
             </button>
         </div>
     </div>
 
     <!-- Report Type Buttons -->
     <div class="report-type-buttons">
-        <button class="report-btn active" onclick="switchReport('daily', this)">Daily</button>
-        <button class="report-btn" onclick="switchReport('weekly', this)">Weekly</button>
-        <button class="report-btn" onclick="switchReport('monthly', this)">Monthly</button>
+        <button class="report-btn active" onclick="switchReport('daily', this)">
+            <i class="fas fa-calendar-day"></i> Daily
+        </button>
+        <button class="report-btn" onclick="switchReport('weekly', this)">
+            <i class="fas fa-calendar-week"></i> Weekly
+        </button>
+        <button class="report-btn" onclick="switchReport('monthly', this)">
+            <i class="fas fa-calendar-alt"></i> Monthly
+        </button>
+        <button class="report-btn" onclick="switchReport('yearly', this)">
+            <i class="fas fa-calendar-year"></i> Yearly
+        </button>
     </div>
 
     <!-- Stats Grid -->
-    <div class="stats-grid">
-        <div class="stat-card">
+    <div class="stats-grid" id="statsGrid">
+        <div class="stat-card patients">
             <div class="icon"><i class="fas fa-users"></i></div>
-            <h3 id="totalPatients">156</h3>
+            <h3 id="totalPatients">0</h3>
             <p>Total Patients</p>
         </div>
-        <div class="stat-card">
+        <div class="stat-card appointments">
             <div class="icon"><i class="fas fa-calendar-check"></i></div>
-            <h3 id="todayAppointments">8</h3>
+            <h3 id="todayAppointments">0</h3>
             <p>Today's Appointments</p>
         </div>
-        <div class="stat-card">
-            <div class="icon"><i class="fas fa-file-invoice"></i></div>
-            <h3 id="pendingBills">3</h3>
+        <div class="stat-card pending">
+            <div class="icon"><i class="fas fa-clock"></i></div>
+            <h3 id="pendingBills">0</h3>
             <p>Pending Bills</p>
         </div>
-        <div class="stat-card">
+        <div class="stat-card revenue">
             <div class="icon"><i class="fas fa-dollar-sign"></i></div>
-            <h3 id="todayRevenue">$3,850</h3>
+            <h3 id="todayRevenue">$0</h3>
             <p>Today's Revenue</p>
         </div>
     </div>
 
     <!-- Charts -->
     <div class="chart-container">
-        <div class="chart-box">
-            <h3><i class="fas fa-chart-line"></i> Revenue Trend</h3>
-            <div class="chart-wrapper">
-                <canvas id="revenueChart"></canvas>
+        <div class="chart-grid">
+            <div class="chart-box">
+                <h3><i class="fas fa-chart-line"></i> Revenue Trend</h3>
+                <div class="chart-wrapper">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-box">
+                <h3><i class="fas fa-chart-pie"></i> Appointment Distribution</h3>
+                <div class="chart-wrapper">
+                    <canvas id="appointmentChart"></canvas>
+                </div>
             </div>
         </div>
+    </div>
 
-        <div class="chart-box">
-            <h3><i class="fas fa-chart-bar"></i> Appointment Distribution</h3>
-            <div class="chart-wrapper">
-                <canvas id="appointmentChart"></canvas>
-            </div>
+    <!-- Recent Transactions Table -->
+    <div class="table-section">
+        <div class="section-header">
+            <h3><i class="fas fa-list"></i> Recent Transactions</h3>
+            <span id="transactionCount" style="color: var(--gray); font-size: 14px;">Loading...</span>
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>Invoice #</th>
+                    <th>Patient</th>
+                    <th>Treatment</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody id="transactionTableBody">
+                <tr>
+                    <td colspan="6" style="text-align: center; color: var(--gray); padding: 30px;">
+                        <i class="fas fa-spinner fa-spin"></i> Loading transactions...
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
 <script>
-    const CONTEXT_PATH = '/dental_clinic_webapp_war_exploded';
+    var CONTEXT_PATH = '/dental_clinic_webapp_war_exploded';
+    var revenueChart = null;
+    var appointmentChart = null;
+    var allBills = [];
+    var allAppointments = [];
+    var allPatients = [];
 
     document.addEventListener('DOMContentLoaded', function() {
-        createCharts();
+        loadDashboardStats();
+        loadBills();
+        loadAppointments();
+        loadPatients();
     });
 
-    function createCharts() {
-        // Revenue Chart
-        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
-        new Chart(revenueCtx, {
+    function loadDashboardStats() {
+        fetch(CONTEXT_PATH + '/api/reports?action=stats&t=' + Date.now())
+            .then(function(response) {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.success) {
+                    document.getElementById('totalPatients').textContent = data.totalPatients || 0;
+                    document.getElementById('todayAppointments').textContent = data.todayAppointments || 0;
+                    document.getElementById('pendingBills').textContent = data.pendingBills || 0;
+                    document.getElementById('todayRevenue').textContent = '$' + (data.todayRevenue || 0).toFixed(2);
+                }
+            })
+            .catch(function(error) {
+                console.error('Error loading stats:', error);
+                // Use fallback data
+                document.getElementById('totalPatients').textContent = '0';
+                document.getElementById('todayAppointments').textContent = '0';
+                document.getElementById('pendingBills').textContent = '0';
+                document.getElementById('todayRevenue').textContent = '$0.00';
+            });
+    }
+
+    function loadBills() {
+        fetch(CONTEXT_PATH + '/api/billing?action=list&t=' + Date.now())
+            .then(function(response) {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(function(data) {
+                allBills = data || [];
+                updateTransactionTable(allBills);
+                createCharts(allBills);
+            })
+            .catch(function(error) {
+                console.error('Error loading bills:', error);
+                allBills = [];
+                updateTransactionTable(allBills);
+                createCharts(allBills);
+            });
+    }
+
+    function loadAppointments() {
+        fetch(CONTEXT_PATH + '/api/appointments?action=list&t=' + Date.now())
+            .then(function(response) {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(function(data) {
+                allAppointments = data || [];
+            })
+            .catch(function(error) {
+                console.error('Error loading appointments:', error);
+                allAppointments = [];
+            });
+    }
+
+    function loadPatients() {
+        fetch(CONTEXT_PATH + '/api/patients?action=list&t=' + Date.now())
+            .then(function(response) {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(function(data) {
+                allPatients = data || [];
+            })
+            .catch(function(error) {
+                console.error('Error loading patients:', error);
+                allPatients = [];
+            });
+    }
+
+    function updateTransactionTable(bills) {
+        var tbody = document.getElementById('transactionTableBody');
+        var countSpan = document.getElementById('transactionCount');
+
+        if (!bills || bills.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--gray); padding: 30px;">' +
+                '<i class="fas fa-inbox"></i> No transactions found</td></tr>';
+            countSpan.textContent = '0 transactions';
+            return;
+        }
+
+        var displayBills = bills.slice(0, 10);
+        countSpan.textContent = bills.length + ' transactions';
+
+        tbody.innerHTML = '';
+        displayBills.forEach(function(bill) {
+            var row = document.createElement('tr');
+            var statusClass = bill.paymentStatus === 'PAID' ? 'paid' : 'pending';
+            var statusLabel = bill.paymentStatus === 'PAID' ? 'Paid' : 'Pending';
+
+            var formattedDate = 'N/A';
+            if (bill.billDate) {
+                var date = new Date(bill.billDate);
+                formattedDate = date.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: '2-digit',
+                    year: 'numeric'
+                });
+            }
+
+            row.innerHTML = `
+                <td><strong style="color: var(--primary);">${bill.invoiceNumber || 'N/A'}</strong></td>
+                <td>${bill.patientName || 'N/A'}</td>
+                <td>${bill.treatmentName || 'N/A'}</td>
+                <td><strong>$${bill.totalAmount ? bill.totalAmount.toFixed(2) : '0.00'}</strong></td>
+                <td>${formattedDate}</td>
+                <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    function createCharts(bills) {
+        // Revenue Chart - Last 7 days
+        var revenueCtx = document.getElementById('revenueChart').getContext('2d');
+
+        var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        var revenueData = [0, 0, 0, 0, 0, 0, 0];
+
+        // Calculate revenue for each day
+        bills.forEach(function(bill) {
+            if (bill.billDate && bill.paymentStatus === 'PAID') {
+                var date = new Date(bill.billDate);
+                var dayIndex = date.getDay();
+                // Adjust to make Monday = 0
+                var adjustedIndex = dayIndex === 0 ? 6 : dayIndex - 1;
+                if (adjustedIndex < 7) {
+                    revenueData[adjustedIndex] += bill.totalAmount || 0;
+                }
+            }
+        });
+
+        if (revenueChart) {
+            revenueChart.destroy();
+        }
+
+        revenueChart = new Chart(revenueCtx, {
             type: 'line',
             data: {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                labels: days,
                 datasets: [{
                     label: 'Revenue ($)',
-                    data: [800, 1200, 600, 1800, 1500, 500, 200],
+                    data: revenueData,
                     borderColor: '#3CA6A6',
                     backgroundColor: 'rgba(60, 166, 166, 0.1)',
-                    borderWidth: 2,
+                    borderWidth: 3,
                     fill: true,
-                    tension: 0.4
+                    tension: 0.4,
+                    pointBackgroundColor: '#3CA6A6',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { display: false }
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return '$' + context.parsed.y.toFixed(2);
+                            }
+                        }
+                    }
                 },
                 scales: {
                     y: {
@@ -348,78 +786,282 @@
             }
         });
 
-        // Appointment Chart
-        const appCtx = document.getElementById('appointmentChart').getContext('2d');
-        new Chart(appCtx, {
-            type: 'bar',
+        // Appointment Distribution Chart
+        var appCtx = document.getElementById('appointmentChart').getContext('2d');
+        var treatmentCounts = {};
+
+        allAppointments.forEach(function(app) {
+            var name = app.treatmentName || 'Consultation';
+            treatmentCounts[name] = (treatmentCounts[name] || 0) + 1;
+        });
+
+        var labels = Object.keys(treatmentCounts);
+        var data = Object.values(treatmentCounts);
+        var colors = ['#3CA6A6', '#4299e1', '#48bb78', '#ecc94b', '#ed8936', '#9f7aea', '#fc8181'];
+
+        if (appointmentChart) {
+            appointmentChart.destroy();
+        }
+
+        appointmentChart = new Chart(appCtx, {
+            type: 'doughnut',
             data: {
-                labels: ['Cleaning', 'Filling', 'Root Canal', 'Extraction', 'Braces'],
+                labels: labels.length > 0 ? labels : ['No Data'],
                 datasets: [{
-                    label: 'Appointments',
-                    data: [12, 8, 5, 6, 4],
-                    backgroundColor: ['#3CA6A6', '#4299e1', '#48bb78', '#ecc94b', '#ed8936'],
-                    borderWidth: 0,
-                    borderRadius: 4
+                    data: data.length > 0 ? data : [1],
+                    backgroundColor: colors.slice(0, Math.max(labels.length, 1)),
+                    borderWidth: 2,
+                    borderColor: '#fff'
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: { stepSize: 2 }
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
                     }
-                }
+                },
+                cutout: '60%'
             }
         });
     }
 
     function switchReport(type, element) {
-        document.querySelectorAll('.report-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.report-btn').forEach(function(btn) {
+            btn.classList.remove('active');
+        });
         element.classList.add('active');
-        showToast(`Switched to ${type} report`, 'info');
+        showToast('Switched to ' + type.charAt(0).toUpperCase() + type.slice(1) + ' Report', 'info');
+
+        // Update chart based on report type
+        updateReportData(type);
     }
 
-    function showToast(message, type = 'info') {
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.style.cssText = `
-            position: fixed; bottom: 30px; right: 30px;
-            background: white; padding: 15px 25px;
-            border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            display: flex; align-items: center; gap: 12px;
-            z-index: 9999; animation: slideIn 0.3s ease;
-            border-left: 4px solid ${type === 'success' ? '#48bb78' : '#4299e1'};
-            max-width: 400px;
-        `;
+    function updateReportData(type) {
+        var days = [];
+        var multiplier = 1;
+        var label = '';
 
-        const icons = {
+        switch(type) {
+            case 'daily':
+                days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                label = 'Daily Revenue';
+                break;
+            case 'weekly':
+                days = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+                label = 'Weekly Revenue';
+                multiplier = 7;
+                break;
+            case 'monthly':
+                days = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                label = 'Monthly Revenue';
+                multiplier = 30;
+                break;
+            case 'yearly':
+                var currentYear = new Date().getFullYear();
+                days = [currentYear - 3, currentYear - 2, currentYear - 1, currentYear];
+                label = 'Yearly Revenue';
+                multiplier = 365;
+                break;
+            default:
+                days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                label = 'Revenue';
+        }
+
+        // Update revenue chart with sample data (in real app, this would come from backend)
+        var revenueData = days.map(function() {
+            return Math.floor(Math.random() * 2000) + 500;
+        });
+
+        if (revenueChart) {
+            revenueChart.data.labels = days;
+            revenueChart.data.datasets[0].data = revenueData;
+            revenueChart.data.datasets[0].label = label;
+            revenueChart.update();
+        }
+
+        showToast('Report data updated for ' + type.charAt(0).toUpperCase() + type.slice(1), 'success');
+    }
+
+    // ============= EXPORT FUNCTIONS =============
+
+    function exportToExcel() {
+        if (!allBills || allBills.length === 0) {
+            showToast('No data to export', 'warning');
+            return;
+        }
+
+        try {
+            var data = allBills.map(function(bill) {
+                return {
+                    'Invoice #': bill.invoiceNumber || 'N/A',
+                    'Patient': bill.patientName || 'N/A',
+                    'Email': bill.patientEmail || 'N/A',
+                    'Phone': bill.patientPhone || 'N/A',
+                    'Treatment': bill.treatmentName || 'N/A',
+                    'Dentist': bill.dentistName || 'N/A',
+                    'Amount': bill.totalAmount || 0,
+                    'Status': bill.paymentStatus || 'PENDING',
+                    'Date': bill.billDate ? new Date(bill.billDate).toLocaleDateString() : 'N/A'
+                };
+            });
+
+            var wb = XLSX.utils.book_new();
+            var ws = XLSX.utils.json_to_sheet(data);
+            XLSX.utils.book_append_sheet(wb, ws, 'Transactions');
+
+            // Auto column widths
+            var colWidths = [
+                { wch: 18 }, // Invoice #
+                { wch: 25 }, // Patient
+                { wch: 30 }, // Email
+                { wch: 18 }, // Phone
+                { wch: 25 }, // Treatment
+                { wch: 25 }, // Dentist
+                { wch: 12 }, // Amount
+                { wch: 12 }, // Status
+                { wch: 15 }  // Date
+            ];
+            ws['!cols'] = colWidths;
+
+            var fileName = 'Dental_Clinic_Report_' + new Date().toISOString().split('T')[0] + '.xlsx';
+            XLSX.writeFile(wb, fileName);
+            showToast('Excel exported successfully!', 'success');
+        } catch (error) {
+            console.error('Export error:', error);
+            showToast('Error exporting Excel: ' + error.message, 'error');
+        }
+    }
+
+    function exportToPDF() {
+        if (!allBills || allBills.length === 0) {
+            showToast('No data to export', 'warning');
+            return;
+        }
+
+        try {
+            var { jsPDF } = window.jspdf;
+            var doc = new jsPDF('landscape', 'mm', 'a4');
+
+            // Header
+            doc.setFontSize(18);
+            doc.setTextColor(44, 62, 80);
+            doc.text('🦷 Dental Clinic - Report', 20, 20);
+
+            doc.setFontSize(11);
+            doc.setTextColor(100, 100, 100);
+            doc.text('Generated: ' + new Date().toLocaleString(), 20, 28);
+            doc.text('Total Transactions: ' + allBills.length, 20, 34);
+
+            // Table data
+            var tableData = allBills.map(function(bill) {
+                return [
+                    bill.invoiceNumber || 'N/A',
+                    bill.patientName || 'N/A',
+                    bill.treatmentName || 'N/A',
+                    '$' + (bill.totalAmount || 0).toFixed(2),
+                    bill.paymentStatus || 'PENDING',
+                    bill.billDate ? new Date(bill.billDate).toLocaleDateString() : 'N/A'
+                ];
+            });
+
+            doc.autoTable({
+                startY: 40,
+                head: [['Invoice #', 'Patient', 'Treatment', 'Amount', 'Status', 'Date']],
+                body: tableData,
+                theme: 'grid',
+                headStyles: {
+                    fillColor: [60, 166, 166],
+                    textColor: [255, 255, 255],
+                    fontSize: 10,
+                    fontStyle: 'bold'
+                },
+                bodyStyles: {
+                    fontSize: 9
+                },
+                alternateRowStyles: {
+                    fillColor: [245, 247, 250]
+                },
+                margin: { top: 40 },
+                pageBreak: 'auto'
+            });
+
+            // Footer
+            var pageCount = doc.internal.getNumberOfPages();
+            for (var i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFontSize(8);
+                doc.setTextColor(150, 150, 150);
+                doc.text('Page ' + i + ' of ' + pageCount, doc.internal.pageSize.width - 30, doc.internal.pageSize.height - 10);
+                doc.text('Dental Clinic - Confidential Report', 20, doc.internal.pageSize.height - 10);
+            }
+
+            var fileName = 'Dental_Clinic_Report_' + new Date().toISOString().split('T')[0] + '.pdf';
+            doc.save(fileName);
+            showToast('PDF exported successfully!', 'success');
+        } catch (error) {
+            console.error('Export error:', error);
+            showToast('Error exporting PDF: ' + error.message, 'error');
+        }
+    }
+
+    function showToast(message, type) {
+        if (type === undefined) type = 'info';
+        var container = document.getElementById('toastContainer');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toastContainer';
+            document.body.appendChild(container);
+        }
+
+        var toast = document.createElement('div');
+        toast.className = 'toast ' + type;
+
+        var icons = {
             success: 'fa-check-circle',
             error: 'fa-exclamation-circle',
             warning: 'fa-exclamation-triangle',
             info: 'fa-info-circle'
         };
 
+        var colors = {
+            success: '#48bb78',
+            error: '#f56565',
+            warning: '#ecc94b',
+            info: '#4299e1'
+        };
+
         toast.innerHTML = `
-            <i class="fas ${icons[type]}" style="font-size: 20px; color: ${type === 'success' ? '#48bb78' : '#4299e1'};"></i>
-            <span style="flex: 1;">${message}</span>
-            <button onclick="this.parentElement.remove()" style="background: none; border: none; color: #7f8c8d; cursor: pointer;">
+            <i class="fas ${icons[type]}" style="font-size: 20px; color: ${colors[type]};"></i>
+            <span style="flex: 1; color: var(--dark);">${message}</span>
+            <button onclick="this.parentElement.remove()" style="background: none; border: none; color: var(--gray); cursor: pointer; font-size: 16px;">
                 <i class="fas fa-times"></i>
             </button>
         `;
 
-        document.body.appendChild(toast);
-        setTimeout(() => {
+        container.appendChild(toast);
+
+        setTimeout(function() {
             if (toast.parentElement) {
                 toast.style.animation = 'fadeOut 0.3s ease';
-                setTimeout(() => toast.remove(), 300);
+                setTimeout(function() {
+                    if (toast.parentElement) toast.remove();
+                }, 300);
             }
         }, 4000);
     }
+
+    // Auto-refresh every 60 seconds
+    setInterval(function() {
+        loadDashboardStats();
+        loadBills();
+    }, 60000);
 </script>
 <script src="js/protection.js"></script>
 </body>
