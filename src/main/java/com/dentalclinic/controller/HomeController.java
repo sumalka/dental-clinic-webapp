@@ -40,7 +40,7 @@ public class HomeController extends HttpServlet {
 
         // Handle login page
         if ("/login".equals(path)) {
-            if (session != null && session.getAttribute("user") != null) {
+            if (session != null && session.getAttribute("username") != null) {
                 response.sendRedirect(request.getContextPath() + "/dashboard");
                 return;
             }
@@ -48,27 +48,51 @@ public class HomeController extends HttpServlet {
             return;
         }
 
-        // Handle dashboard
+        // Handle dashboard - CHECK FOR BOTH USER AND STAFF SESSIONS
         if ("/dashboard".equals(path) || "/".equals(path)) {
-            if (session == null || session.getAttribute("user") == null) {
+            // Check for both user and staff session attributes
+            boolean isAuthenticated = false;
+            if (session != null) {
+                // Check for regular user session
+                if (session.getAttribute("user") != null || session.getAttribute("username") != null) {
+                    isAuthenticated = true;
+                }
+                // Check for staff session
+                if (session.getAttribute("staffId") != null || session.getAttribute("fullName") != null) {
+                    isAuthenticated = true;
+                }
+            }
+
+            if (!isAuthenticated) {
+                System.out.println("❌ No valid session found, redirecting to login");
                 response.sendRedirect(request.getContextPath() + "/login");
                 return;
             }
+
+            System.out.println("✅ User authenticated, serving dashboard");
             servePage("/pages/dashboard/index.html", request, response);
             return;
         }
 
         // Handle module pages - requires authentication
-        // 🔥 FIXED: Added all module mappings including billing, reports, help
         String[] modules = {"/patients", "/appointments", "/dentists", "/treatments",
                 "/billing", "/reports", "/staff", "/help"};
         for (String module : modules) {
             if (path.equals(module)) {
-                if (session == null || session.getAttribute("user") == null) {
+                boolean isAuthenticated = false;
+                if (session != null) {
+                    if (session.getAttribute("user") != null || session.getAttribute("username") != null) {
+                        isAuthenticated = true;
+                    }
+                    if (session.getAttribute("staffId") != null || session.getAttribute("fullName") != null) {
+                        isAuthenticated = true;
+                    }
+                }
+
+                if (!isAuthenticated) {
                     response.sendRedirect(request.getContextPath() + "/login");
                     return;
                 }
-                // 🔥 FIXED: Use proper page mapping for each module
                 String pagePath = getPagePathForModule(module);
                 servePage(pagePath, request, response);
                 return;

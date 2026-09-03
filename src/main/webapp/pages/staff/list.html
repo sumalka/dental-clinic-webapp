@@ -6,7 +6,6 @@
     <title>Staff Management - Dental Clinic</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Same styles as Patient Management page */
         * {
             margin: 0;
             padding: 0;
@@ -52,6 +51,8 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .header-left h1 {
@@ -75,11 +76,12 @@
 
         .header-actions {
             display: flex;
-            gap: 15px;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .btn {
-            padding: 12px 24px;
+            padding: 10px 20px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
@@ -106,11 +108,25 @@
         .btn-primary {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
+            box-shadow: 0 4px 8px rgba(60, 166, 166, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(60, 166, 166, 0.4);
         }
 
         .btn-success {
             background: linear-gradient(135deg, var(--success), #38a169);
             color: white;
+            box-shadow: 0 4px 8px rgba(72, 187, 120, 0.3);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #38a169, var(--success));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(72, 187, 120, 0.4);
         }
 
         .section-header {
@@ -118,6 +134,8 @@
             justify-content: space-between;
             align-items: center;
             padding: 30px 30px 20px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .section-header h2 {
@@ -131,6 +149,23 @@
 
         .section-header h2 i {
             color: var(--primary);
+        }
+
+        .section-header .role-badge {
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .section-header .role-badge.admin {
+            background: rgba(245, 101, 101, 0.15);
+            color: var(--danger);
+        }
+
+        .section-header .role-badge.staff {
+            background: rgba(66, 153, 225, 0.15);
+            color: var(--secondary);
         }
 
         .table-container {
@@ -148,15 +183,15 @@
             color: var(--dark);
             font-weight: 600;
             text-align: left;
-            padding: 15px;
+            padding: 12px 15px;
             border-bottom: 2px solid var(--border);
-            font-size: 14px;
+            font-size: 13px;
         }
 
         td {
-            padding: 15px;
+            padding: 12px 15px;
             border-bottom: 1px solid var(--border);
-            font-size: 14px;
+            font-size: 13px;
             color: var(--dark);
         }
 
@@ -165,52 +200,57 @@
         }
 
         .role-badge {
-            padding: 5px 12px;
+            padding: 4px 12px;
             border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
+            font-size: 11px;
+            font-weight: 600;
             display: inline-block;
+            text-transform: uppercase;
         }
 
-        .role-admin { background: rgba(245, 101, 101, 0.1); color: var(--danger); }
-        .role-receptionist { background: rgba(66, 153, 225, 0.1); color: var(--secondary); }
-        .role-dentist { background: rgba(72, 187, 120, 0.1); color: var(--success); }
-        .role-manager { background: rgba(236, 201, 75, 0.1); color: var(--warning); }
+        .role-admin { background: rgba(245, 101, 101, 0.15); color: var(--danger); }
+        .role-dentist { background: rgba(72, 187, 120, 0.15); color: var(--success); }
+        .role-receptionist { background: rgba(66, 153, 225, 0.15); color: var(--secondary); }
+        .role-manager { background: rgba(236, 201, 75, 0.15); color: #b7950b; }
 
         .status-badge {
-            padding: 5px 12px;
+            padding: 4px 12px;
             border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
+            font-size: 11px;
+            font-weight: 600;
             display: inline-block;
         }
 
         .status-active {
-            background: rgba(72, 187, 120, 0.1);
+            background: rgba(72, 187, 120, 0.15);
             color: var(--success);
         }
 
         .status-inactive {
-            background: rgba(245, 101, 101, 0.1);
+            background: rgba(245, 101, 101, 0.15);
             color: var(--danger);
         }
 
         .actions {
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
 
         .action-btn {
-            width: 35px;
-            height: 35px;
+            width: 32px;
+            height: 32px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 13px;
             transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
         }
 
         .action-view {
@@ -228,9 +268,14 @@
             color: var(--danger);
         }
 
-        .action-btn:hover {
-            transform: translateY(-2px);
-            filter: brightness(0.9);
+        .action-toggle {
+            background: rgba(60, 166, 166, 0.1);
+            color: var(--primary);
+        }
+
+        .action-disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
         }
 
         .loading {
@@ -269,24 +314,192 @@
             font-size: 14px;
         }
 
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 99999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-header {
+            background: var(--sidebar-bg);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 16px 16px 0 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-header h2 i {
+            color: var(--primary);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            padding: 5px 10px;
+            border-radius: 6px;
+        }
+
+        .modal-close:hover {
+            background: rgba(255,255,255,0.1);
+            transform: rotate(90deg);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .form-group label .required {
+            color: var(--danger);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(60, 166, 166, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            margin-top: 10px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 999999;
+            animation: slideIn 0.3s ease;
+            border-left: 4px solid var(--success);
+            max-width: 400px;
+        }
+
+        .toast.error { border-left-color: var(--danger); }
+        .toast.success { border-left-color: var(--success); }
+        .toast.warning { border-left-color: var(--warning); }
+        .toast.info { border-left-color: var(--secondary); }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
-                gap: 15px;
                 text-align: center;
+                padding: 20px;
             }
 
             .header-actions {
                 width: 100%;
                 justify-content: center;
-                flex-wrap: wrap;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                max-width: 100%;
+                margin: 10px;
+            }
+
+            .modal-body {
+                padding: 20px;
             }
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <!-- Header -->
     <div class="header">
         <div class="header-left">
             <h1><i class="fas fa-user-tie"></i> Staff Management</h1>
@@ -294,21 +507,27 @@
         </div>
         <div class="header-actions">
             <button class="btn btn-secondary" onclick="window.location.href='/dental_clinic_webapp_war_exploded/dashboard'">
-                <i class="fas fa-arrow-left"></i> Back to Dashboard
+                <i class="fas fa-arrow-left"></i> Dashboard
             </button>
-            <button class="btn btn-success" onclick="showToast('Add Staff form coming soon!', 'info')">
+            <button class="btn btn-primary" onclick="refreshStaff()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+            <button class="btn btn-success" id="addStaffBtn" onclick="openAddStaffModal()">
                 <i class="fas fa-plus"></i> Add Staff
             </button>
         </div>
     </div>
 
-    <!-- Section Header -->
     <div class="section-header">
-        <h2><i class="fas fa-list"></i> All Staff Members</h2>
-        <span id="staffCount" style="color: var(--gray); font-size: 14px;">Loading...</span>
+        <div>
+            <h2><i class="fas fa-list"></i> All Staff Members</h2>
+        </div>
+        <div>
+            <span id="staffCount" style="color: var(--gray); font-size: 14px;">Loading...</span>
+            <span class="role-badge staff" id="userRoleBadge">Loading...</span>
+        </div>
     </div>
 
-    <!-- Table -->
     <div class="table-container">
         <div class="loading" id="loadingMessage">
             <i class="fas fa-spinner fa-spin"></i>
@@ -321,13 +540,13 @@
                 <th>Name</th>
                 <th>Username</th>
                 <th>Email</th>
+                <th>Phone</th>
                 <th>Role</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
             </thead>
             <tbody id="staffTableBody">
-            <!-- Staff will be loaded here -->
             </tbody>
         </table>
 
@@ -335,36 +554,200 @@
             <i class="fas fa-user-slash"></i>
             <h3>No Staff Found</h3>
             <p>Add your first staff member to the system.</p>
-            <button class="btn btn-primary" onclick="showToast('Add Staff form coming soon!', 'info')">
+            <button class="btn btn-primary" onclick="openAddStaffModal()">
                 <i class="fas fa-plus"></i> Add Staff
             </button>
         </div>
     </div>
 </div>
 
-<script>
-    const CONTEXT_PATH = '/dental_clinic_webapp_war_exploded';
-    let staff = [];
+<!-- Add/Edit Staff Modal -->
+<div class="modal-overlay" id="staffModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-user-plus"></i> <span id="modalTitle">Add Staff Member</span></h2>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="staffForm">
+                <input type="hidden" id="staffId" value="0">
 
-    // Sample staff data
-    const sampleStaff = [
-        { id: 1, name: 'Admin User', username: 'admin', email: 'admin@dentalclinic.com', role: 'admin', status: 'Active' },
-        { id: 2, name: 'Jane Reception', username: 'reception1', email: 'reception@dentalclinic.com', role: 'receptionist', status: 'Active' },
-        { id: 3, name: 'Dr. Sarah Johnson', username: 'dentist1', email: 'sarah@dentalclinic.com', role: 'dentist', status: 'Active' },
-        { id: 4, name: 'Dr. Michael Chen', username: 'dentist2', email: 'michael@dentalclinic.com', role: 'dentist', status: 'Active' }
-    ];
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>First Name <span class="required">*</span></label>
+                        <input type="text" id="firstName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name <span class="required">*</span></label>
+                        <input type="text" id="lastName" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Username <span class="required">*</span></label>
+                        <input type="text" id="username" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password <span class="required">*</span></label>
+                        <input type="password" id="password" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Email <span class="required">*</span></label>
+                        <input type="email" id="email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="text" id="phone" class="form-control" placeholder="+94 77 123 4567">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Role <span class="required">*</span></label>
+                    <select id="role" class="form-control" required>
+                        <option value="admin">Admin</option>
+                        <option value="dentist">Dentist</option>
+                        <option value="receptionist" selected>Receptionist</option>
+                        <option value="manager">Manager</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-success" id="submitBtn">
+                        <i class="fas fa-save"></i> Save Staff
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toastContainer"></div>
+
+<script>
+    var CONTEXT_PATH = '/dental_clinic_webapp_war_exploded';
+    var allStaff = [];
+    var isEditing = false;
+    var currentStaffId = null;
+    var isAdminUser = false;
 
     document.addEventListener('DOMContentLoaded', function() {
-        staff = sampleStaff;
-        displayStaff(staff);
-        document.getElementById('staffCount').textContent = `${staff.length} staff members`;
+        console.log('🔍 Staff page loaded - checking user role...');
+        loadCurrentUser();
     });
 
+    function loadCurrentUser() {
+        fetch(CONTEXT_PATH + '/api/auth', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                console.log('📊 Auth check response:', data);
+                if (data && data.authenticated) {
+                    isAdminUser = data.isAdmin === true;
+                    currentStaffId = data.staffId || 0;
+
+                    console.log('👤 User role from session:', data.role);
+                    console.log('🔑 Is Admin:', isAdminUser);
+
+                    updateUIForRole();
+                } else {
+                    // Fallback: try the staff current endpoint
+                    return fetch(CONTEXT_PATH + '/api/staff?action=current&t=' + Date.now());
+                }
+            })
+            .then(function(response) {
+                if (response) {
+                    return response.json();
+                }
+                return null;
+            })
+            .then(function(data) {
+                if (data && data.role) {
+                    var role = data.role || '';
+                    isAdminUser = data.isAdmin === true || role.toLowerCase() === 'admin';
+                    currentStaffId = data.staffId;
+                    console.log('👤 User role from staff API:', role);
+                    console.log('🔑 Is Admin (from staff API):', isAdminUser);
+                    updateUIForRole();
+                }
+            })
+            .catch(function(error) {
+                console.error('❌ Error checking auth:', error);
+                isAdminUser = false;
+                updateUIForRole();
+            })
+            .finally(function() {
+                loadStaff();
+            });
+    }
+
+    function updateUIForRole() {
+        var badge = document.getElementById('userRoleBadge');
+        var addBtn = document.getElementById('addStaffBtn');
+
+        if (isAdminUser) {
+            badge.textContent = '🔑 Admin Mode';
+            badge.className = 'role-badge admin';
+            addBtn.style.display = 'inline-flex';
+            console.log('✅ Admin user - showing full controls');
+        } else {
+            badge.textContent = '👁️ View Only';
+            badge.className = 'role-badge staff';
+            addBtn.style.display = 'none';
+            console.log('❌ Non-admin user - view only mode');
+        }
+    }
+
+    function loadStaff() {
+        var loading = document.getElementById('loadingMessage');
+        loading.style.display = 'block';
+        document.getElementById('staffTable').style.display = 'none';
+        document.getElementById('emptyState').style.display = 'none';
+
+        fetch(CONTEXT_PATH + '/api/staff?action=list&t=' + Date.now())
+            .then(function(response) {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(function(data) {
+                allStaff = data || [];
+                console.log('📋 Loaded ' + allStaff.length + ' staff members');
+                displayStaff(allStaff);
+                loading.style.display = 'none';
+                document.getElementById('staffCount').textContent = allStaff.length + ' staff members';
+            })
+            .catch(function(error) {
+                console.error('❌ Error loading staff:', error);
+                loading.innerHTML = '<i class="fas fa-exclamation-circle" style="color: var(--danger);"></i>' +
+                    '<p style="color: var(--danger);">Failed to load staff: ' + error.message + '</p>' +
+                    '<button class="btn btn-primary" onclick="loadStaff()" style="margin-top: 15px;">' +
+                    '<i class="fas fa-sync-alt"></i> Retry</button>';
+            });
+    }
+
+    function refreshStaff() {
+        loadStaff();
+        showToast('Refreshing staff data...', 'info');
+    }
+
     function displayStaff(staffToShow) {
-        const tbody = document.getElementById('staffTableBody');
-        const loading = document.getElementById('loadingMessage');
-        const table = document.getElementById('staffTable');
-        const emptyState = document.getElementById('emptyState');
+        var tbody = document.getElementById('staffTableBody');
+        var loading = document.getElementById('loadingMessage');
+        var table = document.getElementById('staffTable');
+        var emptyState = document.getElementById('emptyState');
 
         loading.style.display = 'none';
 
@@ -377,30 +760,52 @@
         table.style.display = 'table';
         emptyState.style.display = 'none';
 
+        console.log('🔑 Displaying staff - Is Admin:', isAdminUser);
+
         tbody.innerHTML = '';
-        staffToShow.forEach(member => {
-            const row = document.createElement('tr');
-            const roleClass = `role-${member.role}`;
-            const statusClass = member.status === 'Active' ? 'status-active' : 'status-inactive';
+        staffToShow.forEach(function(member) {
+            var row = document.createElement('tr');
+            var roleClass = 'role-' + member.role;
+            var statusClass = member.status === 'Active' ? 'status-active' : 'status-inactive';
+
+            var actionsHtml = '';
+            if (isAdminUser) {
+                var isSelf = currentStaffId === member.staffId;
+
+                actionsHtml += `<button class="action-btn action-toggle" onclick="toggleStaffStatus(${member.staffId})" title="Toggle Status">
+                    <i class="fas ${member.status === 'Active' ? 'fa-pause' : 'fa-play'}"></i>
+                </button>`;
+
+                if (!isSelf) {
+                    actionsHtml += `<button class="action-btn action-edit" onclick="editStaff(${member.staffId})" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </button>`;
+                    actionsHtml += `<button class="action-btn action-delete" onclick="deleteStaff(${member.staffId})" title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </button>`;
+                } else {
+                    actionsHtml += `<button class="action-btn action-edit action-disabled" title="Cannot edit yourself" disabled>
+                        <i class="fas fa-edit"></i>
+                    </button>`;
+                    actionsHtml += `<button class="action-btn action-delete action-disabled" title="Cannot delete yourself" disabled>
+                        <i class="fas fa-trash"></i>
+                    </button>`;
+                }
+            } else {
+                actionsHtml = `<button class="action-btn action-view" onclick="viewStaff(${member.staffId})" title="View">
+                    <i class="fas fa-eye"></i>
+                </button>`;
+            }
 
             row.innerHTML = `
-                <td><strong>${member.name}</strong></td>
-                <td>${member.username}</td>
-                <td>${member.email}</td>
-                <td><span class="role-badge ${roleClass}">${member.role.toUpperCase()}</span></td>
-                <td><span class="status-badge ${statusClass}">${member.status}</span></td>
+                <td><strong>${member.firstName || ''} ${member.lastName || ''}</strong></td>
+                <td>${member.username || 'N/A'}</td>
+                <td>${member.email || 'N/A'}</td>
+                <td>${member.phone || 'N/A'}</td>
+                <td><span class="role-badge ${roleClass}">${member.role || 'receptionist'}</span></td>
+                <td><span class="status-badge ${statusClass}">${member.status || 'Active'}</span></td>
                 <td>
-                    <div class="actions">
-                        <button class="action-btn action-view" onclick="viewStaff(${member.id})" title="View">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="action-btn action-edit" onclick="editStaff(${member.id})" title="Edit">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="action-btn action-delete" onclick="deleteStaff(${member.id})" title="Delete">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
+                    <div class="actions">${actionsHtml}</div>
                 </td>
             `;
             tbody.appendChild(row);
@@ -408,57 +813,297 @@
     }
 
     function viewStaff(id) {
-        showToast(`Viewing staff member #${id}`, 'info');
+        var member = allStaff.find(function(s) { return s.staffId === id; });
+        if (!member) {
+            showToast('Staff member not found', 'error');
+            return;
+        }
+
+        var message = '👤 Staff Details\n\n' +
+            'Name: ' + (member.firstName || '') + ' ' + (member.lastName || '') + '\n' +
+            'Username: ' + (member.username || 'N/A') + '\n' +
+            'Email: ' + (member.email || 'N/A') + '\n' +
+            'Phone: ' + (member.phone || 'N/A') + '\n' +
+            'Role: ' + (member.role || 'N/A') + '\n' +
+            'Status: ' + (member.status || 'N/A');
+
+        alert(message);
+    }
+
+    function openAddStaffModal() {
+        if (!isAdminUser) {
+            showToast('Access denied. Admin privileges required.', 'error');
+            return;
+        }
+
+        isEditing = false;
+        document.getElementById('modalTitle').textContent = 'Add Staff Member';
+        document.getElementById('staffId').value = '0';
+        document.getElementById('staffForm').reset();
+        document.getElementById('password').required = true;
+        document.getElementById('password').placeholder = '';
+        document.getElementById('submitBtn').innerHTML = '<i class="fas fa-save"></i> Add Staff';
+        document.getElementById('staffModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
     }
 
     function editStaff(id) {
-        showToast(`Editing staff member #${id}`, 'info');
+        if (!isAdminUser) {
+            showToast('Access denied. Admin privileges required.', 'error');
+            return;
+        }
+
+        var member = allStaff.find(function(s) { return s.staffId === id; });
+        if (!member) {
+            showToast('Staff member not found', 'error');
+            return;
+        }
+
+        if (currentStaffId === id) {
+            showToast('You cannot edit your own account', 'warning');
+            return;
+        }
+
+        isEditing = true;
+        document.getElementById('modalTitle').textContent = 'Edit Staff Member';
+        document.getElementById('staffId').value = member.staffId;
+        document.getElementById('firstName').value = member.firstName || '';
+        document.getElementById('lastName').value = member.lastName || '';
+        document.getElementById('username').value = member.username || '';
+        document.getElementById('password').value = '';
+        document.getElementById('password').required = false;
+        document.getElementById('password').placeholder = 'Leave blank to keep current';
+        document.getElementById('email').value = member.email || '';
+        document.getElementById('phone').value = member.phone || '';
+        document.getElementById('role').value = member.role || 'receptionist';
+        document.getElementById('submitBtn').innerHTML = '<i class="fas fa-save"></i> Update Staff';
+        document.getElementById('staffModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        document.getElementById('staffModal').classList.remove('active');
+        document.body.style.overflow = 'auto';
+        document.getElementById('staffForm').reset();
+        document.getElementById('password').placeholder = '';
+    }
+
+    document.getElementById('staffModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
+
+    document.getElementById('staffForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (!isAdminUser) {
+            showToast('Access denied. Admin privileges required.', 'error');
+            return;
+        }
+
+        var staffId = parseInt(document.getElementById('staffId').value);
+        var firstName = document.getElementById('firstName').value.trim();
+        var lastName = document.getElementById('lastName').value.trim();
+        var username = document.getElementById('username').value.trim();
+        var password = document.getElementById('password').value;
+        var email = document.getElementById('email').value.trim();
+        var phone = document.getElementById('phone').value.trim();
+        var role = document.getElementById('role').value;
+
+        if (!firstName || !lastName || !username || !email || !role) {
+            showToast('Please fill in all required fields', 'error');
+            return;
+        }
+
+        if (!isEditing && !password) {
+            showToast('Password is required for new staff', 'error');
+            return;
+        }
+
+        var submitBtn = document.getElementById('submitBtn');
+        var originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        submitBtn.disabled = true;
+
+        var staffData = {
+            firstName: firstName,
+            lastName: lastName,
+            username: username,
+            email: email,
+            phone: phone || '',
+            role: role,
+            status: 'Active'
+        };
+
+        if (isEditing) {
+            staffData.staffId = staffId;
+            if (password) {
+                staffData.password = password;
+            }
+        } else {
+            staffData.password = password;
+        }
+
+        var url = CONTEXT_PATH + '/api/staff';
+        if (isEditing) {
+            url = CONTEXT_PATH + '/api/staff?_method=PUT';
+        }
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(staffData)
+        })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.success) {
+                    showToast(isEditing ? 'Staff updated successfully!' : 'Staff added successfully!', 'success');
+                    closeModal();
+                    loadStaff();
+                } else {
+                    showToast('Error: ' + data.message, 'error');
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+                showToast('Network error: ' + error.message, 'error');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+    });
+
+    function toggleStaffStatus(id) {
+        if (!isAdminUser) {
+            showToast('Access denied. Admin privileges required.', 'error');
+            return;
+        }
+
+        if (currentStaffId === id) {
+            showToast('You cannot change your own status', 'warning');
+            return;
+        }
+
+        var member = allStaff.find(function(s) { return s.staffId === id; });
+        if (!member) {
+            showToast('Staff member not found', 'error');
+            return;
+        }
+
+        var action = member.status === 'Active' ? 'deactivate' : 'activate';
+        if (!confirm('Are you sure you want to ' + action + ' this staff member?')) {
+            return;
+        }
+
+        fetch(CONTEXT_PATH + '/api/staff?_method=PATCH&id=' + id, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({})
+        })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.success) {
+                    showToast('Staff status toggled successfully', 'success');
+                    loadStaff();
+                } else {
+                    showToast('Error: ' + data.message, 'error');
+                }
+            })
+            .catch(function(error) {
+                showToast('Error: ' + error.message, 'error');
+            });
     }
 
     function deleteStaff(id) {
-        if (confirm('Are you sure you want to deactivate this staff member?')) {
-            const member = staff.find(s => s.id === id);
-            if (member) {
-                member.status = 'Inactive';
-                displayStaff(staff);
-                showToast('Staff member deactivated!', 'success');
-            }
+        if (!isAdminUser) {
+            showToast('Access denied. Admin privileges required.', 'error');
+            return;
         }
+
+        if (currentStaffId === id) {
+            showToast('You cannot delete your own account', 'warning');
+            return;
+        }
+
+        if (!confirm('Are you sure you want to delete this staff member? This action cannot be undone.')) {
+            return;
+        }
+
+        fetch(CONTEXT_PATH + '/api/staff?_method=DELETE&id=' + id, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({})
+        })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.success) {
+                    showToast('Staff deleted successfully', 'success');
+                    loadStaff();
+                } else {
+                    showToast('Error: ' + data.message, 'error');
+                }
+            })
+            .catch(function(error) {
+                showToast('Error: ' + error.message, 'error');
+            });
     }
 
-    function showToast(message, type = 'info') {
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.style.cssText = `
-            position: fixed; bottom: 30px; right: 30px;
-            background: white; padding: 15px 25px;
-            border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            display: flex; align-items: center; gap: 12px;
-            z-index: 9999; animation: slideIn 0.3s ease;
-            border-left: 4px solid ${type === 'success' ? '#48bb78' : '#4299e1'};
-            max-width: 400px;
-        `;
+    function showToast(message, type) {
+        if (type === undefined) type = 'info';
+        var container = document.getElementById('toastContainer');
+        var toast = document.createElement('div');
+        toast.className = 'toast ' + type;
 
-        const icons = {
+        var icons = {
             success: 'fa-check-circle',
             error: 'fa-exclamation-circle',
             warning: 'fa-exclamation-triangle',
             info: 'fa-info-circle'
         };
 
+        var colors = {
+            success: '#48bb78',
+            error: '#f56565',
+            warning: '#ecc94b',
+            info: '#4299e1'
+        };
+
         toast.innerHTML = `
-            <i class="fas ${icons[type]}" style="font-size: 20px; color: ${type === 'success' ? '#48bb78' : '#4299e1'};"></i>
-            <span style="flex: 1;">${message}</span>
-            <button onclick="this.parentElement.remove()" style="background: none; border: none; color: #7f8c8d; cursor: pointer;">
+            <i class="fas ${icons[type]}" style="font-size: 20px; color: ${colors[type]};"></i>
+            <span style="flex: 1; color: var(--dark);">${message}</span>
+            <button onclick="this.parentElement.remove()" style="background: none; border: none; color: var(--gray); cursor: pointer; font-size: 16px;">
                 <i class="fas fa-times"></i>
             </button>
         `;
 
-        document.body.appendChild(toast);
-        setTimeout(() => {
+        container.appendChild(toast);
+
+        setTimeout(function() {
             if (toast.parentElement) {
                 toast.style.animation = 'fadeOut 0.3s ease';
-                setTimeout(() => toast.remove(), 300);
+                setTimeout(function() {
+                    if (toast.parentElement) toast.remove();
+                }, 300);
             }
         }, 4000);
     }

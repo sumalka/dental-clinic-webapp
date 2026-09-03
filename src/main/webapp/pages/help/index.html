@@ -29,82 +29,279 @@
         }
 
         body {
-            background: #F3F4F6;
-            padding: 20px;
+            display: flex;
             min-height: 100vh;
+            background: #F3F4F6;
+            overflow-x: hidden;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            overflow: hidden;
-        }
-
-        .header {
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 280px;
             background: var(--sidebar-bg);
             color: white;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .brand {
+            padding: 10px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .logo {
+            width: 200px;
+            height: 200px;
+            background: transparent;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            animation: float 3s ease-in-out infinite;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .logo i {
+            font-size: 80px;
+            color: var(--primary);
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .brand h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .brand-tagline {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 0;
+        }
+
+        .nav-menu {
+            padding: 10px 0;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+            font-weight: 500;
+            margin: 2px 0;
+            cursor: pointer;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(60, 166, 166, 0.2), rgba(60, 166, 166, 0.1));
+            color: white;
+            border-left: 4px solid var(--primary);
+        }
+
+        .nav-item i {
+            width: 18px;
+            text-align: center;
+            font-size: 15px;
+            color: var(--primary);
+        }
+
+        .nav-item.active i {
+            color: white;
+        }
+
+        .nav-item .badge {
+            margin-left: auto;
+            background: var(--primary);
+            color: white;
+            font-size: 11px;
+            padding: 2px 10px;
+            border-radius: 20px;
+        }
+
+        .user-section {
+            padding: 20px 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(26, 37, 48, 0.95);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 22px;
+            box-shadow: 0 6px 12px rgba(60, 166, 166, 0.4);
+            overflow: hidden;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .user-details {
+            flex-grow: 1;
+        }
+
+        .user-name {
+            font-weight: 700;
+            font-size: 18px;
+            color: white;
+            margin-bottom: 6px;
+            text-transform: capitalize;
+            letter-spacing: 0.3px;
+            line-height: 1.2;
+        }
+
+        .user-role {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-transform: capitalize;
+        }
+
+        .user-role i {
+            font-size: 12px;
+            color: var(--primary);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px;
+            border-radius: 4px;
+        }
+
+        .btn-logout {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(60, 166, 166, 0.3);
+            text-decoration: none;
+        }
+
+        .btn-logout:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(60, 166, 166, 0.4);
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 30px;
+        }
+
+        .top-header {
+            background: var(--sidebar-bg);
             padding: 25px 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
         }
 
-        .header-left h1 {
-            font-size: 28px;
+        .header-left h2 {
+            font-size: 32px;
             font-weight: 700;
             color: white;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .header-left h1 i {
+        .header-left .welcome-message {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-left .welcome-message i {
+            font-size: 18px;
             color: var(--primary);
         }
 
-        .header-left p {
-            opacity: 0.9;
-            font-size: 15px;
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 15px;
-        }
-
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
+        .header-left .welcome-message span {
+            color: var(--primary);
             font-weight: 600;
-            font-size: 14px;
-            display: inline-flex;
+        }
+
+        .header-right {
+            display: flex;
             align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-            text-decoration: none;
+            gap: 20px;
         }
 
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .btn-primary {
+        .current-time {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(60, 166, 166, 0.2);
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
         }
 
         .help-content {
@@ -215,180 +412,459 @@
             padding-left: 30px;
         }
 
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
-            }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
 
-            .header-actions {
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 8px rgba(60, 166, 166, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(60, 166, 166, 0.4);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 99999;
+            animation: slideIn 0.3s ease;
+            border-left: 4px solid var(--success);
+            max-width: 400px;
+        }
+
+        .toast.error { border-left-color: var(--danger); }
+        .toast.success { border-left-color: var(--success); }
+        .toast.warning { border-left-color: var(--warning); }
+        .toast.info { border-left-color: var(--secondary); }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            cursor: pointer;
+            z-index: 1002;
+            font-size: 20px;
+            box-shadow: 0 4px 12px rgba(60, 166, 166, 0.3);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+                width: 100%;
+            }
+            .menu-toggle {
+                display: block;
+            }
+            .help-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .top-header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+                padding: 20px;
+            }
+            .header-right {
                 width: 100%;
                 justify-content: center;
                 flex-wrap: wrap;
             }
-
+            .current-time {
+                min-width: 100%;
+            }
+            .help-content {
+                padding: 20px;
+            }
             .help-grid {
                 grid-template-columns: 1fr;
+            }
+            .help-section h2 {
+                font-size: 20px;
+            }
+            .toast {
+                bottom: 15px;
+                right: 15px;
+                left: 15px;
+                max-width: none;
+                font-size: 14px;
+                padding: 12px 18px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-left h2 {
+                font-size: 22px;
+            }
+            .help-card {
+                padding: 20px;
+            }
+            .help-card i {
+                font-size: 28px;
+            }
+            .help-card h3 {
+                font-size: 16px;
+            }
+            .faq-item h4 {
+                font-size: 14px;
+            }
+            .faq-item p {
+                font-size: 13px;
+                padding-left: 0;
+                margin-top: 8px;
             }
         }
     </style>
 </head>
 <body>
-<div class="container">
+
+<!-- ===== MOBILE MENU TOGGLE ===== -->
+<button class="menu-toggle" id="menuToggle">
+    <i class="fas fa-bars"></i>
+</button>
+
+<!-- ===== SIDEBAR ===== -->
+<nav class="sidebar" id="sidebar">
+    <div class="brand">
+        <div class="logo">
+            <i class="fas fa-tooth"></i>
+        </div>
+        <h1>Dental Clinic</h1>
+        <div class="brand-tagline">Management System</div>
+    </div>
+
+    <div class="nav-menu">
+        <a href="/dental_clinic_webapp_war_exploded/dashboard" class="nav-item">
+            <i class="fas fa-home"></i> Dashboard
+        </a>
+        <a href="/dental_clinic_webapp_war_exploded/patients" class="nav-item">
+            <i class="fas fa-users"></i> Patients
+        </a>
+        <a href="/dental_clinic_webapp_war_exploded/appointments" class="nav-item">
+            <i class="fas fa-calendar-alt"></i> Appointments
+            <span class="badge" id="appointmentBadge">0</span>
+        </a>
+        <a href="/dental_clinic_webapp_war_exploded/dentists" class="nav-item">
+            <i class="fas fa-user-md"></i> Dentists
+        </a>
+        <a href="/dental_clinic_webapp_war_exploded/treatments" class="nav-item">
+            <i class="fas fa-pills"></i> Treatments
+        </a>
+        <a href="/dental_clinic_webapp_war_exploded/billing" class="nav-item">
+            <i class="fas fa-file-invoice-dollar"></i> Billing
+        </a>
+        <a href="/dental_clinic_webapp_war_exploded/reports" class="nav-item">
+            <i class="fas fa-chart-bar"></i> Reports
+        </a>
+        <a href="/dental_clinic_webapp_war_exploded/staff" class="nav-item">
+            <i class="fas fa-user-tie"></i> Staff
+        </a>
+        <a href="/dental_clinic_webapp_war_exploded/help" class="nav-item active">
+            <i class="fas fa-question-circle"></i> Help
+        </a>
+    </div>
+
+    <div class="user-section">
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">A</div>
+            <div class="user-details">
+                <div class="user-name" id="userName">Loading...</div>
+                <div class="user-role" id="userRole">
+                    <i class="fas fa-user-tag"></i> Loading...
+                </div>
+            </div>
+        </div>
+        <a href="/dental_clinic_webapp_war_exploded/logout" class="btn-logout">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</nav>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="main-content">
     <!-- Header -->
-    <div class="header">
+    <div class="top-header">
         <div class="header-left">
-            <h1><i class="fas fa-question-circle"></i> Help & Support</h1>
-            <p><i class="fas fa-life-ring"></i> Getting started with Dental Clinic Management System</p>
+            <h2><i class="fas fa-question-circle"></i> Help & Support</h2>
+            <div class="welcome-message">
+                <i class="fas fa-life-ring"></i>
+                Getting started with Dental Clinic Management System
+            </div>
         </div>
-        <div class="header-actions">
-            <button class="btn btn-secondary" onclick="window.location.href='/dental_clinic_webapp_war_exploded/dashboard'">
-                <i class="fas fa-arrow-left"></i> Back to Dashboard
-            </button>
-            <button class="btn btn-primary" onclick="showToast('Contact support form coming soon!', 'info')">
-                <i class="fas fa-envelope"></i> Contact Support
-            </button>
+        <div class="header-right">
+            <div class="current-time" id="currentTimeDisplay">Loading...</div>
         </div>
     </div>
 
-    <!-- Help Content -->
-    <div class="help-content">
-        <!-- Quick Start -->
-        <div class="help-section">
-            <h2><i class="fas fa-rocket"></i> Quick Start Guide</h2>
-            <div class="help-grid">
-                <div class="help-card">
-                    <i class="fas fa-user-plus"></i>
-                    <h3>Add a Patient</h3>
-                    <p>Start by adding your first patient to the system.</p>
-                    <ul>
-                        <li><i class="fas fa-chevron-right"></i> Click "Patients" in the sidebar</li>
-                        <li><i class="fas fa-chevron-right"></i> Click "Add Patient"</li>
-                        <li><i class="fas fa-chevron-right"></i> Fill in patient details</li>
-                    </ul>
+    <div class="container">
+        <!-- Help Content -->
+        <div class="help-content">
+            <!-- Quick Start -->
+            <div class="help-section">
+                <h2><i class="fas fa-rocket"></i> Quick Start Guide</h2>
+                <div class="help-grid">
+                    <div class="help-card">
+                        <i class="fas fa-user-plus"></i>
+                        <h3>Add a Patient</h3>
+                        <p>Start by adding your first patient to the system.</p>
+                        <ul>
+                            <li><i class="fas fa-chevron-right"></i> Click "Patients" in the sidebar</li>
+                            <li><i class="fas fa-chevron-right"></i> Click "Add Patient"</li>
+                            <li><i class="fas fa-chevron-right"></i> Fill in patient details</li>
+                        </ul>
+                    </div>
+                    <div class="help-card">
+                        <i class="fas fa-calendar-plus"></i>
+                        <h3>Schedule Appointment</h3>
+                        <p>Book appointments for your patients.</p>
+                        <ul>
+                            <li><i class="fas fa-chevron-right"></i> Click "Appointments" in the sidebar</li>
+                            <li><i class="fas fa-chevron-right"></i> Click "Add Appointment"</li>
+                            <li><i class="fas fa-chevron-right"></i> Select patient, dentist, and date</li>
+                        </ul>
+                    </div>
+                    <div class="help-card">
+                        <i class="fas fa-file-invoice"></i>
+                        <h3>Generate Invoice</h3>
+                        <p>Create bills for completed appointments.</p>
+                        <ul>
+                            <li><i class="fas fa-chevron-right"></i> Go to "Billing" in the sidebar</li>
+                            <li><i class="fas fa-chevron-right"></i> View appointment details</li>
+                            <li><i class="fas fa-chevron-right"></i> Click "Generate Bill"</li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="help-card">
-                    <i class="fas fa-calendar-plus"></i>
-                    <h3>Schedule Appointment</h3>
-                    <p>Book appointments for your patients.</p>
-                    <ul>
-                        <li><i class="fas fa-chevron-right"></i> Click "Appointments" in the sidebar</li>
-                        <li><i class="fas fa-chevron-right"></i> Click "Add Appointment"</li>
-                        <li><i class="fas fa-chevron-right"></i> Select patient, dentist, and date</li>
-                    </ul>
+            </div>
+
+            <!-- FAQs -->
+            <div class="help-section">
+                <h2><i class="fas fa-question-circle"></i> Frequently Asked Questions</h2>
+
+                <div class="faq-item">
+                    <h4><i class="fas fa-user"></i> How do I add a new patient?</h4>
+                    <p>Navigate to the Patients page from the sidebar, click the "Add Patient" button, and fill in the required information including name, contact details, and medical history.</p>
                 </div>
-                <div class="help-card">
-                    <i class="fas fa-file-invoice"></i>
-                    <h3>Generate Invoice</h3>
-                    <p>Create bills for completed appointments.</p>
-                    <ul>
-                        <li><i class="fas fa-chevron-right"></i> Go to "Billing" in the sidebar</li>
-                        <li><i class="fas fa-chevron-right"></i> View appointment details</li>
-                        <li><i class="fas fa-chevron-right"></i> Click "Generate Bill"</li>
-                    </ul>
+
+                <div class="faq-item">
+                    <h4><i class="fas fa-calendar"></i> How do I schedule an appointment?</h4>
+                    <p>Go to the Appointments page, click "Add Appointment", select a patient, dentist, treatment type, and choose a date and time that works for everyone.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4><i class="fas fa-file-invoice-dollar"></i> How do I generate a bill?</h4>
+                    <p>After an appointment is completed, go to the Billing section, find the appointment, and click "Generate Bill". The system will calculate the total based on treatment and consultation fees.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4><i class="fas fa-users"></i> How do I manage staff members?</h4>
+                    <p>Only administrators can manage staff. Go to the Staff page to add, edit, or deactivate staff members.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4><i class="fas fa-chart-bar"></i> How do I view reports?</h4>
+                    <p>Navigate to the Reports page to view daily, weekly, and monthly reports on patients, appointments, and revenue.</p>
                 </div>
             </div>
-        </div>
 
-        <!-- FAQs -->
-        <div class="help-section">
-            <h2><i class="fas fa-question-circle"></i> Frequently Asked Questions</h2>
-
-            <div class="faq-item">
-                <h4><i class="fas fa-user"></i> How do I add a new patient?</h4>
-                <p>Navigate to the Patients page from the sidebar, click the "Add Patient" button, and fill in the required information including name, contact details, and medical history.</p>
-            </div>
-
-            <div class="faq-item">
-                <h4><i class="fas fa-calendar"></i> How do I schedule an appointment?</h4>
-                <p>Go to the Appointments page, click "Add Appointment", select a patient, dentist, treatment type, and choose a date and time that works for everyone.</p>
-            </div>
-
-            <div class="faq-item">
-                <h4><i class="fas fa-file-invoice-dollar"></i> How do I generate a bill?</h4>
-                <p>After an appointment is completed, go to the Billing section, find the appointment, and click "Generate Bill". The system will calculate the total based on treatment and consultation fees.</p>
-            </div>
-
-            <div class="faq-item">
-                <h4><i class="fas fa-users"></i> How do I manage staff members?</h4>
-                <p>Only administrators can manage staff. Go to the Staff page to add, edit, or deactivate staff members.</p>
-            </div>
-
-            <div class="faq-item">
-                <h4><i class="fas fa-chart-bar"></i> How do I view reports?</h4>
-                <p>Navigate to the Reports page to view daily, weekly, and monthly reports on patients, appointments, and revenue.</p>
-            </div>
-        </div>
-
-        <!-- Contact -->
-        <div class="help-section">
-            <h2><i class="fas fa-headset"></i> Need More Help?</h2>
-            <div class="help-grid">
-                <div class="help-card">
-                    <i class="fas fa-envelope"></i>
-                    <h3>Email Support</h3>
-                    <p>support@dentalclinic.com</p>
-                    <p style="margin-top: 5px;">Response within 24 hours</p>
-                </div>
-                <div class="help-card">
-                    <i class="fas fa-phone"></i>
-                    <h3>Phone Support</h3>
-                    <p>+94 77 123 4567</p>
-                    <p style="margin-top: 5px;">Mon-Fri, 9am-5pm</p>
-                </div>
-                <div class="help-card">
-                    <i class="fas fa-book"></i>
-                    <h3>User Manual</h3>
-                    <p>Download the complete user manual for detailed instructions.</p>
-                    <button class="btn btn-primary" style="margin-top: 10px;" onclick="showToast('Manual download coming soon!', 'info')">
-                        <i class="fas fa-download"></i> Download Manual
-                    </button>
+            <!-- Contact -->
+            <div class="help-section">
+                <h2><i class="fas fa-headset"></i> Need More Help?</h2>
+                <div class="help-grid">
+                    <div class="help-card">
+                        <i class="fas fa-envelope"></i>
+                        <h3>Email Support</h3>
+                        <p>support@dentalclinic.com</p>
+                        <p style="margin-top: 5px;">Response within 24 hours</p>
+                    </div>
+                    <div class="help-card">
+                        <i class="fas fa-phone"></i>
+                        <h3>Phone Support</h3>
+                        <p>+94 77 123 4567</p>
+                        <p style="margin-top: 5px;">Mon-Fri, 9am-5pm</p>
+                    </div>
+                    <div class="help-card">
+                        <i class="fas fa-book"></i>
+                        <h3>User Manual</h3>
+                        <p>Download the complete user manual for detailed instructions.</p>
+                        <button class="btn btn-primary" style="margin-top: 10px;" onclick="showToast('Manual download coming soon!', 'info')">
+                            <i class="fas fa-download"></i> Download Manual
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</main>
 
 <script>
     const CONTEXT_PATH = '/dental_clinic_webapp_war_exploded';
 
-    function showToast(message, type = 'info') {
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.style.cssText = `
-            position: fixed; bottom: 30px; right: 30px;
-            background: white; padding: 15px 25px;
-            border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            display: flex; align-items: center; gap: 12px;
-            z-index: 9999; animation: slideIn 0.3s ease;
-            border-left: 4px solid ${type === 'success' ? '#48bb78' : '#4299e1'};
-            max-width: 400px;
-        `;
+    // ===== LOAD USER INFO =====
+    async function loadUserInfo() {
+        try {
+            const response = await fetch(CONTEXT_PATH + '/api/session');
+            const data = await response.json();
+            if (data.authenticated) {
+                document.getElementById('userName').textContent = data.fullName || data.username;
+                document.getElementById('userRole').innerHTML = `<i class="fas fa-user-tag"></i> ${data.role || 'Staff'}`;
+                const initials = data.fullName ? data.fullName.split(' ').map(n => n[0]).join('') : 'U';
+                document.getElementById('userAvatar').textContent = initials.toUpperCase().substring(0, 2);
+            }
+        } catch (error) {
+            console.error('Error loading user info:', error);
+        }
+    }
 
-        const icons = {
+    // ===== LOAD APPOINTMENT COUNT =====
+    async function loadAppointmentCount() {
+        try {
+            const response = await fetch(CONTEXT_PATH + '/api/appointments?action=today');
+            const data = await response.json();
+            const badge = document.getElementById('appointmentBadge');
+            if (data && data.count !== undefined) {
+                badge.textContent = data.count;
+                badge.style.display = data.count > 0 ? 'inline' : 'none';
+            }
+        } catch (error) {
+            console.error('Error loading appointment count:', error);
+        }
+    }
+
+    // ===== UPDATE CURRENT TIME =====
+    function updateTime() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second: '2-digit'});
+        const dateString = now.toLocaleDateString('en-US', {
+            weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
+        });
+        document.getElementById('currentTimeDisplay').innerHTML =
+            `<i class="far fa-clock"></i> ${dateString} • ${timeString}`;
+    }
+
+    // ===== TOAST =====
+    function showToast(message, type) {
+        if (type === undefined) type = 'info';
+        var toast = document.createElement('div');
+        toast.className = 'toast ' + type;
+
+        var icons = {
             success: 'fa-check-circle',
             error: 'fa-exclamation-circle',
             warning: 'fa-exclamation-triangle',
             info: 'fa-info-circle'
         };
 
+        var colors = {
+            success: '#48bb78',
+            error: '#f56565',
+            warning: '#ecc94b',
+            info: '#4299e1'
+        };
+
         toast.innerHTML = `
-            <i class="fas ${icons[type]}" style="font-size: 20px; color: ${type === 'success' ? '#48bb78' : '#4299e1'};"></i>
-            <span style="flex: 1;">${message}</span>
-            <button onclick="this.parentElement.remove()" style="background: none; border: none; color: #7f8c8d; cursor: pointer;">
+            <i class="fas ${icons[type]}" style="font-size: 20px; color: ${colors[type]};"></i>
+            <span style="flex: 1; color: var(--dark);">${message}</span>
+            <button onclick="this.parentElement.remove()" style="background: none; border: none; color: var(--gray); cursor: pointer; font-size: 16px;">
                 <i class="fas fa-times"></i>
             </button>
         `;
 
         document.body.appendChild(toast);
-        setTimeout(() => {
+
+        setTimeout(function() {
             if (toast.parentElement) {
                 toast.style.animation = 'fadeOut 0.3s ease';
-                setTimeout(() => toast.remove(), 300);
+                setTimeout(function() {
+                    if (toast.parentElement) toast.remove();
+                }, 300);
             }
         }, 4000);
     }
+
+    // ===== MOBILE MENU TOGGLE =====
+    document.getElementById('menuToggle').addEventListener('click', function() {
+        document.getElementById('sidebar').classList.toggle('active');
+    });
+
+    // Close sidebar on outside click (mobile)
+    document.addEventListener('click', function(e) {
+        const sidebar = document.getElementById('sidebar');
+        const toggle = document.getElementById('menuToggle');
+        if (window.innerWidth <= 1024) {
+            if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        }
+    });
+
+    // ===== INIT =====
+    document.addEventListener('DOMContentLoaded', function() {
+        loadUserInfo();
+        loadAppointmentCount();
+        updateTime();
+        setInterval(updateTime, 60000);
+        setInterval(loadAppointmentCount, 60000);
+    });
 </script>
 <script src="js/protection.js"></script>
 </body>
