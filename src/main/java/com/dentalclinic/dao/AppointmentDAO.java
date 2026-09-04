@@ -138,7 +138,41 @@ public class AppointmentDAO {
         return appointments;
     }
 
+    public List<Appointment> getAppointmentsByDentistAndDate(int dentistId, LocalDate date) {
+        List<Appointment> appointments = new ArrayList<>();
+        String sql = "SELECT a.*, p.first_name as p_first, p.last_name as p_last, " +
+                "d.first_name as d_first, d.last_name as d_last, " +
+                "t.treatment_name " +
+                "FROM appointments a " +
+                "LEFT JOIN patients p ON a.patient_id = p.patient_id " +
+                "LEFT JOIN dentists d ON a.dentist_id = d.dentist_id " +
+                "LEFT JOIN treatments t ON a.treatment_id = t.treatment_id " +
+                "WHERE a.dentist_id = ? AND a.appointment_date = ? " +
+                "AND a.status != 'CANCELLED' " +
+                "ORDER BY a.appointment_time";
+
+        try (Connection conn = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, dentistId);
+            stmt.setDate(2, Date.valueOf(date));
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                appointments.add(extractAppointmentFromResultSet(rs));
+            }
+            System.out.println("Found " + appointments.size() + " appointments for dentist " + dentistId + " on " + date);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return appointments;
+    }
+
     public boolean addAppointment(Appointment appointment) {
+        // Generate a unique appointment number with retry logic
+        String appointmentNumber = generateUniqueAppointmentNumber();
+        appointment.setAppointmentNumber(appointmentNumber);
+
         String sql = "INSERT INTO appointments (appointment_number, patient_id, dentist_id, treatment_id, " +
                 "appointment_date, appointment_time, duration_minutes, status, notes, created_by) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -175,7 +209,6 @@ public class AppointmentDAO {
         return false;
     }
 
-    // FIXED: This method now updates ALL fields
     public boolean updateAppointment(Appointment appointment) {
         String sql = "UPDATE appointments SET patient_id = ?, dentist_id = ?, treatment_id = ?, " +
                 "appointment_date = ?, appointment_time = ?, duration_minutes = ?, " +
@@ -222,23 +255,44 @@ public class AppointmentDAO {
         return false;
     }
 
-    public String generateAppointmentNumber() {
+    public String generateUniqueAppointmentNumber() {
         String date = LocalDate.now().toString().replace("-", "");
-        int count = 0;
-        String countSql = "SELECT COUNT(*) as count FROM appointments WHERE DATE(created_at) = CURDATE()";
+        int maxAttempts = 100;
+        int attempt = 0;
 
+        while (attempt < maxAttempts) {
+            attempt++;
+            // Get the count of appointments for today
+            int count = getTodayAppointmentCount();
+            String appointmentNumber = String.format("APP-%s-%03d", date, count + attempt);
+
+            // Check if this number already exists
+            if (!appointmentNumberExists(appointmentNumber)) {
+                System.out.println("Generated unique appointment number: " + appointmentNumber);
+                return appointmentNumber;
+            }
+        }
+
+        // Fallback: use timestamp
+        String timestamp = String.valueOf(System.currentTimeMillis()).substring(8);
+        String appointmentNumber = String.format("APP-%s-%s", date, timestamp);
+        System.out.println("Generated fallback appointment number: " + appointmentNumber);
+        return appointmentNumber;
+    }
+
+    private boolean appointmentNumberExists(String appointmentNumber) {
+        String sql = "SELECT COUNT(*) FROM appointments WHERE appointment_number = ?";
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(countSql)) {
-
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, appointmentNumber);
+            ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                count = rs.getInt("count") + 1;
+                return rs.getInt(1) > 0;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        return String.format("APP-%s-%03d", date, count);
+        return false;
     }
 
     public int getTodayAppointmentCount() {

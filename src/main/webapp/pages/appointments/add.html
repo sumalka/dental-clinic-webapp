@@ -198,6 +198,11 @@
             background: rgba(245, 101, 101, 0.05);
         }
 
+        .form-control:disabled {
+            background: #f0f0f0;
+            cursor: not-allowed;
+        }
+
         select.form-control {
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237f8c8d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
@@ -245,13 +250,39 @@
             z-index: 9999;
             animation: slideIn 0.3s ease;
             border-left: 4px solid var(--success);
-            max-width: 400px;
+            max-width: 450px;
         }
 
         .toast.error { border-left-color: var(--danger); }
         .toast.success { border-left-color: var(--success); }
         .toast.warning { border-left-color: var(--warning); }
         .toast.info { border-left-color: var(--secondary); }
+
+        .toast .toast-message {
+            flex: 1;
+            color: var(--dark);
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .toast .toast-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0 4px;
+            transition: color 0.2s;
+        }
+
+        .toast-close:hover {
+            color: var(--dark);
+        }
 
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
@@ -291,6 +322,13 @@
             .form-actions .btn {
                 width: 100%;
                 justify-content: center;
+            }
+
+            .toast {
+                bottom: 15px;
+                right: 15px;
+                left: 15px;
+                max-width: none;
             }
         }
     </style>
@@ -355,7 +393,7 @@
                     <div class="form-group">
                         <label>Appointment Date <span class="required">*</span></label>
                         <input type="date" id="appointmentDate" class="form-control" required>
-                        <div class="error-text" id="dateError">Please select a date</div>
+                        <div class="error-text" id="dateError">Please select a valid date</div>
                     </div>
                     <div class="form-group">
                         <label>Appointment Time <span class="required">*</span></label>
@@ -408,7 +446,10 @@
 <script>
     var CONTEXT_PATH = '/dental_clinic_webapp_war_exploded';
 
+    // Set min date to today
     document.addEventListener('DOMContentLoaded', function() {
+        var today = new Date().toISOString().split('T')[0];
+        document.getElementById('appointmentDate').setAttribute('min', today);
         loadPatients();
         loadDentists();
         loadTreatments();
@@ -444,12 +485,13 @@
             })
             .catch(function(error) {
                 console.error('Error loading patients:', error);
-                showToast('Failed to load patients: ' + error.message, 'error');
+                showToast('Failed to load patients. Please refresh the page.', 'error');
             });
     }
 
     function loadDentists() {
-        fetch(CONTEXT_PATH + '/api/dentists?action=list&t=' + Date.now())
+        // Add source=appointment parameter to only get active dentists
+        fetch(CONTEXT_PATH + '/api/dentists?action=list&source=appointment&t=' + Date.now())
             .then(function(response) {
                 if (!response.ok) {
                     throw new Error('Failed to load dentists');
@@ -460,17 +502,26 @@
                 var select = document.getElementById('dentistId');
                 select.innerHTML = '<option value="">Select Dentist</option>';
                 if (Array.isArray(data)) {
-                    data.forEach(function(dentist) {
+                    if (data.length === 0) {
                         var option = document.createElement('option');
-                        option.value = dentist.dentistId;
-                        option.textContent = 'Dr. ' + dentist.firstName + ' ' + dentist.lastName + ' - ' + dentist.specialization;
+                        option.value = '';
+                        option.textContent = 'No active dentists available';
+                        option.disabled = true;
                         select.appendChild(option);
-                    });
+                    } else {
+                        data.forEach(function(dentist) {
+                            var option = document.createElement('option');
+                            option.value = dentist.dentistId;
+                            option.textContent = 'Dr. ' + dentist.firstName + ' ' + dentist.lastName + ' - ' + dentist.specialization;
+                            select.appendChild(option);
+                        });
+                    }
                 }
+                console.log('Loaded ' + data.length + ' active dentists');
             })
             .catch(function(error) {
                 console.error('Error loading dentists:', error);
-                showToast('Failed to load dentists: ' + error.message, 'error');
+                showToast('Failed to load dentists. Please refresh the page.', 'error');
             });
     }
 
@@ -496,7 +547,7 @@
             })
             .catch(function(error) {
                 console.error('Error loading treatments:', error);
-                showToast('Failed to load treatments: ' + error.message, 'error');
+                showToast('Failed to load treatments. Please refresh the page.', 'error');
             });
     }
 
@@ -549,14 +600,14 @@
                         window.location.href = CONTEXT_PATH + '/pages/appointments/list.html';
                     }, 1500);
                 } else {
-                    showToast('Error: ' + data.message, 'error');
+                    showToast(data.message, 'error');
                     submitBtn.innerHTML = originalText;
                     submitBtn.disabled = false;
                 }
             })
             .catch(function(error) {
                 console.error('Error:', error);
-                showToast('Network error: ' + error.message, 'error');
+                showToast('Network error. Please check your connection and try again.', 'error');
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
             });
@@ -596,13 +647,23 @@
         var date = document.getElementById('appointmentDate').value;
         if (!date) {
             document.getElementById('appointmentDate').classList.add('error');
+            document.getElementById('dateError').textContent = 'Please select a date';
             document.getElementById('dateError').classList.add('show');
             isValid = false;
+        } else {
+            var today = new Date().toISOString().split('T')[0];
+            if (date < today) {
+                document.getElementById('appointmentDate').classList.add('error');
+                document.getElementById('dateError').textContent = 'Cannot book appointment in the past. Please select a future date.';
+                document.getElementById('dateError').classList.add('show');
+                isValid = false;
+            }
         }
 
         var time = document.getElementById('appointmentTime').value;
         if (!time) {
             document.getElementById('appointmentTime').classList.add('error');
+            document.getElementById('timeError').textContent = 'Please select a time';
             document.getElementById('timeError').classList.add('show');
             isValid = false;
         }
@@ -619,7 +680,7 @@
             el.classList.remove('show');
         });
         setDefaultDate();
-        showToast('Form reset successfully', 'info');
+        showToast('Form has been reset', 'info');
     }
 
     function showToast(message, type) {
@@ -642,9 +703,10 @@
             info: '#4299e1'
         };
 
-        toast.innerHTML = '<i class="fas ' + icons[type] + '" style="font-size: 20px; color: ' + colors[type] + ';"></i>' +
-            '<span style="flex: 1; color: var(--dark);">' + message + '</span>' +
-            '<button onclick="this.parentElement.remove()" style="background: none; border: none; color: var(--gray); cursor: pointer;">' +
+        toast.innerHTML =
+            '<i class="fas ' + icons[type] + ' toast-icon" style="color: ' + colors[type] + ';"></i>' +
+            '<span class="toast-message">' + message + '</span>' +
+            '<button class="toast-close" onclick="this.parentElement.remove()">' +
             '<i class="fas fa-times"></i></button>';
 
         container.appendChild(toast);

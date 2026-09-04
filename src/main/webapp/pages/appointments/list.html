@@ -113,7 +113,6 @@
         .btn-secondary:hover {
             background: rgba(255, 255, 255, 0.2);
             transform: translateY(-2px);
-            border-color: rgba(255, 255, 255, 0.3);
         }
 
         .btn-success {
@@ -128,21 +127,15 @@
             box-shadow: 0 6px 12px rgba(72, 187, 120, 0.4);
         }
 
-        .btn-danger {
-            background: linear-gradient(135deg, var(--danger), #c53030);
-            color: white;
-            box-shadow: 0 4px 8px rgba(245, 101, 101, 0.3);
+        .btn-outline-secondary {
+            background: var(--light);
+            color: var(--dark);
+            border: 1px solid var(--border);
         }
 
-        .btn-danger:hover {
-            background: linear-gradient(135deg, #c53030, var(--danger));
+        .btn-outline-secondary:hover {
+            background: var(--border);
             transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(245, 101, 101, 0.4);
-        }
-
-        .btn-warning {
-            background: linear-gradient(135deg, var(--warning), #d69e2e);
-            color: white;
         }
 
         .section-header {
@@ -370,30 +363,121 @@
             margin-bottom: 15px;
         }
 
+        /* ===== BEAUTIFUL EMPTY STATE ===== */
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
-            color: var(--gray);
+            padding: 80px 40px 60px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 16px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
         }
 
-        .empty-state i {
-            font-size: 64px;
-            margin-bottom: 20px;
-            opacity: 0.5;
+        .empty-state::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 70% 30%, rgba(60, 166, 166, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .empty-state .empty-icon-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+
+        .empty-state .empty-icon-wrapper .empty-icon-bg {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, rgba(60, 166, 166, 0.1), rgba(60, 166, 166, 0.05));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .empty-state .empty-icon-wrapper i {
+            font-size: 56px;
             color: var(--primary);
+            opacity: 0.8;
+        }
+
+        .empty-state .empty-icon-wrapper .empty-icon-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--primary);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(60, 166, 166, 0.3);
         }
 
         .empty-state h3 {
+            font-size: 28px;
+            font-weight: 700;
             color: var(--dark);
-            margin-bottom: 10px;
-            font-size: 20px;
+            margin-bottom: 12px;
+            position: relative;
         }
 
         .empty-state p {
-            margin-bottom: 20px;
-            font-size: 14px;
+            font-size: 16px;
+            color: var(--gray);
+            margin-bottom: 8px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+            position: relative;
         }
 
+        .empty-state .empty-subtitle {
+            font-size: 14px;
+            color: #a0aec0;
+            margin-bottom: 30px;
+        }
+
+        .empty-state .empty-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: relative;
+        }
+
+        .empty-state .empty-actions .btn {
+            padding: 14px 32px;
+            font-size: 15px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .empty-state .empty-icon-wrapper {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* ===== TOAST ===== */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -416,6 +500,32 @@
         .toast.warning { border-left-color: var(--warning); }
         .toast.info { border-left-color: var(--secondary); }
 
+        .toast .toast-message {
+            flex: 1;
+            color: var(--dark);
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .toast .toast-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0 4px;
+            transition: color 0.2s;
+        }
+
+        .toast-close:hover {
+            color: var(--dark);
+        }
+
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
@@ -426,6 +536,7 @@
             to { transform: translateX(100%); opacity: 0; }
         }
 
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
@@ -455,6 +566,46 @@
                 flex: 1;
                 min-width: 80px;
                 text-align: center;
+            }
+
+            .empty-state {
+                padding: 40px 20px;
+            }
+
+            .empty-state h3 {
+                font-size: 22px;
+            }
+
+            .empty-state .empty-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .empty-state .empty-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .empty-state .empty-icon-wrapper .empty-icon-bg {
+                width: 80px;
+                height: 80px;
+            }
+
+            .empty-state .empty-icon-wrapper i {
+                font-size: 36px;
+            }
+
+            .empty-state .empty-icon-wrapper .empty-icon-badge {
+                width: 28px;
+                height: 28px;
+                font-size: 12px;
+            }
+
+            .toast {
+                bottom: 15px;
+                right: 15px;
+                left: 15px;
+                max-width: none;
             }
         }
     </style>
@@ -529,13 +680,27 @@
             </tbody>
         </table>
 
+        <!-- Beautiful Empty State -->
         <div class="empty-state" id="emptyState" style="display: none;">
-            <i class="fas fa-calendar-times"></i>
+            <div class="empty-icon-wrapper">
+                <div class="empty-icon-bg">
+                    <i class="fas fa-calendar-plus"></i>
+                </div>
+                <div class="empty-icon-badge">
+                    <i class="fas fa-plus"></i>
+                </div>
+            </div>
             <h3>No Appointments Found</h3>
-            <p>Schedule your first appointment today.</p>
-            <button class="btn btn-primary" onclick="window.location.href='/dental_clinic_webapp_war_exploded/pages/appointments/add.html'">
-                <i class="fas fa-plus"></i> Add Appointment
-            </button>
+            <p>It looks like you haven't scheduled any appointments yet.</p>
+            <p class="empty-subtitle">Start by creating your first appointment today!</p>
+            <div class="empty-actions">
+                <button class="btn btn-primary" onclick="window.location.href='/dental_clinic_webapp_war_exploded/pages/appointments/add.html'">
+                    <i class="fas fa-plus"></i> Schedule First Appointment
+                </button>
+                <button class="btn btn-outline-secondary" onclick="window.location.href='/dental_clinic_webapp_war_exploded/dashboard'">
+                    <i class="fas fa-home"></i> Go to Dashboard
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -721,11 +886,11 @@
                     showToast('Appointment confirmed!', 'success');
                     loadAppointments();
                 } else {
-                    showToast('Error: ' + data.message, 'error');
+                    showToast(data.message, 'error');
                 }
             })
             .catch(function(error) {
-                showToast('Error: ' + error.message, 'error');
+                showToast('Network error: ' + error.message, 'error');
             });
     }
 
@@ -736,7 +901,6 @@
 
         showToast('Processing completion and generating bill...', 'info');
 
-        // First update appointment status to COMPLETED
         fetch(CONTEXT_PATH + '/api/appointments', {
             method: 'POST',
             headers: {
@@ -755,7 +919,6 @@
                 if (data.success) {
                     showToast('Appointment completed! Generating bill...', 'success');
 
-                    // Now generate the bill
                     return fetch(CONTEXT_PATH + '/api/billing', {
                         method: 'POST',
                         headers: {
@@ -813,11 +976,11 @@
                     showToast('Appointment cancelled.', 'warning');
                     loadAppointments();
                 } else {
-                    showToast('Error: ' + data.message, 'error');
+                    showToast(data.message, 'error');
                 }
             })
             .catch(function(error) {
-                showToast('Error: ' + error.message, 'error');
+                showToast('Network error: ' + error.message, 'error');
             });
     }
 
@@ -834,9 +997,17 @@
             info: 'fa-info-circle'
         };
 
-        toast.innerHTML = '<i class="fas ' + icons[type] + '" style="font-size: 20px;"></i>' +
-            '<span style="flex: 1;">' + message + '</span>' +
-            '<button onclick="this.parentElement.remove()" style="background: none; border: none; color: var(--gray); cursor: pointer;">' +
+        var colors = {
+            success: '#48bb78',
+            error: '#f56565',
+            warning: '#ecc94b',
+            info: '#4299e1'
+        };
+
+        toast.innerHTML =
+            '<i class="fas ' + icons[type] + ' toast-icon" style="color: ' + colors[type] + ';"></i>' +
+            '<span class="toast-message">' + message + '</span>' +
+            '<button class="toast-close" onclick="this.parentElement.remove()">' +
             '<i class="fas fa-times"></i></button>';
 
         container.appendChild(toast);

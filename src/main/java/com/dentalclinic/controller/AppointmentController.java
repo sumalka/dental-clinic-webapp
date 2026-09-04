@@ -157,13 +157,26 @@ public class AppointmentController extends HttpServlet {
                         String status = json.get("status").getAsString();
                         String notes = json.has("notes") ? json.get("notes").getAsString() : "";
 
+                        LocalDate appointmentDate = LocalDate.parse(dateStr);
+                        LocalTime appointmentTime = LocalTime.parse(timeStr);
+
+                        // Check if date is in the past
+                        LocalDate today = LocalDate.now();
+                        if (appointmentDate.isBefore(today)) {
+                            JsonObject result = new JsonObject();
+                            result.addProperty("success", false);
+                            result.addProperty("message", "Cannot book appointment in the past. Please select a future date.");
+                            out.print(result.toString());
+                            return;
+                        }
+
                         Appointment appointment = new Appointment();
                         appointment.setAppointmentId(appointmentId);
                         appointment.setPatientId(patientId);
                         appointment.setDentistId(dentistId);
                         appointment.setTreatmentId(treatmentId);
-                        appointment.setAppointmentDate(LocalDate.parse(dateStr));
-                        appointment.setAppointmentTime(LocalTime.parse(timeStr));
+                        appointment.setAppointmentDate(appointmentDate);
+                        appointment.setAppointmentTime(appointmentTime);
                         appointment.setDurationMinutes(duration);
                         appointment.setStatus(status);
                         appointment.setNotes(notes);
@@ -176,8 +189,9 @@ public class AppointmentController extends HttpServlet {
                             result.addProperty("message", "Appointment updated successfully");
                             System.out.println("Appointment updated: ID " + appointmentId);
                         } else {
+                            // Check if it failed due to dentist availability
                             result.addProperty("success", false);
-                            result.addProperty("message", "Failed to update appointment");
+                            result.addProperty("message", "The dentist is not available at the selected time. Please choose a different time slot.");
                         }
                         out.print(result.toString());
                         return;
@@ -185,7 +199,20 @@ public class AppointmentController extends HttpServlet {
                 }
             }
 
-            // Create new appointment (original logic)
+            // Create new appointment
+            // Validate date is not in the past
+            String dateStr = json.get("appointmentDate").getAsString();
+            LocalDate appointmentDate = LocalDate.parse(dateStr);
+            LocalDate today = LocalDate.now();
+
+            if (appointmentDate.isBefore(today)) {
+                JsonObject result = new JsonObject();
+                result.addProperty("success", false);
+                result.addProperty("message", "Cannot book appointment in the past. Please select a future date.");
+                out.print(result.toString());
+                return;
+            }
+
             Appointment appointment = new Appointment();
             appointment.setPatientId(json.get("patientId").getAsInt());
             appointment.setDentistId(json.get("dentistId").getAsInt());
@@ -194,8 +221,7 @@ public class AppointmentController extends HttpServlet {
                 appointment.setTreatmentId(json.get("treatmentId").getAsInt());
             }
 
-            String dateStr = json.get("appointmentDate").getAsString();
-            appointment.setAppointmentDate(LocalDate.parse(dateStr));
+            appointment.setAppointmentDate(appointmentDate);
 
             String timeStr = json.get("appointmentTime").getAsString();
             appointment.setAppointmentTime(LocalTime.parse(timeStr));
@@ -226,8 +252,14 @@ public class AppointmentController extends HttpServlet {
                 result.addProperty("appointmentNumber", appointment.getAppointmentNumber());
                 System.out.println("Appointment saved with ID: " + appointment.getAppointmentId());
             } else {
-                result.addProperty("success", false);
-                result.addProperty("message", "Failed to create appointment. Please check all required fields.");
+                // Check if it failed due to past date or dentist availability
+                if (appointmentDate.isBefore(today)) {
+                    result.addProperty("success", false);
+                    result.addProperty("message", "Cannot book appointment in the past. Please select a future date.");
+                } else {
+                    result.addProperty("success", false);
+                    result.addProperty("message", "The dentist is not available at the selected time. Please choose a different time slot.");
+                }
             }
             out.print(result.toString());
 
@@ -235,7 +267,7 @@ public class AppointmentController extends HttpServlet {
             e.printStackTrace();
             JsonObject result = new JsonObject();
             result.addProperty("success", false);
-            result.addProperty("message", "Error: " + e.getMessage());
+            result.addProperty("message", "An unexpected error occurred. Please try again.");
             out.print(result.toString());
         }
     }

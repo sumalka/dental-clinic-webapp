@@ -15,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DentistController extends HttpServlet {
     private final Gson gson = new GsonBuilder().create();
@@ -32,13 +33,24 @@ public class DentistController extends HttpServlet {
 
         PrintWriter out = response.getWriter();
         String action = request.getParameter("action");
+        String source = request.getParameter("source");
 
         try {
             if (action == null || action.equals("list")) {
                 List<Dentist> dentists = dentistService.getAllDentists();
+
+                // If source is 'appointment', only return active dentists
+                if ("appointment".equals(source)) {
+                    dentists = dentists.stream()
+                            .filter(d -> d.isActive())
+                            .collect(Collectors.toList());
+                    System.out.println("Sending " + dentists.size() + " ACTIVE dentists for appointment dropdown");
+                } else {
+                    System.out.println("Sending " + dentists.size() + " dentists with status: " +
+                            dentists.stream().map(d -> d.getDentistId() + ":" + d.isActive()).toList());
+                }
+
                 String json = gson.toJson(dentists);
-                System.out.println("Sending " + dentists.size() + " dentists with status: " +
-                        dentists.stream().map(d -> d.getDentistId() + ":" + d.isActive()).toList());
                 out.print(json);
                 System.out.println("Listed " + dentists.size() + " dentists");
             } else if (action.equals("getById")) {
