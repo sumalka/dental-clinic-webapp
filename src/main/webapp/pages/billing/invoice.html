@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Billing & Payments - Dental Clinic</title>
+    <title>Billing & Payments - Sunrise Dental Clinic</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -1036,7 +1036,7 @@
             <div class="invoice-view">
                 <div class="invoice-header">
                     <div>
-                        <div class="clinic-name"><i class="fas fa-tooth"></i> Dental Clinic</div>
+                        <div class="clinic-name"><i class="fas fa-tooth"></i> Sunrise Dental Clinic</div>
                         <div class="invoice-number">Invoice # <strong>${bill.invoiceNumber || 'N/A'}</strong></div>
                     </div>
                     <div>
@@ -1119,7 +1119,7 @@
                 </div>
 
                 <div class="footer">
-                    <div class="clinic-name-footer">🦷 Dental Clinic</div>
+                    <div class="clinic-name-footer">🦷 Sunrise Dental Clinic</div>
                     <div>Thank you for choosing our services</div>
                     <div style="margin-top: 5px; font-size: 12px;">Invoice generated on ${formattedDate}</div>
                 </div>
@@ -1163,7 +1163,7 @@
         }
     });
 
-    // ===== PRINT INDIVIDUAL INVOICE =====
+    // ===== PRINT INDIVIDUAL INVOICE (FIXED VERSION) =====
     function printInvoice(billId) {
         var bill = allBills.find(function(b) { return b.billId === billId; });
         if (!bill) {
@@ -1171,6 +1171,7 @@
             return;
         }
 
+        // Open print window
         var printWindow = window.open('', '_blank', 'width=800,height=600');
         if (!printWindow) {
             showToast('Please allow popups for printing', 'warning');
@@ -1190,11 +1191,14 @@
         var statusLabel = bill.paymentStatus === 'PAID' ? 'Paid' : 'Pending';
         var statusColor = bill.paymentStatus === 'PAID' ? '#48bb78' : '#ecc94b';
 
-        printWindow.document.write(`
+        // Write content to the new window
+        var doc = printWindow.document;
+        doc.write(`
             <!DOCTYPE html>
             <html>
             <head>
                 <title>Invoice ${bill.invoiceNumber}</title>
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
                 <style>
                     body {
                         font-family: 'Segoe UI', Arial, sans-serif;
@@ -1330,7 +1334,7 @@
                 <div class="invoice-container">
                     <div class="invoice-header">
                         <div>
-                            <h1><i class="fas fa-tooth"></i> Dental Clinic</h1>
+                            <h1><i class="fas fa-tooth"></i> Sunrise Dental Clinic</h1>
                             <div class="invoice-number">Invoice # <strong>${bill.invoiceNumber}</strong></div>
                         </div>
                         <div>
@@ -1409,24 +1413,34 @@
                     </div>
 
                     <div class="footer">
-                        <div class="clinic-name">🦷 Dental Clinic</div>
+                        <div class="clinic-name">Sunrise Dental Clinic</div>
                         <div>Thank you for choosing our services</div>
                         <div style="margin-top: 5px; font-size: 12px;">Invoice generated on ${formattedDate}</div>
                     </div>
                 </div>
                 <script>
+                    // Auto-print when window loads
                     window.onload = function() {
-                        window.print();
+                        // Small delay to ensure rendering is complete
                         setTimeout(function() {
-                            window.close();
-                        }, 1000);
+                            window.print();
+                        }, 500);
+                    };
+
+                    // Close window after printing (optional - user can also close manually)
+                    window.onafterprint = function() {
+                        // Uncomment the line below if you want auto-close after print
+                        // window.close();
                     };
                 <\/script>
             </body>
             </html>
         `);
 
-        printWindow.document.close();
+        doc.close();
+
+        // Focus the new window
+        printWindow.focus();
     }
 
     // ===== PROCESS PAYMENT =====
