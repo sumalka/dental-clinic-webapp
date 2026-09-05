@@ -24,13 +24,11 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>HomeController</servlet-name>
-        <!-- Page navigation paths -->
         <url-pattern>/login</url-pattern>
         <url-pattern>/logout</url-pattern>
         <url-pattern>/dashboard</url-pattern>
         <url-pattern>/home</url-pattern>
         <url-pattern>/</url-pattern>
-        <!-- 🔥 ADDED: Module page paths -->
         <url-pattern>/patients</url-pattern>
         <url-pattern>/appointments</url-pattern>
         <url-pattern>/dentists</url-pattern>
@@ -49,6 +47,7 @@
     <servlet-mapping>
         <servlet-name>AuthController</servlet-name>
         <url-pattern>/api/auth</url-pattern>
+        <url-pattern>/api/auth/*</url-pattern>
     </servlet-mapping>
 
     <servlet>

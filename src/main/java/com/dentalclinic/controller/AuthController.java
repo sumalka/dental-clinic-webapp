@@ -4,6 +4,7 @@ import com.dentalclinic.model.Staff;
 import com.dentalclinic.model.User;
 import com.dentalclinic.service.AuthService;
 import com.dentalclinic.service.StaffService;
+import com.dentalclinic.utils.EmailUtil;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import jakarta.servlet.ServletException;
@@ -15,6 +16,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 public class AuthController extends HttpServlet {
     private final AuthService authService = new AuthService();
@@ -78,7 +80,7 @@ public class AuthController extends HttpServlet {
             }
 
             String requestBody = sb.toString();
-            System.out.println("🔐 Login request received: " + requestBody);
+            System.out.println("Auth request received: " + requestBody);
 
             if (requestBody == null || requestBody.trim().isEmpty()) {
                 json.addProperty("success", false);
@@ -89,6 +91,74 @@ public class AuthController extends HttpServlet {
 
             JsonObject requestJson = JsonParser.parseString(requestBody).getAsJsonObject();
 
+            // ===== CHECK FOR GOOGLE RECOVERY =====
+            if (requestJson.has("credential")) {
+                String credential = requestJson.get("credential").getAsString();
+                System.out.println("Google recovery attempt received");
+
+                String staffEmail = extractEmailFromToken(credential);
+                System.out.println("Extracted email from token: '" + staffEmail + "'");
+
+                if (staffEmail == null || staffEmail.isEmpty()) {
+                    JsonObject result = new JsonObject();
+                    result.addProperty("success", false);
+                    result.addProperty("isStaff", false);
+                    result.addProperty("message", "Unable to extract email from Google account");
+                    out.print(result.toString());
+                    return;
+                }
+
+                Staff staff = findStaffByEmail(staffEmail);
+                System.out.println("Staff found: " + (staff != null ? staff.getUsername() : "null"));
+
+                if (staff == null) {
+                    JsonObject result = new JsonObject();
+                    result.addProperty("success", false);
+                    result.addProperty("isStaff", false);
+                    result.addProperty("message", "No staff account found with email: " + staffEmail);
+                    out.print(result.toString());
+                    return;
+                }
+
+                // Generate temporary password (alphanumeric only to avoid encoding issues)
+                String tempPassword = generateTemporaryPassword();
+                System.out.println("Generated temporary password for: " + staff.getUsername());
+
+                boolean passwordUpdated = updateStaffPassword(staff.getStaffId(), tempPassword);
+                System.out.println("Password updated in database: " + passwordUpdated);
+
+                if (!passwordUpdated) {
+                    JsonObject result = new JsonObject();
+                    result.addProperty("success", false);
+                    result.addProperty("isStaff", false);
+                    result.addProperty("message", "Failed to update password. Please try again.");
+                    out.print(result.toString());
+                    return;
+                }
+
+                boolean emailSent = EmailUtil.sendPasswordRecoveryEmail(
+                        staffEmail,
+                        staff.getUsername(),
+                        tempPassword
+                );
+
+                JsonObject result = new JsonObject();
+                if (emailSent) {
+                    result.addProperty("success", true);
+                    result.addProperty("isStaff", true);
+                    result.addProperty("message", "Recovery email sent successfully to " + staffEmail);
+                    System.out.println("Recovery email sent to: " + staffEmail);
+                } else {
+                    result.addProperty("success", false);
+                    result.addProperty("isStaff", false);
+                    result.addProperty("message", "Failed to send recovery email. Please try again.");
+                    System.out.println("Failed to send recovery email to: " + staffEmail);
+                }
+                out.print(result.toString());
+                return;
+            }
+
+            // ===== REGULAR LOGIN =====
             if (!requestJson.has("username") || !requestJson.has("password")) {
                 json.addProperty("success", false);
                 json.addProperty("message", "Username and password required");
@@ -99,9 +169,8 @@ public class AuthController extends HttpServlet {
             String username = requestJson.get("username").getAsString();
             String password = requestJson.get("password").getAsString();
 
-            System.out.println("🔐 Login attempt: " + username);
+            System.out.println("Login attempt: " + username);
 
-            // First try to authenticate as regular user
             User user = authService.authenticate(username, password);
 
             if (user != null) {
@@ -113,8 +182,8 @@ public class AuthController extends HttpServlet {
                 session.setAttribute("authType", "user");
                 session.setAttribute("username", user.getUsername());
 
-                System.out.println("✅ User login successful: " + username);
-                System.out.println("✅ Session role set to: " + user.getRole());
+                System.out.println("User login successful: " + username);
+                System.out.println("Session role set to: " + user.getRole());
 
                 json.addProperty("success", true);
                 json.addProperty("message", "Login successful");
@@ -123,7 +192,6 @@ public class AuthController extends HttpServlet {
                 json.addProperty("role", user.getRole());
                 json.addProperty("authType", "user");
             } else {
-                // Try staff authentication
                 Staff staff = staffService.authenticate(username, password);
 
                 if (staff != null) {
@@ -136,9 +204,9 @@ public class AuthController extends HttpServlet {
                     session.setAttribute("user", staff.getUsername());
                     session.setAttribute("userId", staff.getStaffId());
 
-                    System.out.println("✅ Staff login successful: " + username);
-                    System.out.println("✅ Staff ID: " + staff.getStaffId());
-                    System.out.println("✅ Staff Role: " + staff.getRole());
+                    System.out.println("Staff login successful: " + username);
+                    System.out.println("Staff ID: " + staff.getStaffId());
+                    System.out.println("Staff Role: " + staff.getRole());
 
                     json.addProperty("success", true);
                     json.addProperty("message", "Login successful");
@@ -150,17 +218,99 @@ public class AuthController extends HttpServlet {
                 } else {
                     json.addProperty("success", false);
                     json.addProperty("message", "Invalid username or password");
-                    System.out.println("❌ Login failed: " + username);
+                    System.out.println("Login failed: " + username);
                 }
             }
 
         } catch (Exception e) {
             json.addProperty("success", false);
-            json.addProperty("message", "Error: " + e.getMessage());
+            json.addProperty("message", "An unexpected error occurred. Please try again.");
             e.printStackTrace();
         }
 
         out.print(json.toString());
+    }
+
+    private String extractEmailFromToken(String credential) {
+        try {
+            String[] parts = credential.split("\\.");
+            if (parts.length < 2) {
+                return null;
+            }
+
+            String payload = parts[1];
+            while (payload.length() % 4 != 0) {
+                payload = payload + "=";
+            }
+
+            byte[] decoded = java.util.Base64.getUrlDecoder().decode(payload);
+            String jsonPayload = new String(decoded, "UTF-8");
+
+            JsonObject json = JsonParser.parseString(jsonPayload).getAsJsonObject();
+
+            if (json.has("email")) {
+                return json.get("email").getAsString();
+            }
+
+            return null;
+        } catch (Exception e) {
+            System.err.println("Error extracting email from token: " + e.getMessage());
+            return null;
+        }
+    }
+
+    private Staff findStaffByEmail(String email) {
+        try {
+            System.out.println("Searching for staff with email: '" + email + "'");
+            List<Staff> allStaff = staffService.getAllStaff();
+            System.out.println("Total staff loaded: " + allStaff.size());
+
+            for (Staff staff : allStaff) {
+                String staffEmail = staff.getEmail();
+                System.out.println("Checking staff: " + staff.getUsername() + " | Email: '" + staffEmail + "'");
+
+                if (staffEmail != null) {
+                    if (staffEmail.trim().equalsIgnoreCase(email.trim())) {
+                        System.out.println("FOUND matching staff: " + staff.getUsername());
+                        return staff;
+                    }
+                }
+            }
+
+            System.out.println("No staff found with email: " + email);
+            return null;
+        } catch (Exception e) {
+            System.err.println("Error finding staff by email: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private String generateTemporaryPassword() {
+        // Use only alphanumeric characters to avoid URL encoding issues
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder password = new StringBuilder();
+        for (int i = 0; i < 10; i++) {
+            int index = (int) (Math.random() * chars.length());
+            password.append(chars.charAt(index));
+        }
+        return password.toString();
+    }
+
+    private boolean updateStaffPassword(int staffId, String newPassword) {
+        try {
+            Staff staff = staffService.getStaffById(staffId);
+            if (staff == null) {
+                System.err.println("Staff not found with ID: " + staffId);
+                return false;
+            }
+            staff.setPassword(newPassword);
+            return staffService.updateStaff(staff);
+        } catch (Exception e) {
+            System.err.println("Error updating staff password: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override

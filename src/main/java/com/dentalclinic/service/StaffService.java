@@ -84,4 +84,30 @@ public class StaffService {
         String newStatus = staff.getStatus().equals("Active") ? "Inactive" : "Active";
         return staffDAO.updateStaffStatus(staffId, newStatus);
     }
+
+    /**
+     * Update staff password by staff ID
+     * @param staffId The staff ID
+     * @param newPassword The new password
+     * @return true if updated successfully, false otherwise
+     */
+    public boolean updateStaffPassword(int staffId, String newPassword) {
+        if (staffId <= 0) {
+            System.out.println("Invalid staff ID: " + staffId);
+            return false;
+        }
+        if (newPassword == null || newPassword.trim().isEmpty()) {
+            System.out.println("Password cannot be empty");
+            return false;
+        }
+
+        Staff staff = staffDAO.getStaffById(staffId);
+        if (staff == null) {
+            System.out.println("Staff not found with ID: " + staffId);
+            return false;
+        }
+
+        staff.setPassword(newPassword);
+        return staffDAO.updateStaff(staff);
+    }
 }

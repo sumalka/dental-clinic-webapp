@@ -725,7 +725,7 @@
             target.style.display = 'flex';
 
             // Auto hide after 4 seconds
-            setTimeout(() => {
+            setTimeout(function() {
                 target.style.display = 'none';
             }, 4000);
         };
@@ -734,20 +734,27 @@
         window.handleGoogleStaffRecovery = async function(response) {
             showMessage('info', 'Verifying your Google account...');
             try {
-                const res = await fetch('/dental_clinic_webapp_war_exploded/api/auth/google-recovery', {
+                const res = await fetch('/dental_clinic_webapp_war_exploded/api/auth', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ credential: response.credential })
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        credential: response.credential
+                    })
                 });
                 const data = await res.json();
                 if (data.success && data.isStaff) {
-                    showMessage('success', 'Recovery email sent!');
-                    setTimeout(() => window.location.href = '/dental_clinic_webapp_war_exploded/login?recovery=success', 1500);
+                    showMessage('success', 'Recovery email sent! Please check your inbox.');
+                    setTimeout(function() {
+                        window.location.href = '/dental_clinic_webapp_war_exploded/login?recovery=success';
+                    }, 1500);
                 } else {
-                    showMessage('info', 'No staff account found with this Google email.');
+                    showMessage('info', 'No staff account found with this Google email. Please contact administrator.');
                 }
             } catch (e) {
-                showMessage('error', 'Network error. Please check your connection.');
+                console.error('Google recovery error:', e);
+                showMessage('error', 'Network error. Please check your connection and try again.');
             }
         };
 
@@ -864,7 +871,7 @@
         checkUrlParams();
 
         // Focus username field
-        setTimeout(() => {
+        setTimeout(function() {
             usernameInput.focus();
         }, 100);
 
