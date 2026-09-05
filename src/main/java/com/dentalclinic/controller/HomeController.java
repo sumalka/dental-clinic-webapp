@@ -19,7 +19,7 @@ public class HomeController extends HttpServlet {
             throws ServletException, IOException {
 
         String path = request.getServletPath();
-        System.out.println("🔍 HomeController request: " + path);
+        System.out.println("HomeController request: " + path);
 
         // API requests - DO NOT INTERCEPT
         if (path.startsWith("/api/")) {
@@ -32,7 +32,7 @@ public class HomeController extends HttpServlet {
         if ("/logout".equals(path)) {
             if (session != null) {
                 session.invalidate();
-                System.out.println("✅ Logout successful");
+                System.out.println("Logout successful");
             }
             response.sendRedirect(request.getContextPath() + "/pages/auth/login.html");
             return;
@@ -64,12 +64,12 @@ public class HomeController extends HttpServlet {
             }
 
             if (!isAuthenticated) {
-                System.out.println("❌ No valid session found, redirecting to login");
+                System.out.println("No valid session found, redirecting to login");
                 response.sendRedirect(request.getContextPath() + "/login");
                 return;
             }
 
-            System.out.println("✅ User authenticated, serving dashboard");
+            System.out.println("User authenticated, serving dashboard");
             servePage("/pages/dashboard/index.html", request, response);
             return;
         }
@@ -116,7 +116,7 @@ public class HomeController extends HttpServlet {
             throws ServletException, IOException {
 
         String path = request.getServletPath();
-        System.out.println("🔐 POST request: " + path);
+        System.out.println("POST request: " + path);
 
         // API requests - DO NOT INTERCEPT
         if (path.startsWith("/api/")) {
@@ -128,7 +128,7 @@ public class HomeController extends HttpServlet {
             String username = request.getParameter("username");
             String password = request.getParameter("password");
 
-            System.out.println("🔐 Login attempt: " + username);
+            System.out.println("Login attempt: " + username);
 
             String requestedWith = request.getHeader("X-Requested-With");
             boolean isAjax = "XMLHttpRequest".equals(requestedWith);
@@ -142,7 +142,7 @@ public class HomeController extends HttpServlet {
                 session.setAttribute("role", user.getRole());
                 session.setAttribute("userId", user.getUserId());
 
-                System.out.println("✅ Login successful: " + username);
+                System.out.println("Login successful: " + username);
 
                 if (isAjax) {
                     response.setContentType("application/json");
@@ -153,7 +153,7 @@ public class HomeController extends HttpServlet {
                     response.sendRedirect(request.getContextPath() + "/dashboard");
                 }
             } else {
-                System.out.println("❌ Login failed: " + username);
+                System.out.println("Login failed: " + username);
                 if (isAjax) {
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
@@ -196,13 +196,13 @@ public class HomeController extends HttpServlet {
                 while ((bytesRead = in.read(buffer)) != -1) {
                     response.getOutputStream().write(buffer, 0, bytesRead);
                 }
-                System.out.println("✅ Served: " + pagePath);
+                System.out.println("Served: " + pagePath);
             } else {
-                System.out.println("❌ Page not found: " + pagePath);
+                System.out.println("Page not found: " + pagePath);
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
         } catch (Exception e) {
-            System.out.println("❌ Error serving page: " + e.getMessage());
+            System.out.println("Error serving page: " + e.getMessage());
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }

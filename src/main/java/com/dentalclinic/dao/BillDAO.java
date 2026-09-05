@@ -19,9 +19,9 @@ public class BillDAO {
             while (rs.next()) {
                 bills.add(extractBillFromResultSet(rs));
             }
-            System.out.println("✅ Loaded " + bills.size() + " bills from database");
+            System.out.println("Loaded " + bills.size() + " bills from database");
         } catch (SQLException e) {
-            System.err.println("❌ Error getting bills: " + e.getMessage());
+            System.err.println("Error getting bills: " + e.getMessage());
             e.printStackTrace();
         }
         return bills;
@@ -65,9 +65,9 @@ public class BillDAO {
             while (rs.next()) {
                 bills.add(extractBillFromResultSet(rs));
             }
-            System.out.println("✅ Loaded " + bills.size() + " bills with filters");
+            System.out.println("Loaded " + bills.size() + " bills with filters");
         } catch (SQLException e) {
-            System.err.println("❌ Error getting bills with filters: " + e.getMessage());
+            System.err.println("Error getting bills with filters: " + e.getMessage());
             e.printStackTrace();
         }
         return bills;
@@ -83,14 +83,14 @@ public class BillDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                System.out.println("✅ Found bill for appointment " + appointmentId);
+                System.out.println("Found bill for appointment " + appointmentId);
                 return extractBillFromResultSet(rs);
             }
         } catch (SQLException e) {
-            System.err.println("❌ Error getting bill by appointment ID: " + e.getMessage());
+            System.err.println("Error getting bill by appointment ID: " + e.getMessage());
             e.printStackTrace();
         }
-        System.out.println("⚠️ No bill found for appointment " + appointmentId);
+        System.out.println("No bill found for appointment " + appointmentId);
         return null;
     }
 
@@ -107,7 +107,7 @@ public class BillDAO {
                 return extractBillFromResultSet(rs);
             }
         } catch (SQLException e) {
-            System.err.println("❌ Error getting bill by ID: " + e.getMessage());
+            System.err.println("Error getting bill by ID: " + e.getMessage());
             e.printStackTrace();
         }
         return null;
@@ -174,15 +174,15 @@ public class BillDAO {
                 ResultSet rs = stmt.getGeneratedKeys();
                 if (rs.next()) {
                     bill.setBillId(rs.getInt(1));
-                    System.out.println("✅ Bill added successfully with ID: " + bill.getBillId());
+                    System.out.println("Bill added successfully with ID: " + bill.getBillId());
                 }
                 return true;
             }
-            System.err.println("❌ No rows affected when adding bill");
+            System.err.println("No rows affected when adding bill");
             return false;
 
         } catch (SQLException e) {
-            System.err.println("❌ Error adding bill: " + e.getMessage());
+            System.err.println("Error adding bill: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -201,7 +201,7 @@ public class BillDAO {
             System.out.println("Updated bill payment: " + billId + ", rows affected: " + rows);
             return rows > 0;
         } catch (SQLException e) {
-            System.err.println("❌ Error updating bill payment: " + e.getMessage());
+            System.err.println("Error updating bill payment: " + e.getMessage());
             e.printStackTrace();
         }
         return false;
@@ -216,7 +216,7 @@ public class BillDAO {
                 return rs.getDouble("revenue");
             }
         } catch (SQLException e) {
-            System.err.println("❌ Error getting total revenue: " + e.getMessage());
+            System.err.println("Error getting total revenue: " + e.getMessage());
             e.printStackTrace();
         }
         return 0.0;
@@ -231,7 +231,7 @@ public class BillDAO {
                 return rs.getDouble("revenue");
             }
         } catch (SQLException e) {
-            System.err.println("❌ Error getting today's revenue: " + e.getMessage());
+            System.err.println("Error getting today's revenue: " + e.getMessage());
             e.printStackTrace();
         }
         return 0.0;
@@ -246,7 +246,7 @@ public class BillDAO {
                 return rs.getDouble("total");
             }
         } catch (SQLException e) {
-            System.err.println("❌ Error getting pending payments total: " + e.getMessage());
+            System.err.println("Error getting pending payments total: " + e.getMessage());
             e.printStackTrace();
         }
         return 0.0;
@@ -261,7 +261,7 @@ public class BillDAO {
                 return rs.getInt("count");
             }
         } catch (SQLException e) {
-            System.err.println("❌ Error getting total invoices: " + e.getMessage());
+            System.err.println("Error getting total invoices: " + e.getMessage());
             e.printStackTrace();
         }
         return 0;
@@ -276,7 +276,7 @@ public class BillDAO {
                 return rs.getInt("count");
             }
         } catch (SQLException e) {
-            System.err.println("❌ Error getting pending bills count: " + e.getMessage());
+            System.err.println("Error getting pending bills count: " + e.getMessage());
             e.printStackTrace();
         }
         return 0;

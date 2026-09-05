@@ -46,7 +46,7 @@ public class BillingController extends HttpServlet {
 
             if (action == null || action.equals("list")) {
                 List<Bill> bills = billService.getAllBills();
-                System.out.println("✅ Retrieved " + bills.size() + " bills from service");
+                System.out.println("Retrieved " + bills.size() + " bills from service");
 
                 // Debug: Print each bill
                 for (Bill bill : bills) {
@@ -166,11 +166,11 @@ public class BillingController extends HttpServlet {
                     result.addProperty("billId", bill.getBillId());
                     result.addProperty("invoiceNumber", bill.getInvoiceNumber());
                     result.addProperty("totalAmount", bill.getTotalAmount());
-                    System.out.println("✅ Bill generated: " + bill.getInvoiceNumber() + " with ID: " + bill.getBillId());
+                    System.out.println("Bill generated: " + bill.getInvoiceNumber() + " with ID: " + bill.getBillId());
                 } else {
                     result.addProperty("success", false);
                     result.addProperty("message", "Failed to generate bill. Please check logs for details.");
-                    System.err.println("❌ Failed to generate bill for appointment: " + appointmentId);
+                    System.err.println("Failed to generate bill for appointment: " + appointmentId);
                 }
                 out.print(result.toString());
 

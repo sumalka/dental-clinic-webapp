@@ -43,12 +43,12 @@ public class PatientDAO {
                 ResultSet rs = stmt.getGeneratedKeys();
                 if (rs.next()) {
                     patient.setPatientId(rs.getInt(1));
-                    LOGGER.info("✅ Patient added with ID: " + patient.getPatientId());
+                    LOGGER.info("Patient added with ID: " + patient.getPatientId());
                     return true;
                 }
             }
         } catch (SQLException e) {
-            LOGGER.severe("❌ Error adding patient: " + e.getMessage());
+            LOGGER.severe("Error adding patient: " + e.getMessage());
             e.printStackTrace();
         }
         return false;
@@ -65,9 +65,9 @@ public class PatientDAO {
             while (rs.next()) {
                 patients.add(extractPatientFromResultSet(rs));
             }
-            LOGGER.info("✅ Loaded " + patients.size() + " patients from database");
+            LOGGER.info("Loaded " + patients.size() + " patients from database");
         } catch (SQLException e) {
-            LOGGER.severe("❌ Error getting patients: " + e.getMessage());
+            LOGGER.severe("Error getting patients: " + e.getMessage());
             e.printStackTrace();
         }
         return patients;
@@ -86,7 +86,7 @@ public class PatientDAO {
                 return extractPatientFromResultSet(rs);
             }
         } catch (SQLException e) {
-            LOGGER.severe("❌ Error getting patient by ID: " + e.getMessage());
+            LOGGER.severe("Error getting patient by ID: " + e.getMessage());
             e.printStackTrace();
         }
         return null;
@@ -110,7 +110,7 @@ public class PatientDAO {
                 patients.add(extractPatientFromResultSet(rs));
             }
         } catch (SQLException e) {
-            LOGGER.severe("❌ Error searching patients: " + e.getMessage());
+            LOGGER.severe("Error searching patients: " + e.getMessage());
             e.printStackTrace();
         }
         return patients;
@@ -146,7 +146,7 @@ public class PatientDAO {
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            LOGGER.severe("❌ Error updating patient: " + e.getMessage());
+            LOGGER.severe("Error updating patient: " + e.getMessage());
             e.printStackTrace();
         }
         return false;
@@ -161,11 +161,11 @@ public class PatientDAO {
             stmt.setInt(1, patientId);
             int rows = stmt.executeUpdate();
             if (rows > 0) {
-                LOGGER.info("✅ Patient deleted: ID " + patientId);
+                LOGGER.info("Patient deleted: ID " + patientId);
                 return true;
             }
         } catch (SQLException e) {
-            LOGGER.severe("❌ Error deleting patient: " + e.getMessage());
+            LOGGER.severe("Error deleting patient: " + e.getMessage());
             e.printStackTrace();
         }
         return false;
@@ -180,7 +180,7 @@ public class PatientDAO {
                 return rs.getInt("count");
             }
         } catch (SQLException e) {
-            LOGGER.severe("❌ Error getting patient count: " + e.getMessage());
+            LOGGER.severe("Error getting patient count: " + e.getMessage());
             e.printStackTrace();
         }
         return 0;
@@ -195,7 +195,7 @@ public class PatientDAO {
                 return rs.getInt("count");
             }
         } catch (SQLException e) {
-            LOGGER.severe("❌ Error getting active patient count: " + e.getMessage());
+            LOGGER.severe("Error getting active patient count: " + e.getMessage());
             e.printStackTrace();
         }
         return 0;
@@ -210,7 +210,7 @@ public class PatientDAO {
                 return rs.getInt("count");
             }
         } catch (SQLException e) {
-            LOGGER.severe("❌ Error getting new this month count: " + e.getMessage());
+            LOGGER.severe("Error getting new this month count: " + e.getMessage());
             e.printStackTrace();
         }
         return 0;

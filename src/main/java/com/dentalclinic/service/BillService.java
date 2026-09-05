@@ -53,33 +53,33 @@ public class BillService {
         // Get appointment details
         Appointment appointment = appointmentDAO.getAppointmentById(appointmentId);
         if (appointment == null) {
-            System.err.println("❌ Appointment not found: " + appointmentId);
+            System.err.println("Appointment not found: " + appointmentId);
             return null;
         }
-        System.out.println("✅ Found appointment: " + appointment.getAppointmentNumber());
+        System.out.println("Found appointment: " + appointment.getAppointmentNumber());
 
         // Get patient details
         Patient patient = patientDAO.getPatientById(appointment.getPatientId());
         if (patient == null) {
-            System.err.println("❌ Patient not found: " + appointment.getPatientId());
+            System.err.println("Patient not found: " + appointment.getPatientId());
             return null;
         }
-        System.out.println("✅ Found patient: " + patient.getFullName());
+        System.out.println("Found patient: " + patient.getFullName());
 
         // Get dentist details
         Dentist dentist = dentistDAO.getDentistById(appointment.getDentistId());
         if (dentist == null) {
-            System.err.println("❌ Dentist not found: " + appointment.getDentistId());
+            System.err.println("Dentist not found: " + appointment.getDentistId());
             return null;
         }
-        System.out.println("✅ Found dentist: " + dentist.getFullName());
+        System.out.println("Found dentist: " + dentist.getFullName());
 
         // Get treatment details
         Treatment treatment = null;
         if (appointment.getTreatmentId() != null) {
             treatment = treatmentDAO.getTreatmentById(appointment.getTreatmentId());
             if (treatment != null) {
-                System.out.println("✅ Found treatment: " + treatment.getTreatmentName());
+                System.out.println("Found treatment: " + treatment.getTreatmentName());
             }
         }
 
@@ -126,11 +126,11 @@ public class BillService {
         // Save bill to database
         boolean success = billDAO.addBill(bill);
         if (success) {
-            System.out.println("✅ Bill saved successfully with ID: " + bill.getBillId());
-            System.out.println("✅ Bill invoice number: " + bill.getInvoiceNumber());
+            System.out.println("Bill saved successfully with ID: " + bill.getBillId());
+            System.out.println("Bill invoice number: " + bill.getInvoiceNumber());
             return bill;
         } else {
-            System.err.println("❌ Failed to save bill to database");
+            System.err.println("Failed to save bill to database");
             return null;
         }
     }

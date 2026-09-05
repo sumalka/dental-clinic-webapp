@@ -112,14 +112,29 @@
             color: white;
         }
 
+        .btn-success:hover {
+            background: linear-gradient(135deg, #38a169, var(--success));
+            transform: translateY(-2px);
+        }
+
         .btn-warning {
             background: linear-gradient(135deg, var(--warning), #d69e2e);
             color: white;
         }
 
+        .btn-warning:hover {
+            background: linear-gradient(135deg, #d69e2e, var(--warning));
+            transform: translateY(-2px);
+        }
+
         .btn-danger {
             background: linear-gradient(135deg, var(--danger), #c53030);
             color: white;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #c53030, var(--danger));
+            transform: translateY(-2px);
         }
 
         .patient-card {
@@ -417,10 +432,10 @@
                 <button class="btn btn-primary" onclick="editPatient()">
                     <i class="fas fa-edit"></i> Edit Patient
                 </button>
-                <button class="btn btn-success" onclick="showToast('Appointment history coming soon!', 'info')">
+                <button class="btn btn-success" onclick="viewAppointments()">
                     <i class="fas fa-calendar-alt"></i> View Appointments
                 </button>
-                <button class="btn btn-warning" onclick="showToast('Treatment history coming soon!', 'info')">
+                <button class="btn btn-warning" onclick="viewTreatmentHistory()">
                     <i class="fas fa-pills"></i> Treatment History
                 </button>
                 <button class="btn btn-danger" onclick="deletePatient()">
@@ -431,14 +446,19 @@
     </div>
 </div>
 
+<!-- Toast Container -->
+<div id="toastContainer"></div>
+
 <script>
     var CONTEXT_PATH = '/dental_clinic_webapp_war_exploded';
+    var currentPatientId = null;
 
     document.addEventListener('DOMContentLoaded', function() {
         var urlParams = new URLSearchParams(window.location.search);
         var patientId = urlParams.get('id');
 
         if (patientId) {
+            currentPatientId = patientId;
             loadPatientFromDatabase(patientId);
         } else {
             document.getElementById('loadingState').innerHTML = '<i class="fas fa-exclamation-circle" style="color: var(--danger);"></i>' +
@@ -451,6 +471,9 @@
     function loadPatientFromDatabase(patientId) {
         fetch(CONTEXT_PATH + '/api/patients?action=getById&id=' + patientId + '&t=' + Date.now())
             .then(function(response) {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
                 return response.json();
             })
             .then(function(patient) {
@@ -464,6 +487,7 @@
                 displayPatient(patient);
             })
             .catch(function(error) {
+                console.error('Error loading patient:', error);
                 document.getElementById('loadingState').innerHTML = '<i class="fas fa-exclamation-circle" style="color: var(--danger);"></i>' +
                     '<p style="color: var(--danger);">Error loading patient: ' + error.message + '</p>' +
                     '<button class="btn btn-primary" onclick="window.location.href=\'' + CONTEXT_PATH + '/pages/patients/list.html\'" style="margin-top: 15px;">' +
@@ -503,45 +527,58 @@
     }
 
     function editPatient() {
-        showToast('Edit patient form coming soon!', 'info');
+        // Redirect to the edit page with the patient ID
+        if (currentPatientId) {
+            window.location.href = CONTEXT_PATH + '/pages/patients/edit.html?id=' + currentPatientId;
+        } else {
+            showToast('Patient ID not found', 'error');
+        }
+    }
+
+    function viewAppointments() {
+        showToast('Appointment history feature coming soon!', 'info');
+    }
+
+    function viewTreatmentHistory() {
+        showToast('Treatment history feature coming soon!', 'info');
     }
 
     function deletePatient() {
-        if (confirm('Are you sure you want to delete this patient?')) {
-            var patientId = document.getElementById('patientId').textContent;
-            fetch(CONTEXT_PATH + '/api/patients?id=' + patientId, {
-                method: 'DELETE'
-            })
-                .then(function(response) {
-                    return response.json();
-                })
-                .then(function(data) {
-                    if (data.success) {
-                        showToast('Patient deleted successfully!', 'success');
-                        setTimeout(function() {
-                            window.location.href = CONTEXT_PATH + '/pages/patients/list.html';
-                        }, 1500);
-                    } else {
-                        showToast('Error: ' + data.message, 'error');
-                    }
-                })
-                .catch(function(error) {
-                    showToast('Error: ' + error.message, 'error');
-                });
+        if (!confirm('Are you sure you want to delete this patient?')) {
+            return;
         }
+
+        if (!currentPatientId) {
+            showToast('Patient ID not found', 'error');
+            return;
+        }
+
+        fetch(CONTEXT_PATH + '/api/patients?id=' + currentPatientId, {
+            method: 'DELETE'
+        })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.success) {
+                    showToast('Patient deleted successfully!', 'success');
+                    setTimeout(function() {
+                        window.location.href = CONTEXT_PATH + '/pages/patients/list.html';
+                    }, 1500);
+                } else {
+                    showToast('Error: ' + data.message, 'error');
+                }
+            })
+            .catch(function(error) {
+                showToast('Error: ' + error.message, 'error');
+            });
     }
 
     function showToast(message, type) {
         if (type === undefined) type = 'info';
+        var container = document.getElementById('toastContainer');
         var toast = document.createElement('div');
         toast.className = 'toast ' + type;
-        toast.style.cssText = 'position: fixed; bottom: 30px; right: 30px;' +
-            'background: white; padding: 15px 25px;' +
-            'border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);' +
-            'display: flex; align-items: center; gap: 12px;' +
-            'z-index: 9999; animation: slideIn 0.3s ease;' +
-            'border-left: 4px solid ' + (type === 'success' ? '#48bb78' : '#4299e1') + ';' +
-            'max-width: 400px;';
 
         var icons = {
             success: 'fa-check-circle',
@@ -550,12 +587,19 @@
             info: 'fa-info-circle'
         };
 
-        toast.innerHTML = '<i class="fas ' + icons[type] + '" style="font-size: 20px; color: ' + (type === 'success' ? '#48bb78' : '#4299e1') + ';"></i>' +
-            '<span style="flex: 1;">' + message + '</span>' +
-            '<button onclick="this.parentElement.remove()" style="background: none; border: none; color: #7f8c8d; cursor: pointer;">' +
+        var colors = {
+            success: '#48bb78',
+            error: '#f56565',
+            warning: '#ecc94b',
+            info: '#4299e1'
+        };
+
+        toast.innerHTML = '<i class="fas ' + icons[type] + '" style="font-size: 20px; color: ' + colors[type] + ';"></i>' +
+            '<span style="flex: 1; color: var(--dark);">' + message + '</span>' +
+            '<button onclick="this.parentElement.remove()" style="background: none; border: none; color: var(--gray); cursor: pointer;">' +
             '<i class="fas fa-times"></i></button>';
 
-        document.body.appendChild(toast);
+        container.appendChild(toast);
 
         setTimeout(function() {
             if (toast.parentElement) {

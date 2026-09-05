@@ -48,12 +48,12 @@ public class AppointmentService {
 
         for (Appointment existing : appointments) {
             if (excludeAppointmentId != null && existing.getAppointmentId() == excludeAppointmentId) {
-                System.out.println("⏭️  Skipping self appointment ID: " + existing.getAppointmentId());
+                System.out.println(" ⏭Skipping self appointment ID: " + existing.getAppointmentId());
                 continue;
             }
 
             if ("CANCELLED".equalsIgnoreCase(existing.getStatus())) {
-                System.out.println("⏭️  Skipping cancelled appointment ID: " + existing.getAppointmentId());
+                System.out.println("⏭Skipping cancelled appointment ID: " + existing.getAppointmentId());
                 continue;
             }
 
@@ -61,24 +61,24 @@ public class AppointmentService {
             LocalTime existingEnd = existing.getAppointmentTime()
                     .plusMinutes(existing.getDurationMinutes());
 
-            System.out.println("📅 Existing Appointment ID: " + existing.getAppointmentId());
+            System.out.println("Existing Appointment ID: " + existing.getAppointmentId());
             System.out.println("   Time: " + existingStart + " - " + existingEnd);
             System.out.println("   Status: " + existing.getStatus());
 
             boolean overlaps = requestedStart.isBefore(existingEnd) && requestedEnd.isAfter(existingStart);
 
             if (overlaps) {
-                System.out.println("❌ OVERLAP DETECTED!");
+                System.out.println("OVERLAP DETECTED!");
                 System.out.println("   Requested: " + requestedStart + " - " + requestedEnd);
                 System.out.println("   Existing: " + existingStart + " - " + existingEnd);
                 System.out.println("=========================================");
                 return false;
             } else {
-                System.out.println("✅ No overlap with this appointment");
+                System.out.println("No overlap with this appointment");
             }
         }
 
-        System.out.println("✅ Dentist IS AVAILABLE at this time");
+        System.out.println("Dentist IS AVAILABLE at this time");
         System.out.println("=========================================");
         return true;
     }
@@ -86,15 +86,15 @@ public class AppointmentService {
     public boolean createAppointment(Appointment appointment) {
         LocalDate today = LocalDate.now();
         if (appointment.getAppointmentDate().isBefore(today)) {
-            System.out.println("❌ Cannot book appointment in the past: " + appointment.getAppointmentDate());
+            System.out.println("Cannot book appointment in the past: " + appointment.getAppointmentDate());
             return false;
         }
 
-        System.out.println("📝 Creating new appointment...");
+        System.out.println("Creating new appointment...");
 
         if (!isDentistAvailable(appointment.getDentistId(), appointment.getAppointmentDate(),
                 appointment.getAppointmentTime(), appointment.getDurationMinutes(), null)) {
-            System.out.println("❌ Dentist " + appointment.getDentistId() + " is not available at that time");
+            System.out.println("Dentist" + appointment.getDentistId() + " is not available at that time");
             return false;
         }
 
@@ -114,7 +114,7 @@ public class AppointmentService {
         }
 
         boolean result = appointmentDAO.addAppointment(appointment);
-        System.out.println("Appointment creation result: " + (result ? "SUCCESS ✅" : "FAILED ❌"));
+        System.out.println("Appointment creation result: " + (result ? "SUCCESS" : "FAILED"));
         return result;
     }
 
@@ -136,17 +136,17 @@ public class AppointmentService {
             return false;
         }
 
-        System.out.println("📝 Updating appointment ID: " + appointment.getAppointmentId());
+        System.out.println("Updating appointment ID: " + appointment.getAppointmentId());
 
         if (!isDentistAvailable(appointment.getDentistId(), appointment.getAppointmentDate(),
                 appointment.getAppointmentTime(), appointment.getDurationMinutes(),
                 appointment.getAppointmentId())) {
-            System.out.println("❌ Dentist " + appointment.getDentistId() + " is not available at that time");
+            System.out.println("Dentist " + appointment.getDentistId() + " is not available at that time");
             return false;
         }
 
         boolean result = appointmentDAO.updateAppointment(appointment);
-        System.out.println("Appointment update result: " + (result ? "SUCCESS ✅" : "FAILED ❌"));
+        System.out.println("Appointment update result: " + (result ? "SUCCESS" : "FAILED"));
         return result;
     }
 

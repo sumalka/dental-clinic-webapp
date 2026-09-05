@@ -25,14 +25,14 @@ public class StaffController extends HttpServlet {
         if (session == null) return false;
 
         String role = (String) session.getAttribute("role");
-        System.out.println("🔍 Checking role from session: " + role);
+        System.out.println("Checking role from session: " + role);
 
         if (role != null && role.equalsIgnoreCase("admin")) {
-            System.out.println("✅ Admin role found: " + role);
+            System.out.println("Admin role found: " + role);
             return true;
         }
 
-        System.out.println("❌ User is NOT admin. Role: " + role);
+        System.out.println("User is NOT admin. Role: " + role);
         return false;
     }
 
@@ -52,7 +52,7 @@ public class StaffController extends HttpServlet {
         try {
             HttpSession session = request.getSession(false);
             boolean isAdminUser = isAdmin(session);
-            System.out.println("🔍 doGet - Is Admin: " + isAdminUser);
+            System.out.println("doGet - Is Admin: " + isAdminUser);
 
             if (action == null || action.equals("list")) {
                 List<Staff> staffList = staffService.getAllStaff();
@@ -145,7 +145,7 @@ public class StaffController extends HttpServlet {
             }
 
             boolean isAdminUser = isAdmin(session);
-            System.out.println("🔍 doPost - Is Admin: " + isAdminUser);
+            System.out.println(" doPost - Is Admin: " + isAdminUser);
 
             if (!isAdminUser) {
                 out.print("{\"success\": false, \"message\": \"Access denied. Admin privileges required.\"}");

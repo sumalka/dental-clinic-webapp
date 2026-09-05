@@ -15,7 +15,7 @@ public class Main {
         DatabaseConnection.getInstance();
 
         System.out.println("\n========================================");
-        System.out.println("🦷 Dental Clinic Management System");
+        System.out.println("Dental Clinic Management System");
         System.out.println("========================================");
 
         // Create HTTP server
@@ -24,8 +24,8 @@ public class Main {
         server.setExecutor(null);
         server.start();
 
-        System.out.println("✅ Server started on: http://localhost:" + PORT);
-        System.out.println("📋 Press Ctrl+C to stop");
+        System.out.println("Server started on: http://localhost:" + PORT);
+        System.out.println("Press Ctrl+C to stop");
         System.out.println("========================================\n");
     }
 }

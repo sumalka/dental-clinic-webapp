@@ -574,7 +574,8 @@
     }
 
     function editPatient(id) {
-        showToast('Edit patient form coming soon!', 'info');
+        // Redirect to the edit page with the patient ID
+        window.location.href = CONTEXT_PATH + '/pages/patients/edit.html?id=' + id;
     }
 
     function deletePatient(id) {

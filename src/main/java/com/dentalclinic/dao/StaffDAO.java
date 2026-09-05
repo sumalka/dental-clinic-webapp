@@ -19,9 +19,9 @@ public class StaffDAO {
             while (rs.next()) {
                 staffList.add(extractStaffFromResultSet(rs));
             }
-            System.out.println("✅ Loaded " + staffList.size() + " staff members");
+            System.out.println("Loaded " + staffList.size() + " staff members");
         } catch (SQLException e) {
-            System.err.println("❌ Error getting staff: " + e.getMessage());
+            System.err.println("Error getting staff: " + e.getMessage());
             e.printStackTrace();
         }
         return staffList;
@@ -40,7 +40,7 @@ public class StaffDAO {
                 return extractStaffFromResultSet(rs);
             }
         } catch (SQLException e) {
-            System.err.println("❌ Error getting staff by ID: " + e.getMessage());
+            System.err.println("Error getting staff by ID: " + e.getMessage());
             e.printStackTrace();
         }
         return null;
@@ -59,7 +59,7 @@ public class StaffDAO {
                 return extractStaffFromResultSet(rs);
             }
         } catch (SQLException e) {
-            System.err.println("❌ Error getting staff by username: " + e.getMessage());
+            System.err.println("Error getting staff by username: " + e.getMessage());
             e.printStackTrace();
         }
         return null;
@@ -76,11 +76,11 @@ public class StaffDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                System.out.println("✅ Staff authenticated: " + username);
+                System.out.println("Staff authenticated: " + username);
                 return extractStaffFromResultSet(rs);
             }
         } catch (SQLException e) {
-            System.err.println("❌ Error authenticating staff: " + e.getMessage());
+            System.err.println("Error authenticating staff: " + e.getMessage());
             e.printStackTrace();
         }
         return null;
@@ -108,11 +108,11 @@ public class StaffDAO {
                 if (rs.next()) {
                     staff.setStaffId(rs.getInt(1));
                 }
-                System.out.println("✅ Staff added: " + staff.getUsername());
+                System.out.println("Staff added: " + staff.getUsername());
                 return true;
             }
         } catch (SQLException e) {
-            System.err.println("❌ Error adding staff: " + e.getMessage());
+            System.err.println("Error adding staff: " + e.getMessage());
             e.printStackTrace();
         }
         return false;
@@ -136,10 +136,10 @@ public class StaffDAO {
             stmt.setInt(9, staff.getStaffId());
 
             int rows = stmt.executeUpdate();
-            System.out.println("✅ Staff updated: " + staff.getUsername() + ", rows: " + rows);
+            System.out.println("Staff updated: " + staff.getUsername() + ", rows: " + rows);
             return rows > 0;
         } catch (SQLException e) {
-            System.err.println("❌ Error updating staff: " + e.getMessage());
+            System.err.println("Error updating staff: " + e.getMessage());
             e.printStackTrace();
         }
         return false;
@@ -153,10 +153,10 @@ public class StaffDAO {
 
             stmt.setInt(1, staffId);
             int rows = stmt.executeUpdate();
-            System.out.println("✅ Staff deleted: ID " + staffId + ", rows: " + rows);
+            System.out.println("Staff deleted: ID " + staffId + ", rows: " + rows);
             return rows > 0;
         } catch (SQLException e) {
-            System.err.println("❌ Error deleting staff: " + e.getMessage());
+            System.err.println("Error deleting staff: " + e.getMessage());
             e.printStackTrace();
         }
         return false;
@@ -173,7 +173,7 @@ public class StaffDAO {
             int rows = stmt.executeUpdate();
             return rows > 0;
         } catch (SQLException e) {
-            System.err.println("❌ Error updating staff status: " + e.getMessage());
+            System.err.println("Error updating staff status: " + e.getMessage());
             e.printStackTrace();
         }
         return false;

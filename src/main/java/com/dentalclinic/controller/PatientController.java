@@ -170,6 +170,80 @@ public class PatientController extends HttpServlet {
         }
     }
 
+    // ==================== ADDED PUT METHOD FOR UPDATING PATIENTS ====================
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+        PrintWriter out = response.getWriter();
+
+        try {
+            StringBuilder sb = new StringBuilder();
+            BufferedReader reader = request.getReader();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+
+            String requestBody = sb.toString();
+            System.out.println("Received update patient data: " + requestBody);
+
+            if (requestBody.trim().isEmpty()) {
+                out.print("{\"success\": false, \"message\": \"Empty request body\"}");
+                return;
+            }
+
+            JsonObject json = JsonParser.parseString(requestBody).getAsJsonObject();
+
+            Patient patient = new Patient();
+            patient.setPatientId(json.get("patientId").getAsInt());
+            patient.setFirstName(json.get("firstName").getAsString());
+            patient.setLastName(json.get("lastName").getAsString());
+            patient.setDateOfBirth(LocalDate.parse(json.get("dateOfBirth").getAsString()));
+            patient.setGender(json.get("gender").getAsString());
+            patient.setContactNumber(json.get("contactNumber").getAsString());
+            patient.setEmail(json.get("email").getAsString());
+            patient.setAddress(json.get("address").getAsString());
+            patient.setCity(json.get("city").getAsString());
+            patient.setState(json.get("state").getAsString());
+            patient.setPostalCode(json.get("postalCode").getAsString());
+            patient.setNationality(json.get("nationality").getAsString());
+            patient.setIdType(json.get("idType").getAsString());
+            patient.setIdNumber(json.get("idNumber").getAsString());
+            patient.setEmergencyContactName(json.get("emergencyContactName").getAsString());
+            patient.setEmergencyContactNumber(json.get("emergencyContactNumber").getAsString());
+            patient.setMedicalNotes(json.get("medicalNotes").getAsString());
+            patient.setStatus(json.get("status").getAsString());
+
+            boolean success = patientService.updatePatient(patient);
+
+            JsonObject result = new JsonObject();
+            if (success) {
+                result.addProperty("success", true);
+                result.addProperty("message", "Patient updated successfully");
+                result.addProperty("patientId", patient.getPatientId());
+                System.out.println("Patient updated: ID " + patient.getPatientId());
+            } else {
+                result.addProperty("success", false);
+                result.addProperty("message", "Failed to update patient. Please check all required fields.");
+            }
+            out.print(result.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JsonObject result = new JsonObject();
+            result.addProperty("success", false);
+            result.addProperty("message", "Error: " + e.getMessage());
+            out.print(result.toString());
+        }
+    }
+
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

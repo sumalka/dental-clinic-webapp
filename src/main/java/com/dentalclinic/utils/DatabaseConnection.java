@@ -19,9 +19,9 @@ public class DatabaseConnection {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             this.connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            LOGGER.info("✅ Database connected successfully!");
+            LOGGER.info("Database connected successfully!");
         } catch (ClassNotFoundException | SQLException e) {
-            LOGGER.severe("❌ Database connection failed: " + e.getMessage());
+            LOGGER.severe("Database connection failed: " + e.getMessage());
         }
     }
 
