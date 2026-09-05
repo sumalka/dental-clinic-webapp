@@ -10,7 +10,7 @@ public class EmailUtil {
 
     // Update these with your email settings
     private static final String FROM_EMAIL = "sunrisedentalclinicsystem@gmail.com";
-    private static final String FROM_PASSWORD = "ejezgynbnwmuecud"; // Use App Password for Gmail
+    private static final String FROM_PASSWORD = "ejezgynbnwmuecud"; // App Password for Gmail
     private static final String SMTP_HOST = "smtp.gmail.com";
     private static final int SMTP_PORT = 587;
 

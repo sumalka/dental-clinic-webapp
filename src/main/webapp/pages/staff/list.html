@@ -637,7 +637,7 @@
     var isAdminUser = false;
 
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('🔍 Staff page loaded - checking user role...');
+        console.log('Staff page loaded - checking user role...');
         loadCurrentUser();
     });
 
@@ -652,13 +652,13 @@
                 return response.json();
             })
             .then(function(data) {
-                console.log('📊 Auth check response:', data);
+                console.log('Auth check response:', data);
                 if (data && data.authenticated) {
                     isAdminUser = data.isAdmin === true;
                     currentStaffId = data.staffId || 0;
 
-                    console.log('👤 User role from session:', data.role);
-                    console.log('🔑 Is Admin:', isAdminUser);
+                    console.log('User role from session:', data.role);
+                    console.log('Is Admin:', isAdminUser);
 
                     updateUIForRole();
                 } else {
@@ -677,13 +677,13 @@
                     var role = data.role || '';
                     isAdminUser = data.isAdmin === true || role.toLowerCase() === 'admin';
                     currentStaffId = data.staffId;
-                    console.log('👤 User role from staff API:', role);
-                    console.log('🔑 Is Admin (from staff API):', isAdminUser);
+                    console.log('User role from staff API:', role);
+                    console.log('Is Admin (from staff API):', isAdminUser);
                     updateUIForRole();
                 }
             })
             .catch(function(error) {
-                console.error('❌ Error checking auth:', error);
+                console.error('Error checking auth:', error);
                 isAdminUser = false;
                 updateUIForRole();
             })
@@ -697,15 +697,15 @@
         var addBtn = document.getElementById('addStaffBtn');
 
         if (isAdminUser) {
-            badge.textContent = '🔑 Admin Mode';
+            badge.textContent = 'Admin Mode';
             badge.className = 'role-badge admin';
             addBtn.style.display = 'inline-flex';
-            console.log('✅ Admin user - showing full controls');
+            console.log('Admin user - showing full controls');
         } else {
-            badge.textContent = '👁️ View Only';
+            badge.textContent = '👁View Only';
             badge.className = 'role-badge staff';
             addBtn.style.display = 'none';
-            console.log('❌ Non-admin user - view only mode');
+            console.log('Non-admin user - view only mode');
         }
     }
 
@@ -724,13 +724,13 @@
             })
             .then(function(data) {
                 allStaff = data || [];
-                console.log('📋 Loaded ' + allStaff.length + ' staff members');
+                console.log('Loaded ' + allStaff.length + ' staff members');
                 displayStaff(allStaff);
                 loading.style.display = 'none';
                 document.getElementById('staffCount').textContent = allStaff.length + ' staff members';
             })
             .catch(function(error) {
-                console.error('❌ Error loading staff:', error);
+                console.error('Error loading staff:', error);
                 loading.innerHTML = '<i class="fas fa-exclamation-circle" style="color: var(--danger);"></i>' +
                     '<p style="color: var(--danger);">Failed to load staff: ' + error.message + '</p>' +
                     '<button class="btn btn-primary" onclick="loadStaff()" style="margin-top: 15px;">' +
@@ -760,7 +760,7 @@
         table.style.display = 'table';
         emptyState.style.display = 'none';
 
-        console.log('🔑 Displaying staff - Is Admin:', isAdminUser);
+        console.log('Displaying staff - Is Admin:', isAdminUser);
 
         tbody.innerHTML = '';
         staffToShow.forEach(function(member) {
